@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+      <title> on Andrew Wood </title>
+      <generator uri="https://gohugo.io">Hugo</generator>
+    <link>http://www.apswood.uk/</link>
+    <language>en-gb</language>
+    
+    <copyright>This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.</copyright>
+    <updated>Fri, 22 Jan 2016 17:53:41 UTC</updated>
+    
+    <item>
+      <title>First post</title>
+      <link>http://www.apswood.uk/post/first/</link>
+      <pubDate>Fri, 22 Jan 2016 17:53:41 UTC</pubDate>
+      
+      <guid>http://www.apswood.uk/post/first/</guid>
+      <description>&lt;p&gt;This is the first post.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>http://www.apswood.uk/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 UTC</pubDate>
+      
+      <guid>http://www.apswood.uk/about/</guid>
+      <description>&lt;p&gt;I&amp;rsquo;m Andrew Wood, a human interested in computers, music, cycling, photography and more. I may occasionally post sporadic ideas miscelaneous stuff here.&lt;/p&gt;
+
+&lt;p&gt;This site is generated using &lt;a href=&#34;https://gohugo.io/&#34;&gt;Hugo&lt;/a&gt; to generate a static site. The files are currently hosted on &lt;a href=&#34;https://aws.amazon.com/s3/&#34;&gt;AWS S3&lt;/a&gt; and written using &lt;a href=&#34;https://en.wikipedia.org/wiki/Markdown&#34;&gt;Markdown&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

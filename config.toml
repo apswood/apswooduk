@@ -1,0 +1,23 @@
+baseurl = "http://www.apswood.uk"
+languageCode = "en-gb"
+contentdir = "content"
+publishdir = "public"
+builddrafts = false
+title = "Andrew Wood"
+canonifyurls = true
+author = "Andrew P.S Wood"
+copyright = "This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License."
+
+
+[indexes]
+   category = "categories"
+   tag = "tags"
+[Params]
+  AuthorName = "Andrew"
+  github = "apswood"
+  twitter = "hydraw"
+  email = "email@apswood.uk"
+  description = "hello"
+  about = "/about"
+  linkedin = "apswood"
+  cover = "/images/background-cover.jpg"
