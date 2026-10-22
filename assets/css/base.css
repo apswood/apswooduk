@@ -1,0 +1,8 @@
+/* Stage 1 structural styles only. Stage 2 replaces this with the full visual system. */
+body{font:1.0625rem/1.6 system-ui,sans-serif;max-width:68ch;margin:0 auto;padding:1rem}
+.bar{display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between}
+.bar nav{display:flex;flex-wrap:wrap;gap:1rem}
+.skip{position:absolute;left:-999px}.skip:focus{left:0}
+.tag{border:1px solid currentColor;padding:0 .4em;font-size:.85em}
+.outcomes{padding-left:1.2rem}.meta,.explainer{font-size:.9rem}
+a:focus-visible{outline:3px solid currentColor;outline-offset:2px}

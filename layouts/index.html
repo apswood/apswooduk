@@ -1,0 +1,25 @@
+{{ define "main" }}
+{{ $p := hugo.Data.profile }}
+<div class="two">
+  <section class="hero">
+    <h1>{{ $p.name }}</h1>
+    <p class="lede">{{ $p.headline }}</p>
+    {{ range $p.summary }}<p>{{ . }}</p>{{ end }}
+  </section>
+  <section class="home-side">
+    <div class="board-dm" role="group" aria-label="Departure board" data-board>
+      <p class="dm-row"><span class="dm-plat">1</span> <span class="dm-dest">Technical Delivery</span> <span class="dm-time">On time</span></p>
+      <p class="dm-row dm-calling">Calling at: {{ delimit $p.calling_at ", " }}</p>
+      <p class="dm-row dm-announce" data-egg aria-live="polite" hidden></p>
+    </div>
+    <h2>Experience spotlights</h2>
+    {{ $cases := where (where site.RegularPages "Section" "experience") "Params.publish" true }}
+    <ul class="cards">
+    {{ range first 4 $cases.ByWeight }}{{ partial "case-card.html" . }}{{ else }}
+    <li>No spotlights are published yet.</li>
+    {{ end }}
+    </ul>
+    <p><a href="/experience/">See all experience</a></p>
+  </section>
+</div>
+{{ end }}

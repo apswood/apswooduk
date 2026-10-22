@@ -1,0 +1,149 @@
+# Attribution must be one of: Led, Co-led, Contributed, Supported.
+# Only outcomes with publish: true are rendered. lenses: operating-model | hands-on.
+# highlight (optional): true puts the outcome in the default Highlights theme on the Experience page.
+# publish_summary: the role summary renders only when this is true.
+# status (optional): only for pilots and proofs of concept.
+# Approved for publication by Andrew, 22 Oct 2026. Figures and team sizes are deliberately kept generic.
+
+- title: "Head of Technical Delivery"
+  org: "Six Degrees"
+  from: 2022-05
+  summary: "I lead a function created in 2022 when managed services was split in two, covering second and third line Cloud, Data, Connectivity, Unified Comms and Workplace support. The team spans onshore and offshore locations, with one layer of team leads."
+  publish_summary: true
+  outcomes:
+    - text: "Converged separate technical teams into one blended operating model while holding live SLAs"
+      attribution: "Led"
+      lenses: [operating-model]
+      capabilities: [operating-model, service-delivery]
+      publish: true
+      highlight: true
+    - text: "Designed and embedded a proactive problem management framework, applied across a large managed customer base, with an engineer kept in the loop where automation cannot decide"
+      attribution: "Led"
+      lenses: [operating-model, hands-on]
+      capabilities: [problem-management, automation]
+      publish: true
+    - text: "Worked with Professional Services leadership to formalise how customer requests move between support and projects, writing the principles and building an AI-assisted triage workflow with decisions kept with people"
+      attribution: "Co-led"
+      lenses: [operating-model]
+      capabilities: [operating-model, service-design, ai-with-oversight]
+      publish: true
+    - text: "Designed and built a knowledge-base pipeline using Python and AI-assisted coding against Cosmos DB and Azure AI Search"
+      attribution: "Led"
+      status: "Proof of concept, piloted, not rolled out"
+      lenses: [hands-on]
+      capabilities: [automation, ai-with-oversight]
+      publish: true
+    - text: "Out-of-hours major incident manager and senior escalation point, and technical lead for zero-day assessments on the vulnerability management committee"
+      attribution: "Led"
+      lenses: [hands-on]
+      capabilities: [major-incident, cyber-recovery]
+      publish: true
+      highlight: true
+    - text: "Championed proactive automation that contributed to a steady run of improvements and a reduction in major outages"
+      attribution: "Contributed"
+      lenses: [operating-model]
+      capabilities: [automation, service-delivery]
+      publish: true
+    - text: "Helping drive a sustained improvement in customer satisfaction scores"
+      attribution: "Contributed"
+      lenses: [operating-model]
+      capabilities: [service-delivery]
+      publish: true
+
+- title: "Head of Managed Services"
+  org: "Six Degrees"
+  from: 2021-05
+  to: 2022-05   # ends where Head of Technical Delivery begins
+  summary: "I brought legacy technical teams together into one proactive managed services operating model, moving towards ITIL-aligned governance and modern monitoring and cross-skilling engineers for hybrid infrastructure."
+  publish_summary: true
+  outcomes:
+    - text: "Provided technical leadership through the consolidation of multiple monitoring tools onto LogicMonitor, driving migration completion and the retirement of legacy platforms"
+      attribution: "Co-led"
+      lenses: [operating-model, hands-on]
+      capabilities: [platform-transformation, monitoring]
+      publish: true
+      highlight: true
+    - text: "Kept hands-on accountability for tier-three major incident escalations through a team realignment to protect live SLAs"
+      attribution: "Led"
+      lenses: [hands-on]
+      capabilities: [major-incident, service-delivery]
+      publish: true
+    - text: "Provided technical evidence supporting the company's Microsoft Azure Expert MSP status (2021)"
+      attribution: "Contributed"
+      lenses: [hands-on]
+      capabilities: [cloud]
+      publish: true
+
+- title: "Centre of Excellence Manager, Secure and Public Sector"
+  org: "Six Degrees"
+  from: 2020-01
+  to: 2021-05
+  summary: "I ran technical escalations and support for secure public sector cloud environments under UK OFFICIAL and NCSC guidance, bridging platform build and live service."
+  publish_summary: true
+  outcomes:
+    - text: "Built 24x7 hypercare monitoring for critical national public sector platforms through peak periods"
+      attribution: "Led"
+      lenses: [operating-model, hands-on]
+      capabilities: [regulated, service-transition]
+      publish: true
+      highlight: true
+    - text: "Owned technical remediation for penetration testing, ITHC, ISO 27001 and SOC 2 for central government and secure clients"
+      attribution: "Led"
+      lenses: [hands-on]
+      capabilities: [regulated, security]
+      publish: true
+    - text: "Hardened Linux and Solaris base images against CIS benchmarks, and designed secure bridging and proxy architecture later signed off through external accreditation"
+      attribution: "Led"
+      lenses: [hands-on]
+      capabilities: [security, engineering]
+      publish: true
+    - text: "Rebuilt load-balancer configuration and helped restore service during a prolonged hosting outage on end-of-life infrastructure"
+      attribution: "Co-led"
+      lenses: [hands-on]
+      capabilities: [major-incident, engineering]
+      publish: true
+
+- title: "Service Desk Manager"
+  org: "Carrenza"
+  from: 2017-02
+  to: 2020-01
+  summary: "I ran the consolidated service desk through the acquisition and its integration into Six Degrees, as the main technical escalation point across networking, servers and VMware. That included peak-load support for major ecommerce sites and televised charity events."
+  publish_summary: true
+  outcomes:
+    - text: "Migrated the service desk onto ServiceNow during the integration, carrying across customer contacts, SLAs and the knowledge base"
+      attribution: "Led"
+      lenses: [hands-on]
+      capabilities: [service-transition, itsm]
+      publish: true
+      highlight: true
+    - text: "Sustained SLA performance through the acquisition and integration"
+      attribution: "Led"
+      lenses: [operating-model]
+      capabilities: [service-delivery]
+      publish: true
+
+- title: "Service Desk Team Lead"
+  org: "Carrenza"
+  from: 2016-03
+  to: 2017-02
+  summary: "I was a technical escalation point across customer estates and mentored junior engineers, helping turn the support function into a structured ITIL operation during rapid client onboarding."
+  publish_summary: true
+  outcomes:
+    - text: "Part of the technical rollout and customer planning for Jira Service Management, which let the team measure SLAs for the first time"
+      attribution: "Contributed"
+      lenses: [hands-on]
+      capabilities: [itsm]
+      publish: true
+
+- title: "Systems Engineer"
+  org: "Carrenza"
+  from: 2013-09
+  to: 2016-03
+  summary: "I joined as a graduate systems engineer, working hands-on across customer VMware, Linux and Windows estates."
+  publish_summary: true
+  outcomes:
+    - text: "Managed configuration and orchestration with Chef and Ansible across customer estates"
+      attribution: "Led"
+      lenses: [hands-on]
+      capabilities: [engineering, automation]
+      publish: true

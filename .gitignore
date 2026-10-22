@@ -1,3 +1,5 @@
-_site/
-.sass-cache/
-.jekyll-metadata
+public/
+resources/
+.hugo_build.lock
+.taste-skill/
+.hugo-bin/

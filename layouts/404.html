@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="color-scheme" content="light dark">
+<title>Page not found</title>
+<script>(function(){try{if(localStorage.getItem('aw-serious')==='1')document.documentElement.dataset.serious='1'}catch(e){}})();</script>
+<style>
+@font-face{font-family:Railway;src:url(/fonts/Railway-Semibold.woff2) format("woff2");font-weight:600;font-display:swap}
+:root{--bg:#f6f1e7;--surface:#ece4d3;--ink:#26292b;--muted:#4b5256;--accent:#1f5f7a;--accent-ink:#fff;--focus:#9a3b00;--head:Railway,"Gill Sans",Calibri,sans-serif}
+@media(prefers-color-scheme:dark){:root{--bg:#12181d;--surface:#1b242b;--ink:#e9e6df;--muted:#aab3ba;--accent:#7fb8d1;--accent-ink:#0f1519;--focus:#ffb070}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:1.0625rem/1.6 Seravek,"Gill Sans Nova",Calibri,"Segoe UI",sans-serif}
+main{max-width:720px;margin:0 auto;padding:clamp(24px,6vw,72px) 20px}
+h1,h2,.panic{font-family:var(--head);font-weight:600;line-height:1.15}
+h1{font-size:clamp(1.8rem,1.2rem + 2.6vw,3rem);margin:0 0 .5em}
+a{color:var(--accent)}a:focus-visible,button:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.panic{font-size:clamp(2.2rem,1.4rem + 5vw,4.5rem);margin:1.2em 0 .3em;letter-spacing:.01em}
+button{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--muted);border-radius:999px;padding:8px 18px;cursor:pointer}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.card{background:var(--surface);border-radius:8px;padding:18px 20px;margin:1rem 0}
+.alert{font-family:var(--head);font-size:1.3rem;margin:.5rem 0 1rem;min-height:3.2em}
+.keys{display:flex;flex-wrap:wrap;gap:8px}
+.meta{color:var(--muted);font-size:.95rem}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+[hidden]{display:none!important}
+html:not([data-serious="1"]) .plain-only{display:none}
+html[data-serious="1"] .egg404{display:none}
+</style>
+</head>
+<body>
+<main>
+  <h1>Signal failure at this location.</h1>
+  <p><a href="/">Return to the home page</a></p>
+  <p class="plain-only">Easter Egg mode is off, so the rest of this page is switched off.</p>
+
+  <div class="egg404">
+    <p class="panic">Don't panic.</p>
+
+    <section class="card" aria-labelledby="storm-h">
+      <h2 id="storm-h">Alert Storm</h2>
+      <p class="meta" id="storm-intro">Sort each alert into P1 to P4, or call it noise. Keys 1 to 4 for priority, 5 or N for noise, P to pause, Esc to stop.</p>
+      <div id="storm-stage" hidden>
+        <p class="meta"><span id="storm-timer"></span> <span id="storm-count"></span></p>
+        <p class="alert" id="storm-alert" aria-live="polite"></p>
+        <div class="keys" id="storm-keys">
+          <button type="button" data-a="P1">1 &middot; P1</button><button type="button" data-a="P2">2 &middot; P2</button>
+          <button type="button" data-a="P3">3 &middot; P3</button><button type="button" data-a="P4">4 &middot; P4</button>
+          <button type="button" data-a="noise">5 &middot; Noise</button>
+          <button type="button" id="storm-pause" aria-pressed="false">Pause</button>
+        </div>
+      </div>
+      <p id="storm-result" role="status" aria-live="polite"></p>
+      <p><button type="button" class="primary" id="storm-start">Play Alert Storm</button></p>
+    </section>
+
+    <p lang="es" id="es-line">Esta página no existe. Todavía estoy aprendiendo español, así que quizá sea culpa mía.</p>
+    <p><button type="button" id="babel" aria-pressed="false">Babel fish not installed</button></p>
+    <p id="en-line" class="meta" hidden>This page does not exist. I am still learning Spanish, so it may be my fault.</p>
+  </div>
+</main>
+<script>
+(function(){
+  var root=document.documentElement;
+  if(root.dataset.serious==='1')return;
+  // Record the find in the same place the main site uses.
+  try{var f=JSON.parse(localStorage.getItem('aw-found')||'{}');if(!f.notfound){f.notfound=Date.now();localStorage.setItem('aw-found',JSON.stringify(f))}}catch(e){}
+
+  var babel=document.getElementById('babel'),en=document.getElementById('en-line');
+  babel.addEventListener('click',function(){var on=en.hidden;en.hidden=!on;babel.setAttribute('aria-pressed',on?'true':'false');babel.textContent=on?'Babel fish installed':'Babel fish not installed'});
+
+  var RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var ALERTS=[
+    ['Primary database cluster unreachable','P1'],['Disk at 97% on archive volume','P3'],['Test alert left over from last Tuesday','noise'],
+    ['Core router heartbeat lost at both sites','P1'],['Certificate expires in 40 days','P4'],['Backup job finished with warnings','P3'],
+    ['CPU spike on batch host, already cleared','noise'],['Payment gateway timeouts rising','P2'],['Printer toner low','noise'],
+    ['Customer portal login failing for all users','P1'],['Patch window reminder for next month','P4'],['Replication lag growing on reporting node','P2'],
+    ['Disk latency above threshold on one host','P3'],['Monitoring agent restarted itself','noise'],['Firewall pair has lost its standby','P2']
+  ];
+  var q,i,right,p1Total,p1Right,left,tick,paused,running=false,answered;
+  var $=function(id){return document.getElementById(id)};
+  var stage=$('storm-stage'),alertEl=$('storm-alert'),timer=$('storm-timer'),count=$('storm-count'),result=$('storm-result'),start=$('storm-start'),pauseBtn=$('storm-pause');
+
+  function shuffle(a){a=a.slice();for(var k=a.length-1;k>0;k--){var j=Math.floor(Math.random()*(k+1));var t=a[k];a[k]=a[j];a[j]=t}return a}
+  function begin(){
+    q=shuffle(ALERTS).slice(0,12);i=0;right=0;p1Total=q.filter(function(a){return a[1]==='P1'}).length;p1Right=0;left=30;paused=false;running=true;
+    result.textContent='';stage.hidden=false;start.hidden=true;timer.textContent=RM?'No timer. Take your time.':'30 seconds left.';
+    pauseBtn.hidden=RM;pauseBtn.setAttribute('aria-pressed','false');pauseBtn.textContent='Pause';
+    show();
+    if(!RM){tick=setInterval(function(){if(paused)return;left--;timer.textContent=left+' seconds left.';if(left<=0)end()},1000)}
+    stage.querySelector('button').focus();
+  }
+  function show(){
+    if(i>=q.length){end();return}
+    alertEl.textContent=q[i][0];count.textContent='Alert '+(i+1)+' of '+q.length+'.';
+  }
+  function answer(a){
+    if(!running||paused)return;
+    if(a===q[i][1]){right++;if(a==='P1')p1Right++}
+    i++;show();
+  }
+  function end(){
+    if(!running)return;running=false;clearInterval(tick);stage.hidden=true;start.hidden=false;start.textContent='Play again';
+    result.textContent='You found the real P1s hiding in the noise. Consolidated monitoring would have helped. Sorted correctly: '+right+' of '+Math.min(i,q.length)+'. P1s caught: '+p1Right+' of '+p1Total+'.';
+    start.focus();
+  }
+  start.addEventListener('click',begin);
+  pauseBtn.addEventListener('click',function(){paused=!paused;pauseBtn.setAttribute('aria-pressed',paused);pauseBtn.textContent=paused?'Resume':'Pause'});
+  $('storm-keys').addEventListener('click',function(e){var b=e.target.closest('[data-a]');if(b)answer(b.dataset.a)});
+  document.addEventListener('keydown',function(e){
+    if(!running)return;var k=e.key.toLowerCase();
+    if(k==='1')answer('P1');else if(k==='2')answer('P2');else if(k==='3')answer('P3');else if(k==='4')answer('P4');else if(k==='5'||k==='n')answer('noise');
+    else if(k==='p'&&!RM)pauseBtn.click();else if(k==='escape')end();
+  });
+})();
+</script>
+</body>
+</html>

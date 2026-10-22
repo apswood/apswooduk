@@ -1,0 +1,27 @@
+{{ define "main" }}
+<div data-egg-page="status">
+  <p class="serious-note">Easter Egg mode is off, so this page is switched off.</p>
+  <div class="egg-content">
+    <div class="towel" data-towel hidden aria-hidden="true">
+      <svg viewBox="0 0 220 60" focusable="false"><path d="M0 0 H220 V28 Q110 40 0 28 Z" fill="#2f6fb0"/><path d="M20 28 V58 H70 V32 Z" fill="#2f6fb0"/><path d="M20 38 H70 M20 46 H70" stroke="#fff" stroke-width="3"/></svg>
+    </div>
+    <h1>Service status</h1>
+    <p class="status-all" data-status-all>All systems mostly operational.</p>
+    <ul class="components">
+      {{ range hugo.Data.status.components }}
+      <li class="comp comp-{{ .level }}"><span class="comp-name">{{ .name }}</span><span class="comp-status"><span class="dot" aria-hidden="true"></span>{{ .status }}</span></li>
+      {{ end }}
+      <li class="comp comp-ok" data-towel-row hidden><span class="comp-name">Towel</span><span class="comp-status"><span class="dot" aria-hidden="true"></span>Located</span></li>
+    </ul>
+    <h2>Incident history</h2>
+    {{ range hugo.Data.status.incidents }}
+    <article class="incident"><h3>{{ .title }} <span class="tag">{{ .status }}</span></h3><p>{{ .body }}</p></article>
+    {{ end }}
+    <p class="meta">This page is a joke and describes no real service.</p>
+  </div>
+</div>
+<script>
+(function(){var d=new Date();if(d.getMonth()===4&&d.getDate()===25){
+document.querySelectorAll('[data-towel],[data-towel-row]').forEach(function(e){e.hidden=false});}})();
+</script>
+{{ end }}

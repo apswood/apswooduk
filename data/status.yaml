@@ -1,0 +1,29 @@
+components:
+  - name: Coffee
+    status: Degraded performance
+    level: degraded
+  - name: Pedantry
+    status: Operational
+    level: ok
+  - name: Spanish
+    status: Rolling upgrade in progress
+    level: maintenance
+  - name: Saxophone practice
+    status: Scheduled maintenance
+    level: maintenance
+  - name: Railway trivia
+    status: Operational, over capacity
+    level: ok
+  - name: Planet Earth
+    status: Mostly harmless
+    level: ok
+incidents:
+  - title: "Second cup delayed pending first"
+    status: Resolved
+    body: "Impact: morning throughput reduced. Root cause: the first cup was still in progress. Resolution: the first cup completed. No customer action was required. Follow-up: consider a larger first cup."
+  - title: "Subjunctive mood intermittently unavailable"
+    status: Monitoring
+    body: "Impact: some sentences arrived in the wrong mood. Root cause: under investigation. Workaround: the indicative, used with confidence. A fix is being rolled out gradually and revisited weekly."
+  - title: "Timetable consulted without need"
+    status: Resolved
+    body: "Impact: none. Root cause: curiosity. Resolution: the timetable was returned to the shelf. A post-incident review concluded that this is likely to happen again."

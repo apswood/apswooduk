@@ -1,0 +1,19 @@
+baseURL = "https://www.apswood.uk/"
+title = "Andrew Wood"
+copyright = "© Andrew Wood"
+enableRobotsTXT = true
+defaultContentLanguage = "en"
+disableKinds = ["taxonomy", "term", "RSS"]
+
+[languages.en]
+  locale = "en-GB"
+
+[params]
+  description = "Andrew Wood, infrastructure and managed services leader. CV and portfolio."
+
+[outputs]
+  home = ["HTML"]
+  section = ["HTML"]
+
+[minify.tdewolff.html]
+  keepComments = true

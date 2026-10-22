@@ -1,0 +1,13 @@
+{{- /* Returns the theme ids a card belongs to. Context: dict with caps, lenses, kind, highlight. */ -}}
+{{- $c := . -}}
+{{- $out := slice -}}
+{{- range hugo.Data.themes -}}
+  {{- $t := . -}}
+  {{- $hit := false -}}
+  {{- if and (eq $t.id "highlights") $c.highlight }}{{ $hit = true }}{{ end -}}
+  {{- range $t.lenses }}{{ if in $c.lenses . }}{{ $hit = true }}{{ end }}{{ end -}}
+  {{- range $t.capabilities }}{{ if in $c.caps . }}{{ $hit = true }}{{ end }}{{ end -}}
+  {{- range $t.kinds }}{{ if eq $c.kind . }}{{ $hit = true }}{{ end }}{{ end -}}
+  {{- if $hit }}{{ $out = $out | append $t.id }}{{ end -}}
+{{- end -}}
+{{- return $out -}}

@@ -1,0 +1,29 @@
+{{ define "main" }}
+{{ $c := hugo.Data.connections }}
+<div data-egg-page="connections">
+  <p class="serious-note">Easter Egg mode is off, so this page is switched off.</p>
+  <div class="egg-content">
+    <h1>How it all connects</h1>
+    <p>Everything here depends on something else. Hover or focus a node to light up what it depends on.</p>
+    <svg class="graph" viewBox="0 0 860 340" aria-hidden="true" focusable="false" data-graph>
+      {{ range $i, $p := $c.pairs }}
+        {{ $y := add 45 (mul $i 80) }}
+        <line class="edge" data-a="L{{ $i }}" data-b="R{{ $i }}" x1="280" y1="{{ $y }}" x2="580" y2="{{ $y }}"/>
+        <line class="edge" data-a="C" data-b="L{{ $i }}" x1="430" y1="170" x2="280" y2="{{ $y }}"/>
+        <line class="edge" data-a="C" data-b="R{{ $i }}" x1="430" y1="170" x2="580" y2="{{ $y }}"/>
+      {{ end }}
+      {{ range $i, $p := $c.pairs }}
+        {{ $y := add 45 (mul $i 80) }}
+        <g class="node" data-id="L{{ $i }}"><rect x="10" y="{{ sub $y 22 }}" width="270" height="44" rx="6"/><text x="20" y="{{ add $y 5 }}">{{ $p.left }}</text></g>
+        <g class="node" data-id="R{{ $i }}"><rect x="580" y="{{ sub $y 22 }}" width="270" height="44" rx="6"/><text x="590" y="{{ add $y 5 }}">{{ $p.right }}</text></g>
+      {{ end }}
+      <g class="node center" data-id="C"><rect x="350" y="148" width="160" height="44" rx="22"/><text x="430" y="175" text-anchor="middle">Systems</text></g>
+    </svg>
+    <h2>As a list</h2>
+    <ul class="conn-list">
+      {{ range $c.pairs }}<li>{{ .left }} connects to {{ .right }}.</li>{{ end }}
+      <li>All of them connect to the same idea: {{ lower (substr $c.center 0 1) }}{{ substr $c.center 1 }}.</li>
+    </ul>
+  </div>
+</div>
+{{ end }}

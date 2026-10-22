@@ -1,0 +1,43 @@
+# The must-have easter eggs. The counter and index read this list.
+- id: terminal
+  name: The terminal
+  how: "Press the backtick key, or use the >_ glyph in the footer."
+- id: signal
+  name: The signal box
+  how: "Click the signal on the career line until it shows green."
+- id: board
+  name: Platform announcements
+  how: "Hover over or focus the departure board on the home page."
+- id: dig
+  name: Beneath the street
+  how: "Use the Dig control under the footer and find something buried."
+- id: status
+  name: The status page
+  how: "Visit /status/, or type status in the terminal."
+- id: notfound
+  name: Signal failure
+  how: "Visit a page that does not exist."
+- id: improve
+  name: The improvement plan
+  how: "Follow Improve this CV in the footer."
+- id: rehearsal
+  name: The rehearsal
+  how: "Type rehearse in the terminal, or follow the quiet link on the Contact page."
+- id: pause
+  name: The awkward pause
+  how: "Open the Contact page for the first time in a visit, and wait."
+- id: notice
+  name: The laminated notice
+  how: "Type cat notice.txt in the terminal, or use the pin on the Approach page."
+- id: map
+  name: How it all connects
+  how: "Follow the quiet link on the Off the clock page."
+- id: retro
+  name: Retro mode
+  how: "A famous sequence of arrow keys, then B and A."
+- id: piano
+  name: The keyboard
+  how: "Use the key icon on the Off the clock page and play a few notes."
+- id: monologue
+  name: Inner monologue
+  how: "Use the thought bubble on the Approach page."

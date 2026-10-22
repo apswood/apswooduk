@@ -1,0 +1,6 @@
+center: "How complex systems fit together"
+pairs:
+  - { left: "Railway signalling", right: "Change control" }
+  - { left: "Jazz improvisation", right: "Incident response under pressure" }
+  - { left: "Lost rivers", right: "Legacy infrastructure" }
+  - { left: "Nordic design", right: "Removing what has not earned its place" }

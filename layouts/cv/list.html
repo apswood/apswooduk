@@ -1,0 +1,22 @@
+{{ define "main" }}
+{{ $p := hugo.Data.profile }}
+<article class="cv">
+<h1>{{ $p.name }}</h1>
+<p class="lede">{{ $p.headline }}, {{ $p.location }}</p>
+{{ range $p.summary }}<p>{{ . }}</p>{{ end }}
+<aside class="cv-cta" aria-label="Up to date CV">
+  <p><strong>This page is a summary.</strong> For my full, up to date CV, view my LinkedIn profile and message me to ask for the latest copy.</p>
+  <p><a class="btn" href="{{ $p.links.linkedin }}" rel="me">View LinkedIn and ask for my CV</a> <span class="cv-url">{{ replace $p.links.linkedin "https://" "" }}</span></p>
+</aside>
+{{ partial "lens-toggle.html" . }}
+<h2>Experience</h2>
+{{ range hugo.Data.experience }}
+<section class="cv-role">
+<h3>{{ .title }}, {{ .org }} <span class="meta">{{ .from }} to {{ with .to }}{{ . }}{{ else }}present{{ end }}</span></h3>
+{{ if .publish_summary }}<p>{{ .summary }}</p>{{ end }}
+{{ partial "outcomes.html" .outcomes }}
+</section>
+{{ end }}
+<p class="no-print"><button type="button" class="chip" onclick="window.print()">Print this page</button> <span class="meta">The printed order follows the lens chosen above.</span></p>
+</article>
+{{ end }}
