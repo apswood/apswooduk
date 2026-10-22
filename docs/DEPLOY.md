@@ -5,7 +5,7 @@ Every push to `master` triggers a Cloudflare build. It runs the publish-gate tes
 ## Settings (Workers Builds)
 - **Repository / branch:** `apswood/apswooduk`, branch `master`.
 - **Build command:** `bash scripts/ci-build.sh`
-- **Deploy command:** `npx wrangler deploy` (reads `wrangler.jsonc`, which serves `public/` as static assets)
+- **Deploy command:** `npx wrangler deploy` (reads `wrangler.jsonc`, which serves `public/` as static assets). Non-production branches run `npx wrangler preview` instead, which needs the empty `previews` block that `wrangler.jsonc` already has.
 - **Environment variable:** none needed. `scripts/ci-build.sh` installs the pinned Hugo (0.168.0, checksum verified) itself.
 
 If you use Cloudflare Pages instead, there is no deploy command. Use the same build command, set the output directory to `public`, and set `HUGO_VERSION`. In that case `wrangler.jsonc` is not needed.
