@@ -41,3 +41,6 @@
 - id: monologue
   name: Inner monologue
   how: "Use the thought bubble on the Approach page."
+- id: shuffle
+  name: The full timetable
+  how: "Use Another one on the home page until you have seen every spotlight in a single visit."

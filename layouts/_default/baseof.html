@@ -50,8 +50,7 @@
   <main id="main">{{ block "main" . }}{{ end }}</main>
   <div class="divider" aria-hidden="true"></div>
   <footer class="foot">
-    <p>Last reviewed {{ time.AsTime hugo.Data.profile.last_reviewed | time.Format "2 January 2006" }}. <a href="/cv/">Printable CV</a></p>
-    <p class="mode-row"><button type="button" class="chip" id="egg-toggle" aria-pressed="true" hidden>Easter Egg mode</button></p>
+    <p class="foot-line"><span>Last reviewed {{ time.AsTime hugo.Data.profile.last_reviewed | time.Format "2 January 2006" }}. <a href="/cv/">Printable CV</a></span> <button type="button" class="chip" id="egg-toggle" aria-pressed="true" hidden>Easter Egg Hunt Mode: On</button></p>
     <p class="egg-row" data-egg>
       <button type="button" class="chip" data-terminal aria-label="Open terminal">&gt;_</button>
       <a href="/improve-this-cv/" data-improve>Improve this CV</a>

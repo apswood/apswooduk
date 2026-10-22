@@ -1,8 +1,0 @@
-{{- /* Context: dict with r (role), o (outcome), first (bool). */ -}}
-{{- $r := .r -}}{{- $o := .o -}}
-{{- $themes := partial "themes-for.html" (dict "caps" $o.capabilities "lenses" $o.lenses "kind" "outcome" "highlight" $o.highlight) -}}
-<li class="dcard dcard-outcome org-{{ urlize $r.org }}" data-themes="{{ delimit $themes " " }}"{{ if .first }} id="role-{{ urlize (printf "%s-%s" $r.from $r.title) }}"{{ end }} data-role="role-{{ urlize (printf "%s-%s" $r.from $r.title) }}">
-  <p class="dkick">{{ $r.org }}, {{ $r.from }} to {{ with $r.to }}{{ . }}{{ else }}present{{ end }}</p>
-  <h2 class="dtitle">{{ $r.title }}</h2>
-  <p class="dtext">{{ partial "attribution.html" $o.attribution }}{{ with $o.status }} <span class="tag tag-status">{{ . }}</span>{{ end }} {{ $o.text }}</p>
-</li>

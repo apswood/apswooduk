@@ -1,0 +1,11 @@
+# Shown as the first station on the Experience page career line.
+org: "University of East Anglia"
+title: "Bachelor of Science (BSc), Computer Science"
+from: "2009"
+to: "2013"
+grade: "2:1"
+project: "Final year project: automatic key recognition in music."
+modules: ["Systems Engineering", "Networking", "Software Engineering", "Data Structures and Algorithms", "Graphics", "Sound and Image"]
+societies: ["UEA Music Society", "UEA Live Music Society", "UEA Kayak", "Union Councillor"]
+alevels: "A levels in Computing, Business Studies, Music, Physics and Financial Studies, at Verulam School."
+summary: "I studied Computer Science before joining Carrenza as a graduate systems engineer in 2013."

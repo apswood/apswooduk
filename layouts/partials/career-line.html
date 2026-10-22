@@ -1,55 +1,97 @@
-{{- /* Career line diagram. Newest role at the top. Lines run at 90 and 45 degrees with rounded bends. Blue is Six Degrees, red is Carrenza.
-       Stations link to the role's first card on the Experience page, so it works by keyboard and without JS. */ -}}
+{{- /* Vertical career line, newest at the top. 90 and 45 degree track with rounded bends.
+       Segment colour follows the era of the station below it. Stations link to their role card, so it works without JS. */ -}}
 {{- $roles := sort hugo.Data.experience "from" "desc" -}}
-{{- $n := len $roles -}}
-{{- $gap := 124 -}}
-{{- $h := add 90 (mul (sub $n 1) $gap) -}}
-{{- $xl := 46 -}}{{- $xr := 104 -}}
-{{- $cols := dict "Carrenza" "var(--line-carrenza)" "Six Degrees" "var(--line-sixdegrees)" -}}
-{{- $k := 0.7071 -}}{{- $rad := 14 -}}
-<nav class="career" aria-label="Career line. Each station links to its role.">
-<svg viewBox="0 0 440 {{ $h }}" role="presentation" focusable="false">
-  {{- /* Tracks first, so the stations sit on top. Each segment is two halves so the colour can change at an interchange. */ -}}
-  {{- range $i, $r := $roles }}
+{{- $nodes := slice -}}
+{{- $prev := "" -}}
+{{- range $roles -}}
+  {{- if and $prev (ne $prev .org) }}{{ $nodes = $nodes | append (dict "kind" "hub" "era" "Six Degrees") }}{{ end -}}
+  {{- $nodes = $nodes | append (dict "kind" "role" "r" . "era" .org) -}}
+  {{- $prev = .org -}}
+{{- end -}}
+{{- $nodes = $nodes | append (dict "kind" "edu" "r" hugo.Data.education "era" "UEA") -}}
+{{- $first := dict -}}
+{{- range sort hugo.Data.experience "from" -}}{{- if not (index $first .org) }}{{ $first = merge $first (dict .org (printf "role-%s" (urlize (printf "%s-%s" .from .title)))) }}{{ end -}}{{- end -}}
+{{- $eduId := printf "role-%s" (urlize (printf "%s-%s" hugo.Data.education.from hugo.Data.education.title)) -}}
+{{- $n := len $nodes -}}
+{{- $top := 150 -}}{{- $step := 104 -}}{{- $xm := 150 -}}{{- $xj := 122 -}}
+{{- $last := add $top (mul (sub $n 1) $step) -}}
+{{- $h := add $last 70 -}}
+{{- $k := 0.7071 -}}{{- $rad := 12 -}}{{- $rk := mul $rad $k -}}
+<nav class="career" aria-label="Career line. Each station selects its role.">
+<div class="tube">
+<svg viewBox="0 0 440 {{ $h }}" role="presentation" focusable="false" data-tube>
+  <defs>
+    <linearGradient id="tube-fade" gradientUnits="userSpaceOnUse" x1="0" y1="{{ $top }}" x2="0" y2="0"><stop offset="0" stop-color="#1E40AF" stop-opacity="1"/><stop offset="1" stop-color="#1E40AF" stop-opacity=".12"/></linearGradient>
+  </defs>
+  <path class="seg-future" d="M{{ $xm }} {{ $top }} V{{ sub $top 38 }} Q{{ $xm }} {{ sub $top 50 }} {{ add $xm $rk }} {{ sub (sub $top 50) $rk }} L{{ sub (add $xm 28) $rk }} {{ add (sub $top 78) $rk }} Q{{ add $xm 28 }} {{ sub $top 78 }} {{ add $xm 28 }} {{ sub $top 90 }} V0" stroke="url(#tube-fade)"/>
+  {{- range $i, $a := $nodes }}
+    {{- $y1 := add $top (mul $i $step) }}
+    {{- $x1 := cond (eq $i (sub $n 2)) $xj $xm }}
     {{- if lt (add $i 1) $n }}
-    {{- $nr := index $roles (add $i 1) }}
-    {{- $y1 := add 40 (mul $i $gap) }}
-    {{- $y2 := add $y1 $gap }}
-    {{- $ym := add $y1 (div $gap 2) }}
-    {{- $x1 := cond (eq (mod $i 2) 0) $xl $xr }}
-    {{- $x2 := cond (eq (mod $i 2) 0) $xr $xl }}
-    {{- $s := cond (gt $x2 $x1) 1 -1 }}
-    {{- $d := div (math.Abs (sub $x2 $x1)) 2 }}
-    {{- $ya := sub $ym $d }}{{- $yb := add $ym $d }}
-    {{- $xm := div (add $x1 $x2) 2 }}
-    {{- $c1 := index $cols $r.org | default "var(--line-sixdegrees)" }}
-    {{- $c2 := index $cols $nr.org | default "var(--line-sixdegrees)" }}
-  <path class="track" d="M{{ $x1 }} {{ $y1 }} V{{ sub $ya $rad }} Q{{ $x1 }} {{ $ya }} {{ add $x1 (mul $s $rad $k) }} {{ add $ya (mul $rad $k) }} L{{ $xm }} {{ $ym }}" stroke="{{ $c1 }}"/>
-  <path class="track" d="M{{ $xm }} {{ $ym }} L{{ sub $x2 (mul $s $rad $k) }} {{ sub $yb (mul $rad $k) }} Q{{ $x2 }} {{ $yb }} {{ $x2 }} {{ add $yb $rad }} V{{ $y2 }}" stroke="{{ $c2 }}"/>
-      {{- if ne $r.org $nr.org }}
-  <g class="interchange"><circle cx="{{ $xm }}" cy="{{ $ym }}" r="12" fill="var(--bg)" stroke="var(--ink)" stroke-width="4"/></g>
-  <text class="ic-label" x="{{ add $xr 70 }}" y="{{ add $ym 5 }}">Interchange: integration</text>
+      {{- $b := index $nodes (add $i 1) }}
+      {{- $y2 := add $y1 $step }}
+      {{- $x2 := cond (eq (add $i 1) (sub $n 2)) $xj $xm }}
+      {{- $ym := add $y1 (div $step 2) }}
+      {{- $s := cond (gt $x2 $x1) 1 -1 }}
+      {{- $d := div (math.Abs (sub $x2 $x1)) 2 }}
+      {{- $ya := sub $ym $d }}{{ $yb := add $ym $d }}
+      {{- $cls := printf "seg era-%s" (urlize $b.era) }}{{ if eq $i 0 }}{{ $cls = "seg seg-near" }}{{ end }}
+      {{- if eq $x1 $x2 }}
+  <path class="{{ $cls }}" d="M{{ $x1 }} {{ $y1 }} V{{ $y2 }}"/>
+      {{- else }}
+  <path class="{{ $cls }}" d="M{{ $x1 }} {{ $y1 }} V{{ sub $ya $rad }} Q{{ $x1 }} {{ $ya }} {{ add $x1 (mul $s $rk) }} {{ add $ya $rk }} L{{ sub $x2 (mul $s $rk) }} {{ sub $yb $rk }} Q{{ $x2 }} {{ $yb }} {{ $x2 }} {{ add $yb $rad }} V{{ $y2 }}"/>
       {{- end }}
+    {{- else }}
+  <path class="seg seg-end era-uea" d="M{{ $x1 }} {{ $y1 }} V{{ add $y1 40 }}"/>
+  <rect class="cap era-uea" x="{{ sub $x1 12 }}" y="{{ add $y1 40 }}" width="24" height="6"/>
     {{- end }}
   {{- end }}
-  {{- range $i, $r := $roles }}
-    {{- $y := add 40 (mul $i $gap) }}
-    {{- $x := cond (eq (mod $i 2) 0) $xl $xr }}
-  <a href="#role-{{ urlize (printf "%s-%s" $r.from $r.title) }}" class="station" aria-label="{{ $r.title }}, {{ $r.org }}, {{ $r.from }} to {{ with $r.to }}{{ . }}{{ else }}present{{ end }}">
-    <circle class="hit" cx="{{ $x }}" cy="{{ $y }}" r="20"/>
-    <rect class="tick" x="{{ sub $x 17 }}" y="{{ sub $y 3 }}" width="34" height="6" rx="1"/>
-    <text class="st-year" x="170" y="{{ sub $y 8 }}">{{ substr $r.from 0 4 }}</text>
-    {{- $parts := split $r.title ", " }}
-    <text class="st-title" x="170" y="{{ add $y 12 }}">{{ index $parts 0 }}{{ if gt (len $parts) 1 }}<tspan x="170" dy="19">{{ delimit (after 1 $parts) ", " }}</tspan>{{ end }}</text>
-    <g class="board" aria-hidden="true">
-      <rect x="160" y="{{ sub $y 32 }}" width="270" height="76" rx="6"/>
-      <text x="176" y="{{ sub $y 6 }}" class="b1">{{ $r.org }}</text>
-      <text x="176" y="{{ add $y 20 }}" class="b2">{{ $r.from }} to {{ with $r.to }}{{ . }}{{ else }}present{{ end }}</text>
-    </g>
+  {{- range $i, $a := $nodes }}
+    {{- $y := add $top (mul $i $step) }}
+    {{- $x := cond (eq $i (sub $n 2)) $xj $xm }}
+    {{- if eq $a.kind "hub" }}
+  <g class="hub">
+    <g aria-hidden="true"><circle cx="{{ $x }}" cy="{{ $y }}" r="14" class="hub-o"/><circle cx="{{ $x }}" cy="{{ $y }}" r="6.5" class="hub-i"/>
+    <text class="hub-l" x="{{ sub $x 26 }}" y="{{ sub $y 2 }}" text-anchor="end">Interchange:</text>
+    <text class="hub-l" x="{{ sub $x 26 }}" y="{{ add $y 14 }}" text-anchor="end">integration</text></g>
+    <a class="pill-link" href="#{{ index $first "Carrenza" }}" data-goto aria-label="Carrenza: first role on the route" aria-hidden="false"><g class="pill pill-dark"><rect x="190" y="{{ sub $y 12 }}" width="86" height="24" rx="12"/><text x="233" y="{{ add $y 4 }}" text-anchor="middle">Carrenza</text></g></a>
+  </g>
+    {{- else }}
+      {{- $r := $a.r }}
+      {{- $parts := split $r.title ", " }}
+      {{- $cur := and (eq $a.kind "role") (not $r.to) }}
+      {{- $nl := len $parts }}
+      {{- $id := printf "role-%s" (urlize (printf "%s-%s" $r.from $r.title)) }}
+  <a href="#{{ $id }}" class="station era-{{ urlize $a.era }}" data-node="{{ $i }}" aria-label="{{ $r.title }}, {{ $r.org }}, {{ $r.from }} to {{ with $r.to }}{{ . }}{{ else }}present{{ end }}">
+    <rect class="lbl-hit" x="180" y="{{ sub $y 32 }}" width="258" height="{{ add 52 (mul 17 $nl) }}"/>
+    <g class="lbl-box"><rect class="lbl-bg" x="182" y="{{ sub $y 30 }}" width="254" height="{{ add 30 (mul 17 $nl) }}" rx="4"/><rect class="lbl-bar" x="182" y="{{ sub $y 30 }}" width="254" height="5"/></g>
+    <circle class="halo" cx="{{ $x }}" cy="{{ $y }}" r="19"/>
+    <circle class="ring" cx="{{ $x }}" cy="{{ $y }}" r="10"/>
+    {{- if $cur }}
+    <text class="st-title" x="192" y="{{ sub $y 6 }}">{{ range $j, $p := $parts }}{{ if $j }}<tspan x="192" dy="17">{{ $p }}</tspan>{{ else }}{{ $p }}{{ end }}{{ end }}</text>
+    <text class="st-year" x="192" y="{{ add (add $y 11) (mul 17 (sub $nl 1)) }}">({{ $r.from }} to present)</text>
+    {{- else }}
+    <text class="st-year" x="192" y="{{ sub $y 7 }}">{{ if eq $a.kind "edu" }}{{ $r.from }} – {{ $r.to }}{{ else }}{{ substr $r.from 0 4 }}{{ end }}</text>
+    <text class="st-title" x="192" y="{{ add $y 11 }}">{{ range $j, $p := $parts }}{{ if $j }}<tspan x="192" dy="17">{{ $p }}</tspan>{{ else }}{{ $p }}{{ end }}{{ end }}</text>
+    {{- end }}
   </a>
+    {{- if eq $a.kind "edu" }}
+  <a class="pill-link" href="#{{ $eduId }}" data-goto aria-label="University of East Anglia: first stop on the route"><g class="pill pill-uea"><rect x="6" y="{{ sub $y 18 }}" width="112" height="36" rx="18"/><text x="62" y="{{ sub $y 2 }}" text-anchor="middle">University of</text><text x="62" y="{{ add $y 12 }}" text-anchor="middle">East Anglia</text></g></a>
+    {{- else if eq $i 1 }}
+  <a class="pill-link" href="#{{ index $first "Six Degrees" }}" data-goto aria-label="Six Degrees: first role on the route"><g class="pill pill-sixdegrees"><rect x="6" y="{{ sub $y 12 }}" width="112" height="24" rx="12"/><text x="62" y="{{ add $y 4 }}" text-anchor="middle">Six Degrees</text></g></a>
+    {{- end }}
+    {{- end }}
   {{- end }}
+  <g class="train" aria-hidden="true" data-train>
+    <circle class="train-glow" r="19"/>
+    <rect class="train-body" x="-11" y="-15" width="22" height="30" rx="8"/>
+    <rect class="train-glass" x="-8" y="-11" width="16" height="10" rx="2.5"/>
+    <path class="train-chev" d="M-5 6 L0 1 L5 6"/>
+    <circle class="train-lamp" cx="-6" cy="11" r="1.8"/><circle class="train-lamp" cx="6" cy="11" r="1.8"/>
+  </g>
 </svg>
-<p class="line-key" aria-hidden="true"><span class="key key-sixdegrees"></span> Six Degrees <span class="key key-carrenza"></span> Carrenza</p>
+<p class="tube-key"><a class="pill pill-h pill-uea" href="#{{ $eduId }}" data-goto>University of East Anglia</a><a class="pill pill-h pill-carrenza" href="#{{ index $first "Carrenza" }}" data-goto>Carrenza</a><a class="pill pill-h pill-sixdegrees" href="#{{ index $first "Six Degrees" }}" data-goto>Six Degrees</a></p>
+</div>
 <div class="signal-box" data-egg>
   <button type="button" class="signal" data-signal hidden aria-label="Signal showing red. Activate to change the aspect.">
     <svg viewBox="0 0 40 100" aria-hidden="true" focusable="false">

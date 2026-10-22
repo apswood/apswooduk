@@ -29,7 +29,7 @@
   function showSerious() {
     if (!sBtn) return;
     sBtn.setAttribute('aria-pressed', isSerious() ? 'false' : 'true');
-    sBtn.textContent = 'Easter Egg mode: ' + (isSerious() ? 'off' : 'on');
+    sBtn.textContent = 'Easter Egg Hunt Mode: ' + (isSerious() ? 'Off' : 'On');
   }
   if (sBtn) {
     sBtn.hidden = false;
