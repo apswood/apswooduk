@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+{{ `<!--
+          ___
+         [___]    <- signal post
+          | |
+          | |
+       ___|_|___
+      [_________]
+  Your task: find every easter egg. Fastest wins. Your time starts now.
+-->` | safeHTML }}
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ if .IsHome }}{{ hugo.Data.profile.name }}, {{ hugo.Data.profile.headline }}{{ else }}{{ .Title }} | {{ hugo.Data.profile.name }}{{ end }}</title>
+  <meta name="description" content="{{ site.Params.description }}">
+  {{ if .Params.noindex }}<meta name="robots" content="noindex, nofollow">{{ end }}
+  <link rel="canonical" href="{{ .Permalink }}">
+  <meta name="color-scheme" content="light dark">
+  <script>
+  (function(){var d=document.documentElement;d.classList.add('js');
+  try{var t=localStorage.getItem('aw-theme');if(t==='light'||t==='dark')d.dataset.theme=t;
+  if(localStorage.getItem('aw-serious')==='1')d.dataset.serious='1'}catch(e){}})();
+  </script>
+  <link rel="preload" href="/fonts/Railway-Semibold.woff2" as="font" type="font/woff2" crossorigin>
+  {{ $css := resources.Get "css/site.css" | minify | fingerprint }}
+  <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
+  {{ $js := resources.Get "js/site.js" | minify | fingerprint }}
+  <script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
+  {{ $lens := resources.Get "js/lens.js" | minify | fingerprint }}
+  <script src="{{ $lens.RelPermalink }}" integrity="{{ $lens.Data.Integrity }}" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="bar">
+    <a class="brand" href="/">{{ hugo.Data.profile.name }}</a>
+    <nav aria-label="Main" class="nav">
+      <a href="/experience/"{{ if eq .Section "experience" }} aria-current="page"{{ end }}>Experience</a>
+      <a href="/work/"{{ if eq .Section "work" }} aria-current="page"{{ end }}>Work</a>
+      <a href="/approach/"{{ if eq .Section "approach" }} aria-current="page"{{ end }}>Approach</a>
+      <a href="/off-the-clock/"{{ if eq .Section "off-the-clock" }} aria-current="page"{{ end }}>Off the clock</a>
+      <a href="/contact/"{{ if eq .Section "contact" }} aria-current="page"{{ end }}>Contact</a>
+    </nav>
+    <div class="controls" role="group" aria-label="Display settings" hidden>
+      <button type="button" class="chip" id="theme-toggle" aria-label="Colour theme">Theme</button>
+      <button type="button" class="chip" id="serious-toggle" aria-pressed="false">Serious mode</button>
+    </div>
+  </header>
+  <main id="main">{{ block "main" . }}{{ end }}</main>
+  <div class="divider" aria-hidden="true"></div>
+  <footer class="foot">
+    <p>Last reviewed {{ time.AsTime hugo.Data.profile.last_reviewed | time.Format "2 January 2006" }}. <a href="/cv/">Printable CV</a></p>
+    <p class="egg-row" data-egg>
+      <button type="button" class="chip" data-terminal aria-label="Open terminal">&gt;_</button>
+      <a href="/improve-this-cv/" data-improve>Improve this CV</a>
+      <a href="/eggs/" data-egg-index hidden>Egg index</a>
+      <span class="eggs-count" role="status" aria-live="polite" data-total="{{ len hugo.Data.eggs }}" hidden></span>
+    </p>
+  </footer>
+  {{ if not (eq .Section "eggs") }}<div class="dig-wrap" data-egg><button type="button" class="chip" id="dig-open" aria-expanded="false" aria-controls="dig">Dig</button></div>{{ end }}
+  {{ partial "egg-data.html" . }}
+</body>
+</html>

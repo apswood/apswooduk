@@ -1,0 +1,21 @@
+{{ define "main" }}
+{{ $steps := hugo.Data.rehearsal.steps }}
+{{ $d := hugo.Data.rehearsal.details }}
+<div data-egg-page="rehearsal">
+  <p class="serious-note">Serious mode is on, so this page is switched off.</p>
+  <div class="egg-content rehearsal">
+    <h1>Interview rehearsal</h1>
+    <p>A complete flowchart for an interview that has not happened yet. Follow the branches in order.</p>
+    <ol class="flow">
+      {{ range $steps }}
+      <li id="s-{{ .id }}">
+        <p><strong>Step {{ .id }}.</strong> {{ $t := .text }}{{ $t = replace $t "{weather}" (printf `<span data-detail="weather">%s</span>` (index $d.weather 0)) }}{{ $t = replace $t "{pen}" (printf `<span data-detail="pen">%s</span>` (index $d.pen 0)) }}{{ $t = replace $t "{chair}" (printf `<span data-detail="chair">%s</span>` (index $d.chair 0)) }}{{ $t | safeHTML }}</p>
+        {{ with .branches }}<ul>{{ range . }}<li>If {{ lower (substr .if 0 1) }}{{ substr .if 1 }}, go to {{ $g := .go }}{{ if where $steps "id" $g }}<a href="#s-{{ $g }}">{{ $g }}</a>{{ else }}{{ $g }}{{ end }}.</li>{{ end }}</ul>{{ end }}
+      </li>
+      {{ end }}
+    </ol>
+    <p class="egg-row"><button type="button" class="chip" data-rerun hidden>Run it again</button> <span role="status" aria-live="polite" data-run-msg class="meta"></span></p>
+  </div>
+</div>
+<script id="rehearsal-details" type="application/json">{{ $d | jsonify | safeJS }}</script>
+{{ end }}

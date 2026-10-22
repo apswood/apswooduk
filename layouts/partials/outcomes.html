@@ -1,0 +1,10 @@
+{{- /* Renders only published outcomes. Fails the build if attribution is invalid. */ -}}
+{{- $out := slice -}}
+{{- range . }}{{ if .publish }}{{ $out = $out | append . }}{{ end }}{{ end -}}
+{{- with $out }}
+<ul class="outcomes" data-lens-list>
+  {{- range . }}
+  <li data-lenses="{{ delimit .lenses " " }}" data-capabilities="{{ delimit .capabilities " " }}">{{ partial "attribution.html" .attribution }}{{ with .status }} <span class="tag tag-status">{{ . }}</span>{{ end }} {{ .text }}</li>
+  {{- end }}
+</ul>
+{{- end -}}

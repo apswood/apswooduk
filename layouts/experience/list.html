@@ -1,0 +1,22 @@
+{{ define "main" }}
+<div class="two">
+  <aside class="side">
+    <h1>{{ .Title }}</h1>
+    {{ partial "career-line.html" . }}
+  </aside>
+  <div class="roles-col">
+    {{ partial "tag-explainer.html" . }}
+    {{ partial "lens-toggle.html" . }}
+    <ol class="roles">
+      {{ range hugo.Data.experience }}
+      <li id="role-{{ urlize (printf "%s-%s" .from .title) }}">
+        <h2>{{ .title }}</h2>
+        <p class="meta">{{ .org }}, {{ .from }} to {{ with .to }}{{ . }}{{ else }}present{{ end }}</p>
+        {{ if .publish_summary }}<p>{{ .summary }}</p>{{ end }}
+        {{ partial "outcomes.html" .outcomes }}
+      </li>
+      {{ end }}
+    </ol>
+  </div>
+</div>
+{{ end }}

@@ -1,0 +1,29 @@
+customHeaders:
+  - pattern: '**/*'
+    headers:
+      - key: 'Strict-Transport-Security'
+        value: 'max-age=31536000'
+      - key: 'X-Content-Type-Options'
+        value: 'nosniff'
+      - key: 'X-Frame-Options'
+        value: 'DENY'
+      - key: 'Referrer-Policy'
+        value: 'strict-origin-when-cross-origin'
+      - key: 'Permissions-Policy'
+        value: 'camera=(), microphone=(), geolocation=()'
+      # The site uses a few inline scripts and styles (theme, 404 page, egg styles), so 'unsafe-inline' is needed.
+      # Everything is same-origin: no third-party scripts, fonts or requests.
+      - key: 'Content-Security-Policy'
+        value: "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; media-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'"
+  - pattern: '/css/*.min.*.css'
+    headers:
+      - key: 'Cache-Control'
+        value: 'public, max-age=31536000, immutable'
+  - pattern: '/js/*.min.*.js'
+    headers:
+      - key: 'Cache-Control'
+        value: 'public, max-age=31536000, immutable'
+  - pattern: '/fonts/*'
+    headers:
+      - key: 'Cache-Control'
+        value: 'public, max-age=604800'

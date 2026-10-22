@@ -1,0 +1,53 @@
+# Original strata and finds for the Dig. To add a find, append to finds with a stratum id,
+# a position (x and y as percentages inside that stratum), a name and a caption.
+strata:
+  - id: paving
+    label: Paving
+    caption: "Street level. Everything below has been waiting here, patiently."
+  - id: ducts
+    label: Fibre and power ducts
+    caption: "Fibre and power ducts. Somebody's weekend depends on these."
+  - id: sewer
+    label: Victorian brick sewer
+    caption: "Victorian brick sewer. Built to last and, awkwardly, it did."
+  - id: fleet
+    label: The River Fleet
+    caption: "The River Fleet, one of London's lost rivers, still flows through a culvert beneath Farringdon and into the Thames."
+  - id: tunnel
+    label: Deep tunnel
+    caption: "A deep tunnel. Quieter down here, with fewer meetings."
+  - id: clay
+    label: London Clay
+    caption: "London Clay. Where the digging mostly stops, because it holds things up very well."
+finds:
+  - id: ringpull
+    stratum: paving
+    x: 22
+    y: 60
+    name: Ring pull
+    caption: "A ring pull. Aluminium, and the detectorist's most reliable disappointment."
+  - id: penny
+    stratum: ducts
+    x: 68
+    y: 55
+    name: Pre-decimal penny
+    caption: "A pre-decimal penny. Spent before the change was formally announced, and never reconciled."
+  - id: roman
+    stratum: sewer
+    x: 30
+    y: 62
+    name: Roman coin
+    caption: "A Roman coin. Londinium presumably had a change process too."
+  - id: pipe
+    stratum: fleet
+    x: 74
+    y: 58
+    name: Clay pipe
+    caption: "A clay pipe. Someone paused here, for reasons now lost to the record."
+  - id: usb
+    stratum: clay
+    x: 45
+    y: 60
+    name: USB stick
+    caption: "A USB stick labelled backup_final_v2_REAL. Not the real one."
+final_line: "Anything deeper needs a change request."

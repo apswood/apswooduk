@@ -1,0 +1,51 @@
+steps:
+  - id: "1"
+    text: "Arrive eleven minutes early. Wait outside until nine minutes early. The weather is {weather}."
+    branches:
+      - { if: "The receptionist smiles", go: "2a" }
+      - { if: "The receptionist smiles slightly less", go: "2b" }
+  - id: "2a"
+    text: "Say good morning once. Do not say it twice."
+    branches:
+      - { if: "They say good morning back", go: "3" }
+      - { if: "They say it slightly later than expected", go: "3b" }
+  - id: "2b"
+    text: "Say good morning, then pause for one beat."
+    branches:
+      - { if: "The pause lasts two beats", go: "2a" }
+      - { if: "The pause lasts one beat", go: "3" }
+  - id: "3"
+    text: "Sit down. The interviewer's pen is {pen}. Do not comment on the pen."
+    branches:
+      - { if: "They click the pen", go: "4a" }
+      - { if: "They do not click the pen", go: "4b" }
+  - id: "3b"
+    text: "Sit down slightly later than planned. Comment on nothing."
+    branches:
+      - { if: "Always", go: "4b" }
+  - id: "4a"
+    text: "Answer the first question in under ninety seconds. Lead with the conclusion."
+    branches:
+      - { if: "They nod", go: "5" }
+      - { if: "They nod slightly less", go: "4c" }
+  - id: "4b"
+    text: "Answer the first question in about ninety seconds. Lead with the conclusion, and leave a gap for the nod."
+    branches:
+      - { if: "They nod", go: "5" }
+  - id: "4c"
+    text: "Restate the conclusion, one notch warmer."
+    branches:
+      - { if: "They nod", go: "5" }
+      - { if: "They nod slightly less than before", go: "4a" }
+  - id: "5"
+    text: "Ask a question about the team. The chair is {chair}. Hold eye contact for exactly as long as is normal."
+    branches:
+      - { if: "They answer", go: "6" }
+      - { if: "They answer with a question", go: "5" }
+  - id: "6"
+    text: "Thank them and leave. Review the rehearsal. If the review is longer than the rehearsal, go to step 1."
+    branches: []
+details:
+  pen: ["blue", "black", "green", "burgundy", "a pencil"]
+  weather: ["dry", "drizzling", "bright but cold", "windy", "unremarkable"]
+  chair: ["the low one", "the swivel one", "the wooden one", "slightly further away than expected", "the one that squeaks"]

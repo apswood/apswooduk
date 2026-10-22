@@ -1,0 +1,12 @@
+name: "Andrew Wood"
+headline: "Head of Technical Delivery"
+summary:
+  - "I lead technical delivery for a UK managed service provider, running second and third line support across cloud, data, connectivity, unified communications and workplace platforms."
+  - "I have grown into leadership over 13 years, from systems engineer to head of function, and I stay hands-on in third-line escalations and major incidents where it matters most."
+  - "Most of my work sits on the seam between project delivery and live service, and on using data and automation to move support from reactive to proactive."
+location: "London"
+service_start: 2013-09        # used by the terminal uptime command
+last_reviewed: 2026-10-22     # shown in the footer
+links:
+  linkedin: "https://www.linkedin.com/in/andrew-wood-00791579"
+calling_at: ["Cloud", "Data", "Connectivity", "Unified Comms", "Workplace"]

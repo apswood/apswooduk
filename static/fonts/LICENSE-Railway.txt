@@ -1,0 +1,12 @@
+Railway and Railway Semibold (Railway Sans)
+
+Copyright (c) Justin Howes, 1994 and 1999. Revised 2012 and 2017, (c) Greg Fleming.
+With Reserved Font Name "Railway".
+
+Licensed under the SIL Open Font License, Version 1.1: https://openfontlicense.org/open-font-license-official-text/
+
+Source: https://fontlibrary.org/en/font/railway-sans
+
+The WOFF2 files here are format conversions of the original TTF files, with the outlines and
+name tables unchanged. This is an open-licence revival of Edward Johnston's 1916 Railway type.
+It is an independent open-licence revival, not derived from any later commercial or licensed cut.

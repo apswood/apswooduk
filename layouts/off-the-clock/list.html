@@ -1,0 +1,8 @@
+{{ define "main" }}
+<h1>{{ .Title }}</h1>
+{{ .Content }}
+<p class="egg-row" data-egg>
+  <button type="button" class="chip icon-btn" data-egg-click="piano" aria-label="Open the keyboard">&#127929;<span class="sr-only"> Keyboard</span></button>
+  <a class="quiet" href="/connections/">How it all connects</a>
+</p>
+{{ end }}

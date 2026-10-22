@@ -1,0 +1,31 @@
+name: Checks
+
+# Deployment is handled by AWS Amplify Hosting (see docs/DEPLOY.md). This workflow only builds and checks,
+# so pull requests and pushes get a pass or fail in GitHub as well.
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  HUGO_VERSION: 0.168.0
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: ${{ env.HUGO_VERSION }}
+          extended: true
+      - name: Publish gate test and prepublish scan
+        run: |
+          bash scripts/test-publish-gate.sh
+          bash scripts/prepublish-check.sh
+      - name: Build
+        run: hugo --minify --gc

@@ -1,0 +1,5 @@
+{{- $a := . -}}
+{{- if not (in (slice "Led" "Co-led" "Contributed" "Supported") $a) -}}
+  {{- errorf "Invalid or missing attribution %q. Use Led, Co-led, Contributed or Supported." $a -}}
+{{- end -}}
+<span class="tag tag-attr" title="Attribution: {{ $a }}">{{ $a }}</span>

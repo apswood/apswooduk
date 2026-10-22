@@ -1,0 +1,22 @@
+{{ define "main" }}
+<h1>{{ .Title }}</h1>
+{{ partial "tag-explainer.html" . }}
+{{ partial "lens-toggle.html" . }}
+{{ $cases := where .Pages "Params.publish" true }}
+{{ $caps := slice }}
+{{ range $cases }}{{ range .Params.capabilities }}{{ $caps = $caps | append . }}{{ end }}{{ end }}
+{{ $caps = $caps | uniq | sort }}
+{{ if $caps }}
+<div class="filter no-print" data-cap-filter role="group" aria-label="Filter by capability" hidden>
+  <span class="lens-label">Capability:</span>
+  {{ range $caps }}<button type="button" class="chip" data-cap="{{ . }}" aria-pressed="false">{{ humanize . }}</button>{{ end }}
+  <button type="button" class="chip chip-clear" data-cap-clear>Show all</button>
+  <p class="meta" role="status" aria-live="polite" data-cap-status></p>
+</div>
+{{ end }}
+<div class="cards" data-lens-list>
+{{ range $cases }}{{ partial "case-card.html" . }}{{ else }}
+<p>No case studies are published yet.</p>
+{{ end }}
+</div>
+{{ end }}

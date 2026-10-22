@@ -1,0 +1,8 @@
+{{ define "main" }}
+<h1>{{ .Title }}</h1>
+<p class="egg-row" data-egg>
+  <button type="button" class="chip icon-btn" data-egg-click="notice" aria-label="Open the staff notice">&#128204;<span class="sr-only"> Staff notice</span></button>
+  <button type="button" class="chip icon-btn" data-egg-click="monologue" aria-pressed="false" aria-label="Inner monologue" data-thoughts='{{ slice "Is three bullet points enough? Is it too many? Nobody has ever been hired for a bullet point." "Is it odd to quote myself on my own CV? Probably. Noted." "This paragraph is fine. This paragraph is definitely fine." "Somebody is reading this on their lunch break. Hello. Please do not mention the sandwich." "I should have kept this shorter. I will now keep this shorter." | jsonify }}'>&#128173;<span class="sr-only"> Inner monologue</span></button>
+</p>
+{{ .Content }}
+{{ end }}

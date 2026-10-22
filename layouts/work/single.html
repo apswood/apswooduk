@@ -1,0 +1,9 @@
+{{ define "main" }}
+<article>
+  <h1>{{ .Title }}</h1>
+  <p>{{ partial "attribution.html" .Params.attribution }} <span class="tag">{{ .Params.status }}</span> {{ .Params.sector }}</p>
+  <p class="lede">{{ .Params.role_line }}</p>
+  {{ .Content }}
+  <p><strong>Lesson.</strong> {{ .Params.lesson }}</p>
+</article>
+{{ end }}

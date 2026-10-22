@@ -1,0 +1,4 @@
+<article class="card" data-lenses="{{ delimit .Params.lenses " " }}" data-capabilities="{{ delimit .Params.capabilities " " }}">
+  <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+  <p>{{ partial "attribution.html" .Params.attribution }}{{ with .Params.status }} <span class="tag tag-status">{{ . }}</span>{{ end }} {{ .Params.role_line }}</p>
+</article>
