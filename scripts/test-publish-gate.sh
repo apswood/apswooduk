@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Publish gate test. Uses temporary sample case studies, so it does not depend on what is currently published.
-# 1. A published sample must render and offer its capability chip.
+# 1. A published sample must render on the Experience page.
 # 2. An unpublished sample (with the hidden build settings) must appear nowhere in the output.
 cd "$(dirname "$0")/.." || exit 1
-T=$(mktemp -d); trap 'rm -rf "$T" content/work/zz-test-pub.md content/work/zz-test-unpub.md' EXIT
-cat > content/work/zz-test-pub.md <<'SAMPLE'
+T=$(mktemp -d); trap 'rm -rf "$T" content/experience/zz-test-pub.md content/experience/zz-test-unpub.md' EXIT
+cat > content/experience/zz-test-pub.md <<'SAMPLE'
 ---
 title: "Zz sentinel published"
 attribution: "Led"
@@ -18,7 +18,7 @@ publish: true
 ---
 Sample body.
 SAMPLE
-cat > content/work/zz-test-unpub.md <<'SAMPLE'
+cat > content/experience/zz-test-unpub.md <<'SAMPLE'
 ---
 title: "Zz sentinel unpublished"
 attribution: "Led"
@@ -36,7 +36,6 @@ build:
 Hidden body.
 SAMPLE
 hugo --destination "$T/out" >/dev/null || { echo "FAIL: build with samples"; exit 1; }
-grep -q "Zz sentinel published" "$T/out/work/index.html" || { echo "FAIL: published case study not rendered"; exit 1; }
-grep -q 'data-cap="zz-test-capability"' "$T/out/work/index.html" || { echo "FAIL: capability chip missing"; exit 1; }
+grep -q "Zz sentinel published" "$T/out/experience/index.html" || { echo "FAIL: published case study not rendered"; exit 1; }
 if grep -rqE "Zz sentinel unpublished|zz-hidden-capability" "$T/out"; then echo "FAIL: unpublished content leaked"; exit 1; fi
 echo "publish gate test passed"

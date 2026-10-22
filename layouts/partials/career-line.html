@@ -1,32 +1,43 @@
-{{- /* Career line diagram. Chronological, top to bottom. Stations link to the roles below, so it works by keyboard and without JS. */ -}}
-{{- $roles := sort hugo.Data.experience "from" -}}
+{{- /* Career line diagram. Newest role at the top. Lines run at 90 and 45 degrees with rounded bends. Blue is Six Degrees, red is Carrenza.
+       Stations link to the role's first card on the Experience page, so it works by keyboard and without JS. */ -}}
+{{- $roles := sort hugo.Data.experience "from" "desc" -}}
 {{- $n := len $roles -}}
-{{- $h := add 70 (mul (sub $n 1) 110) -}}
-{{- $h = add $h 70 -}}
-{{- $xs := dict "Carrenza" 50 "Six Degrees" 100 -}}
-{{- $cols := dict "Carrenza" "var(--line-a)" "Six Degrees" "var(--line-b)" -}}
-<nav class="career" aria-label="Career line. Each station links to its role below.">
+{{- $gap := 124 -}}
+{{- $h := add 90 (mul (sub $n 1) $gap) -}}
+{{- $xl := 46 -}}{{- $xr := 104 -}}
+{{- $cols := dict "Carrenza" "var(--line-carrenza)" "Six Degrees" "var(--line-sixdegrees)" -}}
+{{- $k := 0.7071 -}}{{- $rad := 14 -}}
+<nav class="career" aria-label="Career line. Each station links to its role.">
 <svg viewBox="0 0 440 {{ $h }}" role="presentation" focusable="false">
+  {{- /* Tracks first, so the stations sit on top. Each segment is two halves so the colour can change at an interchange. */ -}}
   {{- range $i, $r := $roles }}
-    {{- $y := add 40 (mul $i 110) }}
-    {{- $x := index $xs $r.org | default 50 }}
-    {{- $c := index $cols $r.org | default "var(--line-a)" }}
-    {{- if lt (add $i 1) $n }}{{- with index $roles (add $i 1) }}
-      {{- $nx := index $xs .org | default 50 }}
-      {{- if eq $nx $x }}
-  <line x1="{{ $x }}" y1="{{ $y }}" x2="{{ $x }}" y2="{{ add $y 110 }}" stroke="{{ $c }}" stroke-width="10" stroke-linecap="butt"/>
-      {{- else }}
-  <path d="M{{ $x }} {{ $y }} V{{ add $y 25 }} L{{ $nx }} {{ add $y 25 | add (math.Abs (sub $nx $x)) }} V{{ add $y 110 }}" fill="none" stroke="{{ $c }}" stroke-width="10"/>
-  <g class="interchange"><circle cx="{{ div (add $x $nx) 2 }}" cy="{{ add $y 25 | add (div (math.Abs (sub $nx $x)) 2) }}" r="13" fill="var(--bg)" stroke="var(--ink)" stroke-width="4"/></g>
-  <text class="ic-label" x="170" y="{{ add $y 25 | add (div (math.Abs (sub $nx $x)) 2) | add 5 }}">Interchange: integration</text>
+    {{- if lt (add $i 1) $n }}
+    {{- $nr := index $roles (add $i 1) }}
+    {{- $y1 := add 40 (mul $i $gap) }}
+    {{- $y2 := add $y1 $gap }}
+    {{- $ym := add $y1 (div $gap 2) }}
+    {{- $x1 := cond (eq (mod $i 2) 0) $xl $xr }}
+    {{- $x2 := cond (eq (mod $i 2) 0) $xr $xl }}
+    {{- $s := cond (gt $x2 $x1) 1 -1 }}
+    {{- $d := div (math.Abs (sub $x2 $x1)) 2 }}
+    {{- $ya := sub $ym $d }}{{- $yb := add $ym $d }}
+    {{- $xm := div (add $x1 $x2) 2 }}
+    {{- $c1 := index $cols $r.org | default "var(--line-sixdegrees)" }}
+    {{- $c2 := index $cols $nr.org | default "var(--line-sixdegrees)" }}
+  <path class="track" d="M{{ $x1 }} {{ $y1 }} V{{ sub $ya $rad }} Q{{ $x1 }} {{ $ya }} {{ add $x1 (mul $s $rad $k) }} {{ add $ya (mul $rad $k) }} L{{ $xm }} {{ $ym }}" stroke="{{ $c1 }}"/>
+  <path class="track" d="M{{ $xm }} {{ $ym }} L{{ sub $x2 (mul $s $rad $k) }} {{ sub $yb (mul $rad $k) }} Q{{ $x2 }} {{ $yb }} {{ $x2 }} {{ add $yb $rad }} V{{ $y2 }}" stroke="{{ $c2 }}"/>
+      {{- if ne $r.org $nr.org }}
+  <g class="interchange"><circle cx="{{ $xm }}" cy="{{ $ym }}" r="12" fill="var(--bg)" stroke="var(--ink)" stroke-width="4"/></g>
+  <text class="ic-label" x="{{ add $xr 70 }}" y="{{ add $ym 5 }}">Interchange: integration</text>
       {{- end }}
-    {{- end }}{{- end }}
+    {{- end }}
   {{- end }}
   {{- range $i, $r := $roles }}
-    {{- $y := add 40 (mul $i 110) }}
-    {{- $x := index $xs $r.org | default 50 }}
+    {{- $y := add 40 (mul $i $gap) }}
+    {{- $x := cond (eq (mod $i 2) 0) $xl $xr }}
   <a href="#role-{{ urlize (printf "%s-%s" $r.from $r.title) }}" class="station" aria-label="{{ $r.title }}, {{ $r.org }}, {{ $r.from }} to {{ with $r.to }}{{ . }}{{ else }}present{{ end }}">
-    <circle cx="{{ $x }}" cy="{{ $y }}" r="12" fill="var(--bg)" stroke="var(--ink)" stroke-width="4"/>
+    <circle class="hit" cx="{{ $x }}" cy="{{ $y }}" r="20"/>
+    <rect class="tick" x="{{ sub $x 17 }}" y="{{ sub $y 3 }}" width="34" height="6" rx="1"/>
     <text class="st-year" x="170" y="{{ sub $y 8 }}">{{ substr $r.from 0 4 }}</text>
     {{- $parts := split $r.title ", " }}
     <text class="st-title" x="170" y="{{ add $y 12 }}">{{ index $parts 0 }}{{ if gt (len $parts) 1 }}<tspan x="170" dy="19">{{ delimit (after 1 $parts) ", " }}</tspan>{{ end }}</text>
@@ -38,6 +49,7 @@
   </a>
   {{- end }}
 </svg>
+<p class="line-key" aria-hidden="true"><span class="key key-sixdegrees"></span> Six Degrees <span class="key key-carrenza"></span> Carrenza</p>
 <div class="signal-box" data-egg>
   <button type="button" class="signal" data-signal hidden aria-label="Signal showing red. Activate to change the aspect.">
     <svg viewBox="0 0 40 100" aria-hidden="true" focusable="false">

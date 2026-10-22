@@ -1,4 +1,4 @@
-/* Retro mode: an original 2004-era personal homepage reskin. Konami code toggles it. Esc or Serious mode restores the site. */
+/* Retro mode: an original 2004-era personal homepage reskin. Konami code toggles it. Esc or turning Easter Egg mode off restores the site. */
 (function () {
   'use strict';
   var root = document.documentElement, active = false, style = null, added = [], ask = null;
@@ -28,7 +28,7 @@
     ['Can I sign the guestbook?', 'The guestbook is closed for maintenance. It has been closed since 2006.'],
     ['How do I get in touch?', 'Use the Contact page. It has a LinkedIn button.']
   ];
-  var RING = ['/', '/experience/', '/work/', '/approach/', '/off-the-clock/', '/contact/'];
+  var RING = ['/', '/about/', '/experience/', '/approach/', '/off-the-clock/', '/contact/'];
 
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text) e.textContent = text; return e; }
 

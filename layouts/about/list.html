@@ -1,0 +1,22 @@
+{{ define "main" }}
+{{ $p := hugo.Data.profile }}
+<div class="about">
+  <h1>{{ .Title }}</h1>
+  <p class="lede">{{ $p.headline }}, {{ $p.location }}</p>
+  {{ range $p.summary }}<p>{{ . }}</p>{{ end }}
+  <h2>Career in brief</h2>
+  <ul class="brief">
+    {{ range hugo.Data.experience }}<li><strong>{{ .title }}</strong>, {{ .org }} <span class="meta">{{ substr .from 0 4 }} to {{ with .to }}{{ substr . 0 4 }}{{ else }}present{{ end }}</span></li>{{ end }}
+  </ul>
+  <p><a href="/experience/">See the detail on the Experience page</a>, or read about my <a href="/approach/">approach</a>.</p>
+  <h2>Technical expertise</h2>
+  <ul class="skills">
+    {{ range hugo.Data.skills }}{{ if .publish }}<li>{{ .name }}</li>{{ end }}{{ end }}
+  </ul>
+  <h2>Certifications</h2>
+  <ul class="skills">
+    {{ range hugo.Data.certifications }}{{ if .publish }}<li>{{ .name }}, {{ .issuer }}{{ with .year }} {{ . }}{{ end }} <span class="meta">({{ .status }})</span></li>{{ end }}{{ end }}
+  </ul>
+  <p><a class="btn" href="{{ $p.links.linkedin }}" rel="me">View my LinkedIn</a></p>
+</div>
+{{ end }}

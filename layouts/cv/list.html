@@ -4,6 +4,10 @@
 <h1>{{ $p.name }}</h1>
 <p class="lede">{{ $p.headline }}, {{ $p.location }}</p>
 {{ range $p.summary }}<p>{{ . }}</p>{{ end }}
+<aside class="cv-cta" aria-label="Up to date CV">
+  <p><strong>This page is a summary.</strong> For my full, up to date CV, view my LinkedIn profile and message me to ask for the latest copy.</p>
+  <p><a class="btn" href="{{ $p.links.linkedin }}" rel="me">View LinkedIn and ask for my CV</a> <span class="cv-url">{{ replace $p.links.linkedin "https://" "" }}</span></p>
+</aside>
 {{ partial "lens-toggle.html" . }}
 <h2>Experience</h2>
 {{ range hugo.Data.experience }}

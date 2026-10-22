@@ -1,4 +1,4 @@
-/* Site shell: theme, Serious mode, and the contract every easter egg follows. No dependencies. */
+/* Site shell: theme, Easter Egg mode, and the contract every easter egg follows. No dependencies. */
 (function () {
   'use strict';
   var root = document.documentElement;
@@ -23,11 +23,16 @@
     showTheme();
   }
 
-  // Serious mode: turns off every easter egg and surprise element.
-  var sBtn = document.getElementById('serious-toggle');
+  // Easter Egg mode: on by default. Turning it off sets the internal serious flag, which switches off every egg and surprise element.
+  var sBtn = document.getElementById('egg-toggle');
   function isSerious() { return root.dataset.serious === '1'; }
-  function showSerious() { if (sBtn) sBtn.setAttribute('aria-pressed', isSerious() ? 'true' : 'false'); }
+  function showSerious() {
+    if (!sBtn) return;
+    sBtn.setAttribute('aria-pressed', isSerious() ? 'false' : 'true');
+    sBtn.textContent = 'Easter Egg mode: ' + (isSerious() ? 'off' : 'on');
+  }
   if (sBtn) {
+    sBtn.hidden = false;
     sBtn.addEventListener('click', function () {
       if (isSerious()) { delete root.dataset.serious; store('aw-serious', null); }
       else { root.dataset.serious = '1'; store('aw-serious', '1'); }
@@ -41,7 +46,7 @@
   if (controls) controls.hidden = false;
 
   // Egg contract. An egg is a script in /js/eggs/<name>.js that calls AW.egg(name, { start, stop }).
-  // Eggs load only on demand, never when Serious mode is on, and must stop() on 'aw:serious'.
+  // Eggs load only on demand, never when Easter Egg mode is off, and must stop() on 'aw:serious'.
   var registry = {};
   window.AW = {
     serious: isSerious,

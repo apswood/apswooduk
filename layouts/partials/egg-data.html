@@ -6,7 +6,7 @@
 {{- end -}}
 {{- $s := newScratch -}}
 {{- range hugo.Data.experience }}{{ range .outcomes }}{{ if .publish }}{{ $s.Add .attribution 1 }}{{ end }}{{ end }}{{ end -}}
-{{- range where (where site.RegularPages "Section" "work") "Params.publish" true }}{{ $s.Add .Params.attribution 1 }}{{ end -}}
+{{- range where (where site.RegularPages "Section" "experience") "Params.publish" true }}{{ if .Params.attribution }}{{ $s.Add .Params.attribution 1 }}{{ end }}{{ end -}}
 {{- $tags := dict "Led" ($s.Get "Led" | default 0) "Co-led" ($s.Get "Co-led" | default 0) "Contributed" ($s.Get "Contributed" | default 0) "Supported" ($s.Get "Supported" | default 0) -}}
 {{- $term := dict "headline" $p.headline "name" $p.name "service_start" $p.service_start "roles" $roles "tags" $tags -}}
 {{- $a := resources.FromString "terminal.json" ($term | jsonify) -}}

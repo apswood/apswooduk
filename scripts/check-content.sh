@@ -13,15 +13,16 @@ EMDASH=$(printf '\xe2\x80\x94')
 } > OPEN_ITEMS.md
 if grep -rn "$EMDASH" $paths; then echo "FAIL: em dash found"; fail=1; fi
 if grep -rniE '\b(honestly|that said|delve|genuinely|straightforward)\b|worth noting' content data layouts static/js assets/js; then echo "FAIL: banned filler word"; fail=1; fi
-for f in content/work/*.md; do
+for f in content/experience/*.md; do
   case "$f" in *_index.md) continue;; esac
   if grep -q '^publish: false' "$f" && ! grep -q 'render: never' "$f"; then echo "FAIL: $f is publish: false but not build render: never"; fail=1; fi
   if grep -q '^publish: true' "$f" && grep -q 'render: never' "$f"; then echo "FAIL: $f is publish: true but build hides it"; fail=1; fi
 done
 # Every outcome and case study needs a valid attribution, whatever its publish flag.
 awk '/- text:/{t=1;next} t&&/attribution:/{ if ($0 !~ /"(Led|Co-led|Contributed|Supported)"/) {print "FAIL: bad attribution in data/experience.yaml line " NR ": " $0; bad=1}; t=0} /- text:/&&t{} END{exit bad}' data/experience.yaml || fail=1
-for f in content/work/*.md; do
+for f in content/experience/*.md; do
   case "$f" in *_index.md) continue;; esac
+  grep -q '^kind: "thought"' "$f" && continue
   a=$(grep -m1 '^attribution:' "$f")
   case "$a" in *TODO\(andrew\)*|*\"Led\"*|*\"Co-led\"*|*\"Contributed\"*|*\"Supported\"*) ;; *) echo "FAIL: $f has no valid attribution"; fail=1;; esac
 done

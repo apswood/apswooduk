@@ -1,4 +1,4 @@
-/* Lens toggle and capability filter. Both only reorder or hide for display. Without JS everything shows in data order. */
+/* Lens toggle (printable CV). It only reorders for display. Without JS everything shows in data order. */
 (function () {
   'use strict';
   var LENSES = ['balanced', 'operating-model', 'hands-on'];
@@ -45,33 +45,4 @@
     });
   });
   applyLens();
-
-  // --- Capability filter ---
-  var f = document.querySelector('[data-cap-filter]');
-  if (f) {
-    f.hidden = false;
-    var cards = document.querySelectorAll('.cards > [data-capabilities]');
-    var active = (params.get('cap') || '').split(',').filter(Boolean);
-    var status = f.querySelector('[data-cap-status]');
-    var render = function () {
-      var shown = 0;
-      cards.forEach(function (c) {
-        var ok = !active.length || tokens(c, 'data-capabilities').some(function (x) { return active.indexOf(x) > -1; });
-        c.hidden = !ok; if (ok) shown++;
-      });
-      f.querySelectorAll('[data-cap]').forEach(function (b) { b.setAttribute('aria-pressed', active.indexOf(b.dataset.cap) > -1 ? 'true' : 'false'); });
-      status.textContent = active.length ? 'Showing ' + shown + ' of ' + cards.length + ' case studies.' : '';
-      var u = new URL(location.href);
-      if (active.length) u.searchParams.set('cap', active.join(',')); else u.searchParams.delete('cap');
-      history.replaceState(null, '', u);
-    };
-    f.addEventListener('click', function (e) {
-      if (e.target.closest('[data-cap-clear]')) { active = []; render(); return; }
-      var b = e.target.closest('[data-cap]'); if (!b) return;
-      var i = active.indexOf(b.dataset.cap);
-      if (i > -1) active.splice(i, 1); else active.push(b.dataset.cap);
-      render();
-    });
-    render();
-  }
 })();

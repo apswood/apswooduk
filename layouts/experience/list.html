@@ -4,19 +4,37 @@
     <h1>{{ .Title }}</h1>
     {{ partial "career-line.html" . }}
   </aside>
-  <div class="roles-col">
+  <div class="deck-col">
     {{ partial "tag-explainer.html" . }}
-    {{ partial "lens-toggle.html" . }}
-    <ol class="roles">
-      {{ range hugo.Data.experience }}
-      <li id="role-{{ urlize (printf "%s-%s" .from .title) }}">
-        <h2>{{ .title }}</h2>
-        <p class="meta">{{ .org }}, {{ .from }} to {{ with .to }}{{ . }}{{ else }}present{{ end }}</p>
-        {{ if .publish_summary }}<p>{{ .summary }}</p>{{ end }}
-        {{ partial "outcomes.html" .outcomes }}
-      </li>
-      {{ end }}
-    </ol>
+    <div class="themes no-print" data-themes-bar role="group" aria-label="Themes" hidden>
+      <span class="lens-label">Themes:</span>
+      {{ range hugo.Data.themes }}<button type="button" class="chip" data-theme="{{ .id }}" aria-pressed="false">{{ .label }}</button>{{ end }}
+      <button type="button" class="chip" data-theme="all" aria-pressed="false">All</button>
+    </div>
+    {{- /* Outcomes from the CV, newest role first, with each case study or post slotted in between. */ -}}
+    {{- $outs := slice -}}
+    {{- range hugo.Data.experience -}}{{- $r := . -}}{{- $first := true -}}
+      {{- range .outcomes -}}{{- if .publish -}}
+        {{- $outs = $outs | append (dict "r" $r "o" . "first" $first) -}}{{- $first = false -}}
+      {{- end -}}{{- end -}}
+    {{- end -}}
+    {{- $spots := (where .Pages "Params.publish" true).ByWeight -}}
+    <section class="deck" data-deck aria-roledescription="carousel" aria-label="Experience cards">
+      <ol class="deck-track" data-deck-track tabindex="0" aria-label="Cards. Use the arrow keys or the buttons to move between them.">
+        {{- range $i, $x := $outs -}}
+          {{ partial "deck-outcome.html" $x }}
+          {{- if lt $i (len $spots) }}{{ partial "case-card.html" (index $spots $i) }}{{ end -}}
+        {{- end -}}
+        {{- range $i, $s := $spots -}}{{- if ge $i (len $outs) }}{{ partial "case-card.html" $s }}{{ end -}}{{- end -}}
+      </ol>
+      <div class="deck-ctl no-print" data-deck-ctl hidden>
+        <button type="button" class="chip" data-deck-prev aria-label="Previous card">Previous</button>
+        <span class="deck-count" role="status" aria-live="polite" data-deck-count></span>
+        <button type="button" class="chip" data-deck-next aria-label="Next card">Next</button>
+      </div>
+    </section>
   </div>
 </div>
+{{ $deck := resources.Get "js/deck.js" | minify | fingerprint }}
+<script src="{{ $deck.RelPermalink }}" integrity="{{ $deck.Data.Integrity }}" defer></script>
 {{ end }}

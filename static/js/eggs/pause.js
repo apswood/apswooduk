@@ -1,4 +1,4 @@
-/* The awkward pause. Once per session, on first opening Contact. Never with reduced motion or Serious mode. */
+/* The awkward pause. Once per session, on first opening Contact. Never with reduced motion or with Easter Egg mode off. */
 (function () {
   'use strict';
   var el = document.querySelector('[data-pause]'), timer = null;

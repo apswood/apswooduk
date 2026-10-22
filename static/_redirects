@@ -1,0 +1,3 @@
+/work /experience/ 301
+/work/ /experience/ 301
+/work/* /experience/:splat 301

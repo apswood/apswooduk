@@ -29,27 +29,29 @@
   <script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
   {{ $lens := resources.Get "js/lens.js" | minify | fingerprint }}
   <script src="{{ $lens.RelPermalink }}" integrity="{{ $lens.Data.Integrity }}" defer></script>
+  {{ $motion := resources.Get "js/motion.js" | minify | fingerprint }}
+  <script src="{{ $motion.RelPermalink }}" integrity="{{ $motion.Data.Integrity }}" defer></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
   <header class="bar">
     <a class="brand" href="/">{{ hugo.Data.profile.name }}</a>
     <nav aria-label="Main" class="nav">
+      <a href="/about/"{{ if eq .Section "about" }} aria-current="page"{{ end }}>About</a>
       <a href="/experience/"{{ if eq .Section "experience" }} aria-current="page"{{ end }}>Experience</a>
-      <a href="/work/"{{ if eq .Section "work" }} aria-current="page"{{ end }}>Work</a>
       <a href="/approach/"{{ if eq .Section "approach" }} aria-current="page"{{ end }}>Approach</a>
       <a href="/off-the-clock/"{{ if eq .Section "off-the-clock" }} aria-current="page"{{ end }}>Off the clock</a>
       <a href="/contact/"{{ if eq .Section "contact" }} aria-current="page"{{ end }}>Contact</a>
     </nav>
     <div class="controls" role="group" aria-label="Display settings" hidden>
       <button type="button" class="chip" id="theme-toggle" aria-label="Colour theme">Theme</button>
-      <button type="button" class="chip" id="serious-toggle" aria-pressed="false">Serious mode</button>
     </div>
   </header>
   <main id="main">{{ block "main" . }}{{ end }}</main>
   <div class="divider" aria-hidden="true"></div>
   <footer class="foot">
     <p>Last reviewed {{ time.AsTime hugo.Data.profile.last_reviewed | time.Format "2 January 2006" }}. <a href="/cv/">Printable CV</a></p>
+    <p class="mode-row"><button type="button" class="chip" id="egg-toggle" aria-pressed="true" hidden>Easter Egg mode</button></p>
     <p class="egg-row" data-egg>
       <button type="button" class="chip" data-terminal aria-label="Open terminal">&gt;_</button>
       <a href="/improve-this-cv/" data-improve>Improve this CV</a>

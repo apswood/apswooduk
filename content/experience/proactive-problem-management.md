@@ -8,6 +8,7 @@ sector: "Managed services"
 status: "In production"
 lesson: "Automation can find a gap, but a person still has to decide whether it matters."
 weight: 1
+highlight: true
 publish: true
 ---
 

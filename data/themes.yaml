@@ -1,0 +1,12 @@
+# Themes on the Experience page. A card belongs to a theme when it is flagged highlight (highlights),
+# or when its lenses, capabilities or kind match. Order here is the order of the chips.
+- { id: highlights, label: "Highlights" }
+- { id: operating-model, label: "Operating model", lenses: [operating-model] }
+- { id: hands-on, label: "Hands-on", lenses: [hands-on] }
+- { id: incidents, label: "Incidents and recovery", capabilities: [major-incident, cyber-recovery] }
+- { id: automation, label: "Automation and AI", capabilities: [automation, ai-with-oversight, ai-governance] }
+- { id: security, label: "Security and compliance", capabilities: [security, regulated] }
+- { id: platforms, label: "Platforms and tooling", capabilities: [platform-transformation, monitoring, cloud, engineering, itsm] }
+- { id: service, label: "Service delivery", capabilities: [service-delivery, service-design, service-transition, service-governance, problem-management] }
+- { id: leadership, label: "Leadership and commercial", capabilities: [leadership, people, strategy, commercial] }
+- { id: thought, label: "Thought leadership", kinds: [thought] }

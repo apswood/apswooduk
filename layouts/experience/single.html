@@ -1,9 +1,17 @@
 {{ define "main" }}
+{{ $thought := eq .Params.kind "thought" }}
 <article>
+  <p class="meta"><a href="/experience/">Experience</a></p>
   <h1>{{ .Title }}</h1>
+  {{- if $thought }}
+  <p class="lede">{{ .Params.summary }}</p>
+  <p><span class="tag">Thought leadership</span> {{ hugo.Data.profile.name }}</p>
+  {{ .Content }}
+  {{- else }}
   <p>{{ partial "attribution.html" .Params.attribution }} <span class="tag">{{ .Params.status }}</span> {{ .Params.sector }}</p>
   <p class="lede">{{ .Params.role_line }}</p>
   {{ .Content }}
   <p><strong>Lesson.</strong> {{ .Params.lesson }}</p>
+  {{- end }}
 </article>
 {{ end }}

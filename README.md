@@ -8,14 +8,14 @@ bash scripts/check-content.sh  # lint content and regenerate OPEN_ITEMS.md
 hugo --minify                  # build into public/
 ```
 
-## Adding a case study
-`hugo new work/my-case-study.md`, fill in the front matter, write prose. Keep `publish` and `build.render` in step (`publish: true` means remove the `build:` block).
+## Adding a case study or thought post
+`hugo new experience/my-case-study.md`, fill in the front matter, write prose. For a thought post set `kind: "thought"` and a `summary`; it needs no attribution. Both appear as cards on the Experience page (themes are defined in `data/themes.yaml`; `highlight: true` puts a card in the default Highlights theme). Keep `publish` and `build.render` in step (`publish: true` means remove the `build:` block).
 
 ## Approving a claim
 In `data/experience.yaml`, set `publish: true` on an outcome that has a valid `attribution` (Led, Co-led, Contributed, Supported). Unpublished items are never rendered.
 
 ## Easter eggs (Stage 4a)
-All eggs are lazy-loaded from `static/js/eggs/`, switched off by Serious mode and hidden in print. The egg list is `data/eggs.yaml`.
+All eggs are lazy-loaded from `static/js/eggs/`, switched off when Easter Egg mode is turned off (footer toggle) and hidden in print. The egg list is `data/eggs.yaml`.
 
 - **Add a terminal command:** in `static/js/eggs/terminal.js`, add its name to `COMMANDS` and a `case` in `run()`. Data it needs goes in `layouts/partials/egg-data.html`, which publishes `/terminal.json`.
 - **Add a dig find:** append to `finds` in `data/dig.yaml` (stratum id, x and y percentages, name, caption). If it needs a new icon, add an entry to `icons` in `static/js/eggs/dig.js`.

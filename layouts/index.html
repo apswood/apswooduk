@@ -5,7 +5,6 @@
     <h1>{{ $p.name }}</h1>
     <p class="lede">{{ $p.headline }}</p>
     {{ range $p.summary }}<p>{{ . }}</p>{{ end }}
-    {{ partial "lens-toggle.html" . }}
   </section>
   <section class="home-side">
     <div class="board-dm" role="group" aria-label="Departure board" data-board>
@@ -13,13 +12,14 @@
       <p class="dm-row dm-calling">Calling at: {{ delimit $p.calling_at ", " }}</p>
       <p class="dm-row dm-announce" data-egg aria-live="polite" hidden></p>
     </div>
-    <h2>Selected work</h2>
-    {{ $cases := where (where site.RegularPages "Section" "work") "Params.publish" true }}
-    <div data-lens-list>
-    {{ range first 3 $cases }}{{ partial "case-card.html" . }}{{ else }}
-    <p>No case studies are published yet.</p>
+    <h2>Experience spotlights</h2>
+    {{ $cases := where (where site.RegularPages "Section" "experience") "Params.publish" true }}
+    <ul class="cards">
+    {{ range first 4 $cases.ByWeight }}{{ partial "case-card.html" . }}{{ else }}
+    <li>No spotlights are published yet.</li>
     {{ end }}
-    </div>
+    </ul>
+    <p><a href="/experience/">See all experience</a></p>
   </section>
 </div>
 {{ end }}

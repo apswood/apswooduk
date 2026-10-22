@@ -7,7 +7,8 @@ capabilities: [cyber-recovery, major-incident, executive-communication]
 sector: "Retail and distribution"
 status: "Complete"
 lesson: "Successful backups and successful recovery are not always the same thing."
-weight: 3
+weight: 5
+highlight: true
 publish: true
 ---
 
