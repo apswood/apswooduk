@@ -1,6 +1,6 @@
 name: Checks
 
-# Deployment is handled by AWS Amplify Hosting (see docs/DEPLOY.md). This workflow only builds and checks,
+# Deployment is handled by Cloudflare (see docs/DEPLOY.md). This workflow only builds and checks,
 # so pull requests and pushes get a pass or fail in GitHub as well.
 on:
   push:

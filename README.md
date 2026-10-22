@@ -32,4 +32,4 @@ Run `bash scripts/prepublish-check.sh`. It reports every blocker (visible placeh
 To publish a role summary set `publish_summary: true` on the role in `data/experience.yaml`. To publish an outcome set `publish: true` on it. Both need your approval first. Deployment is by AWS Amplify Hosting, see docs/DEPLOY.md.
 
 ## Deployment
-Deployed by AWS Amplify Hosting on every push to `master`. Build spec: `amplify.yml`. Headers: `customHttp.yml`. Setup, the 404 rule and rollback: `docs/DEPLOY.md`.
+Deployed by Cloudflare on every push to `master`. Headers: `static/_headers`. Asset config: `wrangler.jsonc`. Setup, rollback and settings: `docs/DEPLOY.md`.

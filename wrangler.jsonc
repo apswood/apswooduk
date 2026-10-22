@@ -1,0 +1,10 @@
+{
+  // Cloudflare Workers Builds deploys the built Hugo site as static assets.
+  "name": "apswooduk",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./public",
+    // Unknown URLs get the site's own standalone 404.html with a 404 status.
+    "not_found_handling": "404-page"
+  }
+}
