@@ -24,5 +24,6 @@ A few practical tools, dashboards, and digital corners worth a look:
 - [Tate Modern](https://www.tate.org.uk/visit/tate-modern): Industrial architecture turned modern and contemporary powerhouse, from monumental Turbine Hall commissions to quiet visual studies.
 - [Every Noise at Once](https://everynoise.com/): An algorithmically generated scatter-plot map of thousands of musical micro-genres with instant audio snippets.
 - [Hidden London (LTM)](https://www.ltmuseum.co.uk/hidden-london): Archive tours and research exploring London's disused stations, deep-level shelters, and subterranean spaces.
+- [xkcd](https://xkcd.com/): A long-running webcomic of stick figures, science, maths and sarcasm.
 - [Neal.fun](https://neal.fun/): A fantastic repository of interactive digital experiments, data visualisations, and visual toys.
 - [Nebulous](https://archive.org/details/nebulous5): Graham Duff's BBC Radio 4 science fiction spoof, in which Professor Nebulous and his crew of misfits save a post-apocalypse Earth from highly unlikely catastrophes with no budget and little common sense.

@@ -2,7 +2,7 @@
 {{- $thought := eq .Params.kind "thought" -}}
 {{- $themes := partial "themes-for.html" (dict "caps" .Params.capabilities "lenses" .Params.lenses "kind" (cond $thought "thought" "case") "highlight" .Params.highlight) -}}
 <li class="dcard dcard-spot {{ if $thought }}dcard-thought{{ else }}dcard-case{{ end }}" data-themes="{{ delimit $themes " " }}">
-  <p class="dkick">{{ if $thought }}Thought leadership{{ else }}Case study, {{ .Params.sector }}{{ end }}</p>
+  <p class="dkick">{{ if $thought }}Insights and thoughts{{ else }}Case study, {{ .Params.sector }}{{ end }}</p>
   <h2 class="dtitle"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
   {{- if $thought }}
   <p class="dtext">{{ .Params.summary }}</p>

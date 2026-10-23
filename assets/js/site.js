@@ -140,7 +140,9 @@
   function pilotTime(e) {
     var tip = e.target.closest && e.target.closest('[data-pilot="led"]');
     var t = tip && tip.querySelector('[data-pilot-tip]');
-    if (t) t.textContent = 'All systems operational as of ' + new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    if (!t || (e.relatedTarget && tip.contains(e.relatedTarget))) return;
+    var nods = ['Courageous, Minister.', 'Allegedly, as Private Eye would put it.', 'Too bland even for Spitting Image.'];
+    t.textContent = 'All systems operational as of ' + new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) + '. ' + nods[Math.floor(Math.random() * nods.length)];
   }
   document.addEventListener('mouseover', pilotTime);
   document.addEventListener('focusin', pilotTime);

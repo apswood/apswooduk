@@ -9,4 +9,4 @@
 - { id: platforms, label: "Platforms and tooling", capabilities: [platform-transformation, monitoring, cloud, engineering, itsm] }
 - { id: service, label: "Service delivery", capabilities: [service-delivery, service-design, service-transition, service-governance, problem-management] }
 - { id: leadership, label: "Leadership and commercial", capabilities: [leadership, people, strategy, commercial] }
-- { id: thought, label: "Thought leadership", kinds: [thought] }
+- { id: thought, label: "Insights and thoughts", kinds: [thought] }

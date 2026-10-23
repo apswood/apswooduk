@@ -5,7 +5,7 @@
   <h1>{{ .Title }}</h1>
   {{- if $thought }}
   <p class="lede">{{ .Params.summary }}</p>
-  <p><span class="tag">Thought leadership</span> {{ hugo.Data.profile.name }}</p>
+  <p><span class="tag">Insights and thoughts</span> {{ hugo.Data.profile.name }}</p>
   {{ .Content }}
   {{- else }}
   <p>{{ partial "attribution.html" .Params.attribution }} <span class="tag">{{ .Params.status }}</span> {{ .Params.sector }}</p>
