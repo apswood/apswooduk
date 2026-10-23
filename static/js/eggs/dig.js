@@ -1,7 +1,7 @@
 /* Beneath the street. Original strata, a detector, and a finds log. Loaded when the Dig control is first used. */
 (function () {
   'use strict';
-  var sec = null, data = null, btn = null, audio = null, osc = null, gain = null;
+  var sec = null, data = null, btn = null, sndBtn = null, audio = null, osc = null, gain = null;
   var detector = false, sound = false, dug = {}, mx = -999, my = -999;
 
   var css =
@@ -20,7 +20,7 @@
     '.dig-final{font-family:var(--head,serif);font-size:1.4rem;margin:28px 0 0}' +
     '.dig.detecting .stratum{cursor:none}.dig.detecting .find{cursor:none}' +
     '.dig-ring{position:fixed;width:64px;height:64px;margin:-32px 0 0 -32px;border:4px solid #ffcc00;border-radius:50%;pointer-events:none;z-index:60;display:none;box-shadow:0 0 0 2px #000}' +
-    '.dig.detecting~.dig-ring{display:block}' +
+    '.dig:not([hidden]).detecting~.dig-ring{display:block}' +
     '@media(prefers-reduced-motion:reduce){.dig .reveal{opacity:1;transition:none}.find{transition:none}}';
 
   var art = {
@@ -54,12 +54,12 @@
       sec.classList.toggle('detecting', detector);
       if (!detector) tone(0);
     });
-    var snd = toggleBtn('Sound: off', false, function () {
-      sound = !sound; snd.textContent = 'Sound: ' + (sound ? 'on' : 'off'); snd.setAttribute('aria-pressed', sound);
+    sndBtn = toggleBtn('Sound: off', false, function () {
+      sound = !sound; sndBtn.textContent = 'Sound: ' + (sound ? 'on' : 'off'); sndBtn.setAttribute('aria-pressed', sound);
       if (sound) startAudio(); else stopAudio();
     });
     var hint = el('span', 'meta'); hint.textContent = 'Switch on the detector and move the pointer. Buried objects can also be reached with the keyboard.';
-    tools.appendChild(det); tools.appendChild(snd); tools.appendChild(hint);
+    tools.appendChild(det); tools.appendChild(sndBtn); tools.appendChild(hint);
     sec.appendChild(tools);
 
     var ol = el('ol', 'dig-strata');
@@ -152,6 +152,7 @@
     var go = function () {
       if (!sec) build();
       sec.hidden = false;
+      if (sound && !osc) startAudio();
       if (btn) btn.setAttribute('aria-expanded', 'true');
       sec.scrollIntoView({ behavior: AW.reducedMotion() ? 'auto' : 'smooth', block: 'start' });
     };

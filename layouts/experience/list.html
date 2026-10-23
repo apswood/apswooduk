@@ -27,23 +27,71 @@
         <button type="button" class="chip" data-deck-prev aria-label="Previous role">Previous</button>
         <span class="deck-count" role="status" aria-live="polite" data-deck-count></span>
         <button type="button" class="chip" data-deck-next aria-label="Next role">Next</button>
+        <button type="button" class="chip" data-deck-expand aria-pressed="false">Show all</button>
       </div>
     </section>
   </div>
 </div>
-{{ $loose := slice }}
-{{ range $cases }}{{ if not .Params.roles }}{{ $loose = $loose | append . }}{{ end }}{{ end }}
-{{ with $loose }}
+{{ $projects := slice }}
+{{ $caseStudies := slice }}
+{{ range $cases }}
+  {{ if .Params.roles }}
+    {{ $caseStudies = $caseStudies | append . }}
+  {{ else }}
+    {{ $projects = $projects | append . }}
+  {{ end }}
+{{ end }}
+{{ with $projects }}
 <section class="extra">
   <h2>Projects</h2>
+  {{ if gt (len .) 3 }}
+  <div class="deck" data-deck-carousel="Project" aria-roledescription="carousel" aria-label="Projects">
+    <ul class="cards cards-wide deck-track" data-deck-track tabindex="0" aria-label="Projects. Use the arrow keys or the buttons to move between them.">
+      {{ range . }}{{ partial "case-card.html" . }}{{ end }}
+    </ul>
+    <div class="deck-ctl no-print" data-deck-ctl hidden>
+      <button type="button" class="chip" data-deck-prev aria-label="Previous project">Previous</button>
+      <span class="deck-count" role="status" aria-live="polite" data-deck-count></span>
+      <button type="button" class="chip" data-deck-next aria-label="Next project">Next</button>
+      <button type="button" class="chip" data-deck-expand aria-pressed="false">Show all</button>
+    </div>
+  </div>
+  {{ else }}
   <ul class="cards cards-wide">{{ range . }}{{ partial "case-card.html" . }}{{ end }}</ul>
+  {{ end }}
+</section>
+{{ end }}
+{{ with $caseStudies }}
+<section class="extra">
+  <h2>Case studies</h2>
+  <div class="deck" data-deck-carousel="Case study" aria-roledescription="carousel" aria-label="Case studies">
+    <ul class="cards cards-wide deck-track" data-deck-track tabindex="0" aria-label="Case studies. Use the arrow keys or the buttons to move between them.">
+      {{ range .ByWeight }}{{ partial "case-card.html" . }}{{ end }}
+    </ul>
+    <div class="deck-ctl no-print" data-deck-ctl hidden>
+      <button type="button" class="chip" data-deck-prev aria-label="Previous case study">Previous</button>
+      <span class="deck-count" role="status" aria-live="polite" data-deck-count></span>
+      <button type="button" class="chip" data-deck-next aria-label="Next case study">Next</button>
+      <button type="button" class="chip" data-deck-expand aria-pressed="false">Show all</button>
+    </div>
+  </div>
 </section>
 {{ end }}
 {{ with $thoughts }}
 <section class="extra">
   <h2>Insights and thoughts</h2>
   <p class="meta">Notes on running managed services, from the operations side.</p>
-  <ul class="cards cards-wide">{{ range .ByWeight }}{{ partial "case-card.html" . }}{{ end }}</ul>
+  <div class="deck" data-deck-carousel="Post" aria-roledescription="carousel" aria-label="Insights and thoughts">
+    <ul class="cards cards-wide deck-track" data-deck-track tabindex="0" aria-label="Insights and thoughts. Use the arrow keys or the buttons to move between posts.">
+      {{ range .ByWeight }}{{ partial "case-card.html" . }}{{ end }}
+    </ul>
+    <div class="deck-ctl no-print" data-deck-ctl hidden>
+      <button type="button" class="chip" data-deck-prev aria-label="Previous post">Previous</button>
+      <span class="deck-count" role="status" aria-live="polite" data-deck-count></span>
+      <button type="button" class="chip" data-deck-next aria-label="Next post">Next</button>
+      <button type="button" class="chip" data-deck-expand aria-pressed="false">Show all</button>
+    </div>
+  </div>
 </section>
 {{ end }}
 {{ $deck := resources.Get "js/deck.js" | minify | fingerprint }}

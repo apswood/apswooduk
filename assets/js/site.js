@@ -72,7 +72,7 @@
 /* Egg plumbing: found counter, egg index unlock, lazy loading of each egg. */
 (function () {
   'use strict';
-  var AW = window.AW, root = document.documentElement, mem = {};
+  var AW = window.AW, mem = {};
   function getFound() {
     try { return JSON.parse(AW.read('aw-found') || '{}'); } catch (e) { return mem; }
   }
@@ -98,6 +98,25 @@
     if (!document.querySelector(sel) || AW.serious()) return;
     idle(function () { AW.load(name).then(function (e) { if (e && boot) boot(e); }); });
   }
+  function bootPageEggs(restart) {
+    if (AW.serious()) return;
+    var pg = document.querySelector('[data-egg-page]');
+    if (pg) {
+      var pmap = { status: 'status', improve: 'improve', rehearsal: 'rehearsal', connections: 'map' };
+      if (pmap[pg.dataset.eggPage]) AW.found(pmap[pg.dataset.eggPage]);
+    }
+    var run = restart ? function (e) { if (e && e.start) e.start(); } : null;
+    when('[data-signal]', 'signal', run);
+    when('[data-board]', 'board', run);
+    when('[data-egg-page="index"]', 'index', run);
+    when('[data-egg-page="rehearsal"]', 'rehearsal', run);
+    when('[data-egg-page="connections"]', 'connections', run);
+    when('[data-pause]', 'pause', run);
+    render();
+  }
+  bootPageEggs(false);
+  document.addEventListener('aw:serious', function (e) { if (!e.detail) bootPageEggs(true); });
+
   // Terminal: backtick or the footer glyph.
   function openTerminal() { AW.load('terminal').then(function (t) { if (t) t.toggle(); }); }
   document.addEventListener('keydown', function (e) {
@@ -113,18 +132,6 @@
   // Dig: loaded when the control is first used.
   var dig = document.getElementById('dig-open');
   if (dig) dig.addEventListener('click', function () { AW.load('dig').then(function (d) { if (d) d.toggle(dig); }); });
-
-  when('[data-signal]', 'signal');
-  when('[data-board]', 'board');
-  when('[data-egg-page="index"]', 'index');
-  var pg = document.querySelector('[data-egg-page]');
-  if (pg) {
-    var pmap = { status: 'status', improve: 'improve', rehearsal: 'rehearsal', connections: 'map' };
-    if (pmap[pg.dataset.eggPage]) AW.found(pmap[pg.dataset.eggPage]);
-  }
-  when('[data-egg-page="rehearsal"]', 'rehearsal');
-  when('[data-egg-page="connections"]', 'connections');
-  when('[data-pause]', 'pause');
 
   // Generic trigger: any element with data-egg-click="name" loads that egg and toggles it.
   document.addEventListener('click', function (e) {

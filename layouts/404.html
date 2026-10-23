@@ -6,11 +6,12 @@
 <meta name="robots" content="noindex">
 <meta name="color-scheme" content="light dark">
 <title>Page not found</title>
-<script>(function(){try{if(localStorage.getItem('aw-serious')==='1')document.documentElement.dataset.serious='1'}catch(e){}})();</script>
+<script>(function(){var d=document.documentElement;try{var t=localStorage.getItem('aw-theme');if(t==='light'||t==='dark')d.dataset.theme=t;if(localStorage.getItem('aw-serious')==='1')d.dataset.serious='1'}catch(e){}})();</script>
 <style>
 @font-face{font-family:Railway;src:url(/fonts/Railway-Semibold.woff2) format("woff2");font-weight:600;font-display:swap}
 :root{--bg:#f6f1e7;--surface:#ece4d3;--ink:#26292b;--muted:#4b5256;--accent:#1f5f7a;--accent-ink:#fff;--focus:#9a3b00;--head:Railway,"Gill Sans",Calibri,sans-serif}
-@media(prefers-color-scheme:dark){:root{--bg:#12181d;--surface:#1b242b;--ink:#e9e6df;--muted:#aab3ba;--accent:#7fb8d1;--accent-ink:#0f1519;--focus:#ffb070}}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12181d;--surface:#1b242b;--ink:#e9e6df;--muted:#aab3ba;--accent:#7fb8d1;--accent-ink:#0f1519;--focus:#ffb070}}
+:root[data-theme="dark"]{--bg:#12181d;--surface:#1b242b;--ink:#e9e6df;--muted:#aab3ba;--accent:#7fb8d1;--accent-ink:#0f1519;--focus:#ffb070}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:1.0625rem/1.6 Seravek,"Gill Sans Nova",Calibri,"Segoe UI",sans-serif}
 main{max-width:720px;margin:0 auto;padding:clamp(24px,6vw,72px) 20px}
