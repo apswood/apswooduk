@@ -143,72 +143,40 @@ a.pill-h{text-decoration:none}a.pill-h:hover,.pill-link:hover .pill rect{filter:
 .themes .chip:disabled{opacity:.4;cursor:default}
 .deck-track{list-style:none;margin:0;padding:0;display:grid;gap:16px}
 .is-deck .deck-track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;padding:6px 6px 14px;scrollbar-width:none;align-items:flex-start}
-.is-deck .cards.deck-track{align-items:stretch;gap:18px;padding:16px 16px 32px;margin:-12px -16px -24px}
+.is-deck .cards.deck-track{align-items:stretch;gap:18px;padding:24px 20px 36px;margin:-16px -20px -28px}
 .is-deck .deck-track::-webkit-scrollbar{display:none}
 .is-deck .deck-track:focus-visible{outline:3px solid var(--focus);outline-offset:4px;border-radius:8px}
 .is-deck .rcard{flex:0 0 100%;scroll-snap-align:start;min-height:28rem}
 .is-deck .cards.deck-track > .dcard{flex:0 0 min(calc(100vw - 48px), 340px);scroll-snap-align:start;margin:0;position:relative}
 
-/* White-hot Piccadilly line neon glow for selected Case studies and Insights and thoughts cards */
+/* Carousel selected card: Light mode has light source from above with a soft dark shadow */
 .is-deck:not(.is-expanded) .cards.deck-track > .dcard.is-current{
   box-shadow:
-    0 0 0 1px rgba(255,255,255,.9),
-    4px 0 20px rgba(255,255,255,.7),
-    0 8px 26px rgba(255,255,255,.6),
-    0 -4px 18px rgba(255,255,255,.5),
-    4px 10px 24px rgba(0,0,0,.15);
+    0 12px 24px -4px rgba(28,25,23,.12),
+    0 6px 12px -2px rgba(28,25,23,.08),
+    0 2px 4px rgba(28,25,23,.04);
 }
+/* Carousel selected card: Dark mode has soft luminous illumination from behind */
 @media(prefers-color-scheme:dark){
   :root:not([data-theme="light"]) .is-deck:not(.is-expanded) .cards.deck-track > .dcard.is-current{
     box-shadow:
-      0 0 0 1px #ffffff,
-      4px 0 26px rgba(255,255,255,.85),
-      0 10px 32px rgba(255,255,255,.75),
-      0 -6px 22px rgba(255,255,255,.65),
-      0 0 45px rgba(255,255,255,.35),
-      4px 12px 28px rgba(0,0,0,.5);
+      0 0 12px rgba(255,255,255,.45),
+      0 0 24px rgba(127,184,209,.32),
+      0 2px 28px rgba(96,165,250,.2),
+      0 8px 24px rgba(0,0,0,.55);
   }
 }
 :root[data-theme="dark"] .is-deck:not(.is-expanded) .cards.deck-track > .dcard.is-current{
   box-shadow:
-    0 0 0 1px #ffffff,
-    4px 0 26px rgba(255,255,255,.85),
-    0 10px 32px rgba(255,255,255,.75),
-    0 -6px 22px rgba(255,255,255,.65),
-    0 0 45px rgba(255,255,255,.35),
-    4px 12px 28px rgba(0,0,0,.5);
-}
-.is-deck:not(.is-expanded) .cards.deck-track > .dcard::after{
-  content:"";
-  position:absolute;
-  top:-2px;
-  right:-2px;
-  bottom:-2px;
-  left:0;
-  border-top:2.5px solid #ffffff;
-  border-right:2.5px solid #ffffff;
-  border-bottom:2.5px solid #ffffff;
-  border-left:none;
-  border-top-right-radius:12px;
-  border-bottom-right-radius:12px;
-  border-top-left-radius:0;
-  border-bottom-left-radius:0;
-  pointer-events:none;
-  opacity:0;
-  box-shadow:
-    0 0 6px #ffffff,
-    0 0 14px rgba(255,255,255,.9),
-    0 0 26px rgba(255,255,255,.6),
-    inset 0 0 8px rgba(255,255,255,.4);
-  transition:opacity .35s ease;
-}
-.is-deck:not(.is-expanded) .cards.deck-track > .dcard.is-current::after{
-  opacity:1;
+    0 0 12px rgba(255,255,255,.45),
+    0 0 24px rgba(127,184,209,.32),
+    0 2px 28px rgba(96,165,250,.2),
+    0 8px 24px rgba(0,0,0,.55);
 }
 .deck-ctl{display:flex;align-items:center;gap:14px;margin-bottom:14px}
 .deck-count{flex:1;font-family:var(--head);font-weight:600;text-align:center}
 .deck-ctl .chip:disabled{opacity:.4;cursor:default}
-.is-deck.is-expanded .deck-track{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))!important;overflow-x:visible!important;scroll-snap-type:none!important;padding:0!important}
+.is-deck.is-expanded .deck-track{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))!important;overflow-x:visible!important;scroll-snap-type:none!important;padding:0!important;margin:0 0 1rem!important}
 .is-deck.is-expanded .rcard{flex:none!important;scroll-snap-align:none!important;min-height:0!important}
 .is-deck.is-expanded .dcard{flex:none!important;scroll-snap-align:none!important;margin:0!important;width:auto!important}
 @media(min-width:900px){.deck-col{position:sticky;top:16px;align-self:start}}
