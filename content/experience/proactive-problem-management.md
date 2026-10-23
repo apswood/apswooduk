@@ -4,6 +4,7 @@ attribution: "Led"
 role_line: "Designed the process, took it to senior leadership and embedded it with my team leads"
 lenses: [operating-model, hands-on]
 capabilities: [problem-management, automation, service-delivery]
+roles: ["2022-05-head-of-technical-delivery"]
 sector: "Managed services"
 status: "In production"
 lesson: "Automation can find a gap, but a person still has to decide whether it matters."

@@ -2,6 +2,9 @@
 (function () {
   'use strict';
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+  // A reload or back/forward visit of the same page gets no entrance motion.
+  var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+  if (nav && (nav.type === 'reload' || nav.type === 'back_forward')) return;
   var sel = 'main h1, main .lede, main > * > h2, main > * > p, main > * > ul:not(.deck-track), main .card, main .comp, main .career, main .themes, main .deck, main .roles > li, main article > *';
   var items = Array.prototype.slice.call(document.querySelectorAll(sel)).filter(function (el, i, a) {
     return a.indexOf(el) === i && !el.closest('.deck-track') && !el.closest('[data-egg]');
@@ -17,8 +20,9 @@
   items.forEach(function (el) {
     var r = el.getBoundingClientRect(), now = performance.now();
     batch = now - last < 50 ? batch + 1 : 0; last = now;
-    el.style.setProperty('--d', Math.min(batch, 6) * 70 + 'ms');
+    el.style.setProperty('--d', Math.min(batch, 4) * 40 + 'ms');
     el.classList.add('rv');
+    if (el.matches('.career, .themes, .deck')) el.classList.add('rv-f');
     io.observe(el);
   });
   // Safety net: never leave anything hidden

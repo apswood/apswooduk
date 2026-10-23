@@ -16,4 +16,4 @@ I use AI to take repetitive load off engineers and to surface what needs attenti
 
 ## How I lead
 
-I lead by empowering teams to own their domains, removing blockers and partnering with customers to listen and improve their experience. I stay hands-on in third-line escalations and major incidents where it matters most. In my experience, people cope better with a difficult decision than an unclear one, so I try to make decisions clear early.
+I lead by empowering teams to own their domains, removing blockers and partnering with customers to listen and improve their experience. I pair technical authority with psychological safety: people learn faster and innovate more when they are not afraid to be wrong, and stability through a complex transformation depends on it. That starts with genuine relationships, because operations runs on trust. I stay hands-on in third-line escalations and major incidents where it matters most. In my experience, people cope better with a difficult decision than an unclear one, so I try to make decisions clear early.

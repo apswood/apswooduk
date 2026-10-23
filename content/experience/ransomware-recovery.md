@@ -4,6 +4,7 @@ attribution: "Co-led"
 role_line: "Led the technical recovery workstream alongside the major incident manager"
 lenses: [operating-model, hands-on]
 capabilities: [cyber-recovery, major-incident, executive-communication]
+roles: ["2022-05-head-of-technical-delivery"]
 sector: "Retail and distribution"
 status: "Complete"
 lesson: "Successful backups and successful recovery are not always the same thing."

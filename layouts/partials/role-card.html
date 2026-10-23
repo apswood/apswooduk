@@ -1,0 +1,27 @@
+{{- /* One card per role (or the degree). Context: dict with r (role or education), key (id), cases (pages), edu (bool). */ -}}
+{{- $r := .r -}}
+{{- $era := cond .edu "UEA" $r.org -}}
+<li class="rcard era-{{ urlize $era }}" id="{{ .key }}" data-role="{{ .key }}">
+  <div class="rhead"><span class="rorg">{{ $r.org }}</span><span class="rdates">{{ if .edu }}{{ $r.from }} – {{ $r.to }}{{ else }}{{ $r.from }} to {{ with $r.to }}{{ . }}{{ else }}present{{ end }}{{ end }}</span></div>
+  <div class="rbody">
+    <h2 class="rtitle">{{ $r.title }}</h2>
+    {{- with .cases }}
+    <p class="rcases"><span class="rcases-l">{{ if gt (len .) 1 }}Case studies{{ else }}Case study{{ end }}:</span> {{ range $i, $c := . }}{{ if $i }}, {{ end }}<a href="{{ $c.RelPermalink }}">{{ $c.Title }}</a>{{ end }}</p>
+    {{- end }}
+    {{- if or .edu $r.publish_summary }}<p class="rsummary">{{ $r.summary }}</p>{{ end }}
+    {{- if not .edu }}
+    {{- $caps := slice }}
+    <ul class="routcomes" data-outcomes>
+      {{- range $r.outcomes }}{{ if .publish }}
+      {{- $themes := partial "themes-for.html" (dict "caps" .capabilities "lenses" .lenses "kind" "outcome" "highlight" .highlight) }}
+      {{- range .capabilities }}{{ $caps = $caps | append . }}{{ end }}
+      <li data-themes="{{ delimit $themes " " }}">{{ partial "attribution.html" .attribution }}{{ with .status }} <span class="tag tag-status">{{ . }}</span>{{ end }} {{ .text }}</li>
+      {{- end }}{{ end }}
+    </ul>
+    <p class="rempty" hidden>Nothing from this role falls under that theme. Try All.</p>
+    <ul class="rtags" aria-label="Skills and platforms">
+      {{- range $caps | uniq | sort }}<li>{{ index hugo.Data.capabilities . | default (humanize .) }}</li>{{ end }}
+    </ul>
+    {{- end }}
+  </div>
+</li>

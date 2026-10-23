@@ -2,8 +2,8 @@
 {{ $p := hugo.Data.profile }}
 <div class="about">
   <h1>{{ .Title }}</h1>
-  <p class="lede">{{ $p.headline }}, {{ $p.location }}</p>
-  {{ range $p.summary }}<p>{{ . }}</p>{{ end }}
+  {{ range $p.about }}<p class="about-story">{{ . }}</p>{{ end }}
+  <p>{{ $p.beliefs }}</p>
   <h2>Career in brief</h2>
   <ul class="brief">
     {{ range hugo.Data.experience }}<li><strong>{{ .title }}</strong>, {{ .org }} <span class="meta">{{ substr .from 0 4 }} to {{ with .to }}{{ substr . 0 4 }}{{ else }}present{{ end }}</span></li>{{ end }}
@@ -17,6 +17,12 @@
   <ul class="skills">
     {{ range hugo.Data.certifications }}{{ if .publish }}<li>{{ .name }}, {{ .issuer }}{{ with .year }} {{ . }}{{ end }} <span class="meta">({{ .status }})</span></li>{{ end }}{{ end }}
   </ul>
+  {{ with hugo.Data.education }}
+  <h2>Education</h2>
+  <p><strong>{{ .title }}</strong>, {{ .org }}, {{ .from }} to {{ .to }}, {{ .grade }}. {{ .project }}</p>
+  <p>{{ .alevels }}</p>
+  <p class="meta">Activities: {{ delimit .societies ", " }}.</p>
+  {{ end }}
   <p><a class="btn" href="{{ $p.links.linkedin }}" rel="me">View my LinkedIn</a></p>
 </div>
 {{ end }}

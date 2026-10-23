@@ -44,6 +44,21 @@
       lenses: [operating-model]
       capabilities: [automation, service-delivery]
       publish: true
+    - text: "Mentored engineers across complex hybrid platforms and built a culture of psychological safety, so people feel able to learn, ask and try things without fear"
+      attribution: "Led"
+      lenses: [operating-model]
+      capabilities: [leadership, people]
+      publish: true
+    - text: "Contributed to bid responses and service design, aligning technical architecture proposals with commercial strategy"
+      attribution: "Contributed"
+      lenses: [operating-model]
+      capabilities: [service-design, commercial]
+      publish: true
+    - text: "Recognised with Above and Beyond awards and company all-hands mentions for leadership in vulnerability management and incident response"
+      attribution: "Led"
+      lenses: [hands-on]
+      capabilities: [major-incident, security, leadership]
+      publish: true
     - text: "Helping drive a sustained improvement in customer satisfaction scores"
       attribution: "Contributed"
       lenses: [operating-model]
@@ -78,7 +93,7 @@
   org: "Six Degrees"
   from: 2020-01
   to: 2021-05
-  summary: "I ran technical escalations and support for secure public sector cloud environments under UK OFFICIAL and NCSC guidance, bridging platform build and live service."
+  summary: "I ran technical escalations and support for secure public sector cloud environments under UK OFFICIAL and NCSC guidance, including secure VDI on VMware Horizon, VMware vCloud and PSN networks, bridging platform build and live service."
   publish_summary: true
   outcomes:
     - text: "Built 24x7 hypercare monitoring for critical national public sector platforms through peak periods"
@@ -134,6 +149,7 @@
       lenses: [hands-on]
       capabilities: [itsm]
       publish: true
+      highlight: true
 
 - title: "Systems Engineer"
   org: "Carrenza"
@@ -147,3 +163,4 @@
       lenses: [hands-on]
       capabilities: [engineering, automation]
       publish: true
+      highlight: true

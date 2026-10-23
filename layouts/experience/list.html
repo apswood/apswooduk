@@ -1,4 +1,7 @@
 {{ define "main" }}
+{{ $pub := where .Pages "Params.publish" true }}
+{{ $cases := where $pub "Params.kind" "ne" "thought" }}
+{{ $thoughts := where $pub "Params.kind" "thought" }}
 <div class="two">
   <aside class="side">
     <h1>{{ .Title }}</h1>
@@ -8,33 +11,41 @@
     {{ partial "tag-explainer.html" . }}
     <div class="themes no-print" data-themes-bar role="group" aria-label="Themes" hidden>
       <span class="lens-label">Themes:</span>
-      {{ range hugo.Data.themes }}<button type="button" class="chip" data-theme="{{ .id }}" aria-pressed="false">{{ .label }}</button>{{ end }}
+      {{ range hugo.Data.themes }}{{ if ne .id "thought" }}<button type="button" class="chip" data-theme="{{ .id }}" aria-pressed="false">{{ .label }}</button>{{ end }}{{ end }}
       <button type="button" class="chip" data-theme="all" aria-pressed="false">All</button>
     </div>
-    {{- /* Outcomes from the CV, newest role first, with each case study or post slotted in between. */ -}}
-    {{- $outs := slice -}}
-    {{- range hugo.Data.experience -}}{{- $r := . -}}{{- $first := true -}}
-      {{- range .outcomes -}}{{- if .publish -}}
-        {{- $outs = $outs | append (dict "r" $r "o" . "first" $first) -}}{{- $first = false -}}
-      {{- end -}}{{- end -}}
-    {{- end -}}
-    {{- $spots := (where .Pages "Params.publish" true).ByWeight -}}
-    <section class="deck" data-deck aria-roledescription="carousel" aria-label="Experience cards">
-      <ol class="deck-track" data-deck-track tabindex="0" aria-label="Cards. Use the arrow keys or the buttons to move between them.">
-        {{- range $i, $x := $outs -}}
-          {{ partial "deck-outcome.html" $x }}
-          {{- if lt $i (len $spots) }}{{ partial "case-card.html" (index $spots $i) }}{{ end -}}
-        {{- end -}}
-        {{- range $i, $s := $spots -}}{{- if ge $i (len $outs) }}{{ partial "case-card.html" $s }}{{ end -}}{{- end -}}
+    <section class="deck" data-deck aria-roledescription="carousel" aria-label="Roles">
+      <ol class="deck-track" data-deck-track tabindex="0" aria-label="Roles, newest first. Use the arrow keys, the buttons or the career line to move between them.">
+        {{- range sort hugo.Data.experience "from" "desc" }}
+          {{- $id := urlize (printf "%s-%s" .from .title) }}
+          {{- $mine := where $cases "Params.roles" "intersect" (slice $id) }}
+          {{ partial "role-card.html" (dict "r" . "key" (printf "role-%s" $id) "cases" $mine "edu" false) }}
+        {{- end }}
+        {{- with hugo.Data.education }}{{ partial "role-card.html" (dict "r" . "key" (printf "role-%s" (urlize (printf "%s-%s" .from .title))) "cases" slice "edu" true) }}{{ end }}
       </ol>
       <div class="deck-ctl no-print" data-deck-ctl hidden>
-        <button type="button" class="chip" data-deck-prev aria-label="Previous card">Previous</button>
+        <button type="button" class="chip" data-deck-prev aria-label="Previous role">Previous</button>
         <span class="deck-count" role="status" aria-live="polite" data-deck-count></span>
-        <button type="button" class="chip" data-deck-next aria-label="Next card">Next</button>
+        <button type="button" class="chip" data-deck-next aria-label="Next role">Next</button>
       </div>
     </section>
   </div>
 </div>
+{{ $loose := slice }}
+{{ range $cases }}{{ if not .Params.roles }}{{ $loose = $loose | append . }}{{ end }}{{ end }}
+{{ with $loose }}
+<section class="extra">
+  <h2>Projects</h2>
+  <ul class="cards cards-wide">{{ range . }}{{ partial "case-card.html" . }}{{ end }}</ul>
+</section>
+{{ end }}
+{{ with $thoughts }}
+<section class="extra">
+  <h2>Thought leadership</h2>
+  <p class="meta">Notes on running managed services, from the operations side.</p>
+  <ul class="cards cards-wide">{{ range .ByWeight }}{{ partial "case-card.html" . }}{{ end }}</ul>
+</section>
+{{ end }}
 {{ $deck := resources.Get "js/deck.js" | minify | fingerprint }}
 <script src="{{ $deck.RelPermalink }}" integrity="{{ $deck.Data.Integrity }}" defer></script>
 {{ end }}

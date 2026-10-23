@@ -12,14 +12,22 @@
       <p class="dm-row dm-calling">Calling at: {{ delimit $p.calling_at ", " }}</p>
       <p class="dm-row dm-announce" data-egg aria-live="polite" hidden></p>
     </div>
-    <h2>Experience spotlights</h2>
+    <h2>Experience spotlight</h2>
     {{ $cases := where (where site.RegularPages "Section" "experience") "Params.publish" true }}
-    <ul class="cards">
-    {{ range first 4 $cases.ByWeight }}{{ partial "case-card.html" . }}{{ else }}
-    <li>No spotlights are published yet.</li>
-    {{ end }}
-    </ul>
-    <p><a href="/experience/">See all experience</a></p>
+    <div class="spotlight" data-spotlight>
+      <ul class="cards spot-list" data-spot-list>
+      {{ range $i, $c := $cases.ByWeight }}{{ partial "case-card.html" $c }}{{ else }}
+      <li>No spotlights are published yet.</li>
+      {{ end }}
+      </ul>
+      <p class="spot-actions">
+        <button type="button" class="chip spot-shuffle" data-spot-shuffle hidden>Another one</button>
+        <a href="/experience/">See all experience</a>
+      </p>
+      <p class="spot-note" data-spot-note role="status" aria-live="polite" hidden></p>
+      {{ $spot := resources.Get "js/spotlight.js" | minify | fingerprint }}
+      <script src="{{ $spot.RelPermalink }}" integrity="{{ $spot.Data.Integrity }}"></script>
+    </div>
   </section>
 </div>
 {{ end }}

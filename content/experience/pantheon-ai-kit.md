@@ -18,4 +18,4 @@ It brings together patterns I have found useful in running live services. Five s
 
 The agents are advisory by design. They report and suggest, and people decide. Secrets stay out of the repository through environment configuration and a validator that scans for leaks, and organisation-specific identifiers are replaced with placeholders. Skills load their detailed standards only when they are needed. The coaching approach is deliberately non-accusatory, in the same spirit as the gentle accountability I aim for with my own teams.
 
-It is early, and I am developing it in the open.
+It is early, and I am developing it to be re-usable and to test out the same ideas that underpin the project with AI supported scripting.
