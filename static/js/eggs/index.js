@@ -14,7 +14,7 @@
       var t = got ? e.name : 'Not yet found';
       li.innerHTML = '<strong></strong> <span></span>';
       li.firstChild.textContent = t + '.';
-      li.lastChild.textContent = got ? ' ' + e.how + ' First found ' + new Date(got).toLocaleDateString('en-GB') + '.' : ' Keep looking.';
+      li.lastChild.textContent = got ? ' ' + e.how + ' First found ' + new Date(got).toLocaleDateString('en-GB') + ' at ' + new Date(got).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + '.' : ' Keep looking.';
       list.appendChild(li);
     });
     list.hidden = false;
