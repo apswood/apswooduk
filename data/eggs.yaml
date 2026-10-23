@@ -47,3 +47,6 @@
 - id: pilotlight
   name: The pilot light
   how: "Find the faint light at the end of the About page, or the little signal on Off the clock, and follow it."
+- id: steam
+  name: London Museum of Water & Steam
+  how: "Connect the pipes and start the Cornish pump on the Off the clock page."

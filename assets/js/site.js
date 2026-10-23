@@ -137,6 +137,7 @@
   document.addEventListener('click', function (e) {
     var t = e.target.closest && e.target.closest('[data-egg-click]');
     if (!t) return;
+    if (!AW.serious() && t.tagName === 'A') e.preventDefault();
     AW.load(t.dataset.eggClick).then(function (x) { if (x && x.toggle) x.toggle(t); });
   });
 

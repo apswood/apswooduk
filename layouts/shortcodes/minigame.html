@@ -1,0 +1,5 @@
+{{- $id := .Get "id" | default (.Get 0) -}}
+{{- $text := .Get "text" | default (.Get 1) -}}
+{{- $url := .Get "url" | default (.Get 2) -}}
+{{- $badge := .Get "badge" | default "mini-game" -}}
+<a href="{{ $url }}" class="minigame-link" data-minigame="{{ $id }}" data-egg-click="{{ $id }}" data-url="{{ $url }}" aria-haspopup="dialog" title="Play the {{ $text }} puzzle"><span class="minigame-text">{{ $text }}</span> <span class="minigame-badge" aria-hidden="true">&#9881; {{ $badge }}</span></a>
