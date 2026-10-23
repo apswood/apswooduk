@@ -138,22 +138,23 @@ a.pill-h{text-decoration:none}a.pill-h:hover,.pill-link:hover .pill rect{filter:
 
 /* Experience deck */
 .deck-col{min-width:0}
-.themes{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 1.2rem}
+.themes{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:0 0 1rem}
+.themes .chip{padding:5px 12px;font-size:.85rem}
 .themes .chip:disabled{opacity:.4;cursor:default}
 .deck-track{list-style:none;margin:0;padding:0;display:grid;gap:16px}
 .is-deck .deck-track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;padding:2px 2px 8px;scrollbar-width:none;align-items:flex-start}
-.is-deck .cards.deck-track{align-items:stretch}
+.is-deck .cards.deck-track{align-items:stretch;gap:16px}
 .is-deck .deck-track::-webkit-scrollbar{display:none}
 .is-deck .deck-track:focus-visible{outline:3px solid var(--focus);outline-offset:4px;border-radius:8px}
-.is-deck .rcard{flex:0 0 100%;scroll-snap-align:start;min-height:29rem}
-.is-deck .dcard{flex:0 0 100%;scroll-snap-align:start;margin:0}
-.deck-ctl{display:flex;align-items:center;gap:14px;margin-top:12px}
+.is-deck .rcard{flex:0 0 100%;scroll-snap-align:start;min-height:28rem}
+.is-deck .cards.deck-track > .dcard{flex:0 0 min(calc(100vw - 48px), 340px);scroll-snap-align:start;margin:0}
+.deck-ctl{display:flex;align-items:center;gap:14px;margin-bottom:14px}
 .deck-count{flex:1;font-family:var(--head);font-weight:600;text-align:center}
 .deck-ctl .chip:disabled{opacity:.4;cursor:default}
 .is-deck.is-expanded .deck-track{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))!important;overflow-x:visible!important;scroll-snap-type:none!important;padding:0!important}
 .is-deck.is-expanded .rcard{flex:none!important;scroll-snap-align:none!important;min-height:0!important}
-.is-deck.is-expanded .dcard{flex:none!important;scroll-snap-align:none!important;margin:0!important}
-@media(min-width:900px){.deck-col{position:sticky;top:16px;align-self:start;max-height:calc(100vh - 32px);overflow-y:auto;scrollbar-width:thin}}
+.is-deck.is-expanded .dcard{flex:none!important;scroll-snap-align:none!important;margin:0!important;width:auto!important}
+@media(min-width:900px){.deck-col{position:sticky;top:16px;align-self:start}}
 
 /* About, CV call to action, footer mode toggle */
 .brief,.skills{padding-left:1.2rem}.brief li,.skills li{margin:0 0 .4em}
