@@ -273,3 +273,4 @@ main{position:relative}
   @keyframes spot-in{from{opacity:0;transform:translateY(14px) scale(.985)}}
 }
 .about-story{margin:0 0 1em}
+@media(max-width:600px){.nav{gap:4px 12px;font-size:.88rem}}
