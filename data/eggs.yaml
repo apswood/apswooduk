@@ -44,3 +44,6 @@
 - id: shuffle
   name: The full timetable
   how: "Use Another one on the home page until you have seen every spotlight in a single visit."
+- id: pilotlight
+  name: The pilot light
+  how: "Find the faint light at the end of the About page, or the little signal on Off the clock, and follow it."

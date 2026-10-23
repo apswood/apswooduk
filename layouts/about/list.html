@@ -2,7 +2,7 @@
 {{ $p := hugo.Data.profile }}
 <div class="about">
   <h1>{{ .Title }}</h1>
-  {{ range $p.about }}<p class="about-story">{{ . }}</p>{{ end }}
+  {{ range $i, $e := $p.about }}<p class="about-story">{{ $e }}{{ if eq (add $i 1) (len $p.about) }} {{ partial "pilot-light.html" "led" }}{{ end }}</p>{{ end }}
   <p>{{ $p.beliefs }}</p>
   <h2>Career in brief</h2>
   <ul class="brief">

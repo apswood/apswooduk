@@ -10,7 +10,7 @@ That curiosity extends naturally to railways. Whilst not claiming to be a train 
 
 On screen I like things sharp and dry: the uncomfortable brilliance of [Peep Show](https://www.channel4.com/programmes/peep-show) and [Severance](https://en.wikipedia.org/wiki/Severance_(TV_series)), the gentle craft of [Detectorists](https://en.wikipedia.org/wiki/Detectorists), the political comedy of [The Thick of It](https://en.wikipedia.org/wiki/The_Thick_of_It), [Veep](https://en.wikipedia.org/wiki/Veep) and [Parks and Recreation](https://en.wikipedia.org/wiki/Parks_and_Recreation), or the calculated chaos of [The Traitors](https://en.wikipedia.org/wiki/The_Traitors_(British_TV_series)) and [Nathan Fielder](https://www.hbo.com/the-rehearsal). Alongside [Douglas Adams](https://en.wikipedia.org/wiki/Douglas_Adams) on the bookshelf, I still have a soft spot for the early web absurdity of [Homestar Runner](https://homestarrunner.com/) and [Weebl's Stuff](https://www.weebls-stuff.com/).
 
-It all comes back to the same habit: work out how something fits together and it becomes infinitely more fun, whether that is a complex transport interchange, a piece of photography, or a deadpan punchline.
+It all comes back to the same habit: work out how something fits together and it becomes infinitely more fun, whether that is a complex transport interchange, a piece of photography, or a deadpan punchline. {{< pilot "signal" >}}
 
 ## Rabbit holes, tools and curiosities
 

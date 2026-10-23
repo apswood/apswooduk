@@ -133,6 +133,18 @@
     AW.load(t.dataset.eggClick).then(function (x) { if (x && x.toggle) x.toggle(t); });
   });
 
+  // Pilot light: a hidden link to /status/ on About and Off the clock. Recorded before the page navigates.
+  document.addEventListener('click', function (e) {
+    if (e.target.closest && e.target.closest('[data-pilot]')) AW.found('pilotlight');
+  });
+  function pilotTime(e) {
+    var tip = e.target.closest && e.target.closest('[data-pilot="led"]');
+    var t = tip && tip.querySelector('[data-pilot-tip]');
+    if (t) t.textContent = 'All systems operational as of ' + new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  }
+  document.addEventListener('mouseover', pilotTime);
+  document.addEventListener('focusin', pilotTime);
+
   // Konami code: retro mode.
   var seq = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'], pos = 0;
   document.addEventListener('keydown', function (e) {

@@ -1,0 +1,11 @@
+{{- /* A tiny hidden link to /status/. Variants: led (About) and signal (Off the clock). Hidden when Easter Egg Hunt Mode is off. */ -}}
+{{- $v := . | default "led" -}}
+<a class="pilot pilot-{{ $v }}" data-pilot="{{ $v }}" data-egg href="/status/" aria-label="Service status">
+  {{- if eq $v "signal" -}}
+  <svg class="pilot-svg" viewBox="0 0 12 26" aria-hidden="true" focusable="false"><rect x="4.5" y="14" width="3" height="12" fill="currentColor" opacity=".5"/><rect x="1" y="0" width="10" height="18" rx="4" fill="#15181b" stroke="#7a8188" stroke-width=".8"/><circle class="pl-r" cx="6" cy="5" r="2.6"/><circle class="pl-g" cx="6" cy="13" r="2.6"/></svg>
+  <span class="pilot-tip" aria-hidden="true">Signal clear. Proceed to /status/</span>
+  {{- else -}}
+  <span class="pilot-dot" aria-hidden="true"></span>
+  <span class="pilot-tip" aria-hidden="true" data-pilot-tip>All systems operational</span>
+  {{- end -}}
+</a>

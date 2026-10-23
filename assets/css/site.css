@@ -274,3 +274,16 @@ main{position:relative}
 }
 .about-story{margin:0 0 1em}
 @media(max-width:600px){.nav{gap:4px 12px;font-size:.88rem}}
+
+/* Pilot light: hidden links to /status/ */
+.pilot{position:relative;display:inline-block;vertical-align:middle;padding:7px;margin:-7px 0 -7px 2px;line-height:1;color:var(--muted);text-decoration:none;opacity:.45;transition:opacity .2s}
+.pilot:hover,.pilot:focus-visible{opacity:1}
+.pilot-dot{display:block;width:8px;height:8px;border-radius:50%;background:#2e8b57;animation:pilot-breathe 3.2s ease-in-out infinite}
+@keyframes pilot-breathe{0%,100%{box-shadow:0 0 0 0 rgba(46,139,87,.5)}50%{box-shadow:0 0 0 5px rgba(46,139,87,0)}}
+.pilot-svg{display:block;width:10px;height:22px}
+.pilot-svg .pl-r{fill:#ff3b30}.pilot-svg .pl-g{fill:#2b2f33;transition:fill .2s}
+.pilot:hover .pl-g,.pilot:focus-visible .pl-g{fill:#34c759}
+.pilot:hover .pl-r,.pilot:focus-visible .pl-r{fill:#4a1512}
+.pilot-tip{position:absolute;left:50%;bottom:calc(100% - 2px);transform:translateX(-50%);white-space:nowrap;background:var(--board-bg);color:#fff;font:600 .78rem/1 var(--mono);padding:6px 9px;border-radius:4px;opacity:0;pointer-events:none;transition:opacity .2s}
+.pilot:hover .pilot-tip,.pilot:focus-visible .pilot-tip{opacity:1}
+@media(prefers-reduced-motion:reduce){.pilot-dot{animation:none}}
