@@ -1,5 +1,7 @@
 # Stage 5 review against section 9
 
+> Historical document, written when the site was hosted on S3 and deployed from a workflow. Hosting is now Cloudflare, so ignore the S3, Amplify and workflow-deploy items here. See `docs/DEPLOY.md`.
+
 Run `bash scripts/prepublish-check.sh` for the automated part. It builds the site and checks the built output.
 Status: **not ready to publish**, only because placeholders are still visible (see blockers). Nothing else failed.
 

@@ -19,4 +19,6 @@
 {{ end }}
 <p class="no-print"><button type="button" class="chip" onclick="window.print()">Print this page</button> <span class="meta">The printed order follows the lens chosen above.</span></p>
 </article>
+{{ $lens := resources.Get "js/lens.js" | minify | fingerprint }}
+<script src="{{ $lens.RelPermalink }}" integrity="{{ $lens.Data.Integrity }}" defer></script>
 {{ end }}

@@ -1,5 +1,7 @@
 # Improvement list
 
+> Historical document, written when the site was hosted on S3 and deployed from a workflow. Hosting is now Cloudflare, so ignore the S3, Amplify and workflow-deploy items here. See `docs/DEPLOY.md`.
+
 Done in this pass: new Hugo layouts (no theme dependency), Boska typography, work ledger driven by `data/projects.yaml`, credited imagery, dark contact section, reduced-motion support, GitHub Actions deploy (`.github/workflows/deploy.yml`).
 
 ## CI / deployment (set up once)

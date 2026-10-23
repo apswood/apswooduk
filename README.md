@@ -1,6 +1,6 @@
 # apswood.uk
 
-Interactive CV and portfolio, built with Hugo (extended). Hosting and deployment are unchanged and manual. See `TICKETS.md` for the staged plan.
+Interactive CV and portfolio, built with Hugo (extended). Deployed by Cloudflare, see `docs/DEPLOY.md`. `TICKETS.md` and `REVIEW.md` are the historical build plan and review.
 
 ```
 hugo server                    # local preview
@@ -29,7 +29,7 @@ Rehearsal flowchart: `data/rehearsal.yaml`. Notice text: `data/notice.yaml`. Con
 ## Before publishing
 Run `bash scripts/prepublish-check.sh`. It reports every blocker (visible placeholders, em dashes, banned terms, third-party scripts, cookies). `REVIEW.md` holds the Stage 5 review. `OPEN_ITEMS.md` lists every `TODO(andrew)`.
 
-To publish a role summary set `publish_summary: true` on the role in `data/experience.yaml`. To publish an outcome set `publish: true` on it. Both need your approval first. Deployment is by AWS Amplify Hosting, see docs/DEPLOY.md.
+To publish a role summary set `publish_summary: true` on the role in `data/experience.yaml`. To publish an outcome set `publish: true` on it. Both need your approval first. Deployment is by Cloudflare, see `docs/DEPLOY.md`.
 
 ## Deployment
 Deployed by Cloudflare on every push to `master`. Headers: `static/_headers`. Asset config: `wrangler.jsonc`. Setup, rollback and settings: `docs/DEPLOY.md`.

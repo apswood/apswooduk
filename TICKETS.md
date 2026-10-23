@@ -1,5 +1,7 @@
 # Tickets: interactive CV and portfolio
 
+> Historical document, written when the site was hosted on S3 and deployed from a workflow. Hosting is now Cloudflare, so ignore the S3, Amplify and workflow-deploy items here. See `docs/DEPLOY.md`.
+
 Source: the "Andrew Wood interactive CV and portfolio" brief (section numbers below refer to it).
 Status key: `todo`, `blocked` (needs Andrew's answer), `done`.
 Agent key: **content** (data, copy, placeholders), **frontend** (Hugo templates, CSS), **js** (vanilla JS, no deps), **a11y** (WCAG 2.2 AA review), **art** (original SVG/illustration), **qa** (review against section 9).
