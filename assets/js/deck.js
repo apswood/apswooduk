@@ -76,6 +76,21 @@
     prev.disabled = idx <= 0; next.disabled = idx >= cards.length - 1;
     var st = stations[idx];
     if (st) moveTrain(nodeD(+st.dataset.node), opts.instant);
+    updateChips();
+  }
+
+  // Only offer themes that apply to the selected role. Highlights and All always show.
+  function updateChips() {
+    if (!bar) return;
+    var have = {};
+    Array.prototype.forEach.call(cards[idx].querySelectorAll('[data-outcomes] > li'), function (li) {
+      (li.getAttribute('data-themes') || '').split(/\s+/).forEach(function (t) { if (t) have[t] = true; });
+    });
+    bar.querySelectorAll('[data-theme]').forEach(function (b) {
+      var id = b.dataset.theme;
+      b.hidden = !(id === 'highlights' || id === 'all' || have[id]);
+    });
+    if (theme !== 'all' && bar.querySelector('[data-theme="' + theme + '"]').hidden) setTheme(DEFAULT_THEME);
   }
 
   // --- Themes: show the matching outcomes inside each role card ---
