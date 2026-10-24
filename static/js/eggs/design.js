@@ -184,8 +184,8 @@
           id: 'sliders',
           name: 'Confusing Slide Switches',
           startX: 360,
-          startY: 322,
-          path: [[360, 322], [480, 322], [480, 220], [565, 220]],
+          startY: 334,
+          path: [[360, 334], [480, 334], [480, 220], [565, 220]],
           exitX: 565,
           exitY: 220,
           quote: 'Good design is innovative: new technology enables ever cleaner execution.',
@@ -261,6 +261,10 @@
     '<radialGradient id="des-dial" cx="0.4" cy="0.35" r="0.75"><stop offset="0" stop-color="#fbfaf7"/><stop offset="1" stop-color="#dcd8d0"/></radialGradient>' +
     '<linearGradient id="des-wood" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6e4220"/><stop offset="0.45" stop-color="#a06a35"/><stop offset="1" stop-color="#7a4a24"/></linearGradient>' +
     '<linearGradient id="des-chrome" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f7f9fb"/><stop offset="0.5" stop-color="#9aa1a9"/><stop offset="0.55" stop-color="#d6dbe0"/><stop offset="1" stop-color="#6c737b"/></linearGradient>' +
+    '<linearGradient id="des-enamel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d0453a"/><stop offset="1" stop-color="#8a1f18"/></linearGradient>' +
+    '<linearGradient id="des-shade" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7a1914"/><stop offset="0.4" stop-color="#d24a3f"/><stop offset="1" stop-color="#6e1611"/></linearGradient>' +
+    '<linearGradient id="des-cone" x1="0" y1="0" x2="0.6" y2="1"><stop offset="0" stop-color="#ffe9a8" stop-opacity="0.45"/><stop offset="1" stop-color="#ffe9a8" stop-opacity="0"/></linearGradient>' +
+    '<linearGradient id="des-et66" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3632"/><stop offset="1" stop-color="#1d1b19"/></linearGradient>' +
     '<pattern id="des-mat" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="#221d19" stroke-width="1"/></pattern>' +
     '</defs>';
 
@@ -420,61 +424,121 @@
     });
   }
 
-  function chassisPaint(isPure) {
-    return isPure ? ' fill="#36302a" stroke="#1f5f7a" stroke-width="4"' : ' fill="#2b2622" stroke="#473e36" stroke-width="3"';
+  // Pair of parallel rods between two points, like the Anglepoise arms
+  function rodPair(x1, y1, x2, y2, off) {
+    var dx = x2 - x1, dy = y2 - y1;
+    var len = Math.hypot(dx, dy);
+    var nx = (-dy / len) * off, ny = (dx / len) * off;
+    return [-1, 1].map(function (s) {
+      return '<line x1="' + (x1 + nx * s).toFixed(1) + '" y1="' + (y1 + ny * s).toFixed(1) +
+        '" x2="' + (x2 + nx * s).toFixed(1) + '" y2="' + (y2 + ny * s).toFixed(1) + '"/>';
+    }).join('');
+  }
+
+  function springPath(x1, y1, x2, y2, coils) {
+    var dx = x2 - x1, dy = y2 - y1;
+    var len = Math.hypot(dx, dy);
+    var nx = -dy / len, ny = dx / len;
+    var d = 'M ' + x1 + ' ' + y1;
+    var steps = coils * 2;
+    for (var i = 1; i < steps; i++) {
+      var t = i / steps;
+      var s = i % 2 ? 2.6 : -2.6;
+      d += ' L ' + (x1 + dx * t + nx * s).toFixed(1) + ' ' + (y1 + dy * t + ny * s).toFixed(1);
+    }
+    return d + ' L ' + x2 + ' ' + y2;
+  }
+
+  // Anglepoise 1227: stepped base, twin-rod arms, three base springs and a
+  // spun-metal bell shade. Lit once the clutter is gone.
+  function lampArtwork(isPure) {
+    var springs = '';
+    [[279, 298, 261, 214], [285, 298, 265, 216], [291, 298, 269, 218]].forEach(function (s) {
+      springs += '<path d="' + springPath(s[0], s[1], s[2], s[3], 9) + '"/>';
+    });
+    return (
+      '<g id="product-art">' +
+      // Warm light pool when the lamp is restored
+      (isPure ? '<polygon points="397,118 358,157 380,392 560,392" fill="url(#des-cone)"/>' : '') +
+      // Stepped cast base in red enamel
+      '<rect class="product-chassis' + (isPure ? ' pure' : '') + '" x="228" y="306" width="144" height="22" rx="5" fill="url(#des-enamel)" stroke="#4a0f0b" stroke-width="1.5"/>' +
+      '<rect x="252" y="294" width="96" height="14" rx="5" fill="url(#des-enamel)" stroke="#4a0f0b" stroke-width="1.2"/>' +
+      '<rect x="232" y="308" width="136" height="2" rx="1" fill="#fff" opacity="0.25"/>' +
+      // Pivot bracket
+      '<path d="M 290 296 L 290 284 Q 300 276 310 284 L 310 296 Z" fill="#c9ced4" stroke="#5b6168"/>' +
+      // Springs, then the arms
+      '<g fill="none" stroke="#dfe3e7" stroke-width="1.2" stroke-linejoin="round">' + springs + '</g>' +
+      '<g stroke="#c9ced4" stroke-width="2.6" stroke-linecap="round">' +
+      rodPair(300, 288, 250, 180, 3.6) + rodPair(250, 180, 343, 103, 3) +
+      '</g>' +
+      '<g stroke="#ffffff" stroke-width="0.7" opacity="0.6">' + rodPair(300, 288, 250, 180, 4.6) + '</g>' +
+      // Knuckles
+      '<circle cx="300" cy="287" r="6" fill="#2b2b2b" stroke="#c9ced4" stroke-width="2"/>' +
+      '<circle cx="250" cy="180" r="7" fill="#2b2b2b" stroke="#c9ced4" stroke-width="2"/>' +
+      '<circle cx="343" cy="103" r="6" fill="#2b2b2b" stroke="#c9ced4" stroke-width="2"/>' +
+      // Shade, drawn pointing down its own axis then turned to face down-right
+      '<g transform="translate(345 105) rotate(-45)">' +
+      '<rect x="-6" y="0" width="12" height="15" rx="2" fill="url(#des-enamel)" stroke="#4a0f0b"/>' +
+      '<path d="M -8 14 Q -11 30 -28 46 L 28 46 Q 11 30 8 14 Z" fill="url(#des-shade)" stroke="#4a0f0b" stroke-width="1.2"/>' +
+      '<path d="M -6 18 Q -8 30 -20 42" fill="none" stroke="#fff" stroke-width="1.6" opacity="0.35"/>' +
+      '<ellipse cx="0" cy="46" rx="28" ry="5" fill="' + (isPure ? '#fff3c4' : '#3a1210') + '" stroke="#4a0f0b"/>' +
+      (isPure ? '<ellipse cx="0" cy="45" rx="12" ry="3" fill="#ffffff"/>' : '') +
+      '</g>' +
+      (isPure ? '<text x="300" y="346" text-anchor="middle" font-family="sans-serif" font-size="8" font-weight="bold" fill="#34c759">ANGLEPOISE ICON</text>' : '') +
+      '</g>'
+    );
+  }
+
+  // Braun ET66: dark case, inset display, convex round keys with the
+  // famous yellow equals key.
+  function et66Artwork(isPure) {
+    var rows = [
+      ['C', 'M', '%', '÷'],
+      ['7', '8', '9', '×'],
+      ['4', '5', '6', '−'],
+      ['1', '2', '3', '+'],
+      ['0', '.', '±', '=']
+    ];
+    var cols = [238, 278, 318, 360];
+    var keys = '';
+    rows.forEach(function (row, ri) {
+      row.forEach(function (label, ci) {
+        var x = cols[ci], y = 152 + ri * 38;
+        var fill = '#3b3734', ink = '#f1ede6';
+        if (ci === 3) fill = '#5d4a38';
+        if (label === 'C') fill = '#c4441c';
+        if (label === 'M' || label === '%') fill = '#68625c';
+        if (label === '=') { fill = '#e8b10c'; ink = '#2b2006'; }
+        keys +=
+          '<circle cx="' + x + '" cy="' + (y + 1.6) + '" r="14.5" fill="#0d0c0b"/>' +
+          '<circle cx="' + x + '" cy="' + y + '" r="14" fill="' + fill + '"/>' +
+          '<circle cx="' + (x - 3) + '" cy="' + (y - 4) + '" r="9" fill="#fff" opacity="0.12"/>' +
+          '<text x="' + x + '" y="' + (y + 3.6) + '" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="10.5" font-weight="bold" fill="' + ink + '">' + label + '</text>';
+      });
+    });
+    return (
+      '<g id="product-art">' +
+      '<rect class="product-chassis' + (isPure ? ' pure' : '') + '" x="210" y="55" width="180" height="290" rx="14" fill="url(#des-et66)" stroke="#0d0c0b" stroke-width="2"/>' +
+      '<rect x="214" y="58" width="172" height="3" rx="1.5" fill="#fff" opacity="0.12"/>' +
+      // Display window
+      '<rect x="228" y="72" width="144" height="46" rx="4" fill="#111"/>' +
+      '<rect x="234" y="78" width="132" height="34" rx="2" fill="#9aa38f"/>' +
+      '<rect x="234" y="78" width="132" height="6" fill="#fff" opacity="0.12"/>' +
+      '<text x="360" y="104" text-anchor="end" font-family="monospace" font-size="20" font-weight="bold" fill="#1b2416">0.</text>' +
+      '<text x="232" y="134" font-family="Helvetica,Arial,sans-serif" font-size="7" font-weight="bold" letter-spacing="0.5" fill="#bcb6ac">BRAUN</text>' +
+      '<text x="368" y="134" text-anchor="end" font-family="Helvetica,Arial,sans-serif" font-size="7" fill="#8f8a82">ET 66</text>' +
+      keys +
+      (isPure ? '<text x="300" y="362" text-anchor="middle" font-family="sans-serif" font-size="8" font-weight="bold" fill="#34c759">ET66 ARCHETYPE</text>' : '') +
+      '</g>'
+    );
   }
 
   function getProductArtwork(levelIdx, isPure) {
     if (levelIdx === 0) {
       return t3Artwork(isPure);
     }
-    if (levelIdx === 1) {
-      // Anglepoise Lamp
-      return (
-        '<g id="product-art">' +
-        // Heavy base
-        '<rect class="product-chassis' + (isPure ? ' pure' : '') + '" x="220" y="300" width="160" height="30" rx="6"' + chassisPaint(isPure) + '/>' +
-        '<circle cx="300" cy="300" r="10" fill="#1b1714"/>' +
-        // Articulated cantilever arm
-        '<line x1="300" y1="300" x2="250" y2="180" stroke="' + (isPure ? '#d4af37' : '#52453a') + '" stroke-width="5" stroke-linecap="round"/>' +
-        '<line x1="250" y1="180" x2="340" y2="100" stroke="' + (isPure ? '#d4af37' : '#52453a') + '" stroke-width="5" stroke-linecap="round"/>' +
-        // Pivot joints & tension springs
-        '<circle cx="300" cy="300" r="6" fill="#c29238"/>' +
-        '<circle cx="250" cy="180" r="7" fill="#c29238"/>' +
-        '<circle cx="340" cy="100" r="6" fill="#c29238"/>' +
-        // Tension spring line
-        '<line x1="290" y1="285" x2="255" y2="195" stroke="#99836a" stroke-width="2" stroke-dasharray="2 3"/>' +
-        // Spun aluminium lampshade
-        '<path d="M 330,85 L 390,130 L 370,145 L 315,100 Z" fill="' + (isPure ? '#dcd6cb' : '#5c5044') + '" stroke="#26201b" stroke-width="2"/>' +
-        (isPure ? '<text x="300" y="320" text-anchor="middle" font-family="sans-serif" font-size="8" font-weight="bold" fill="#34c759">ANGLEPOISE ICON</text>' : '') +
-        '</g>'
-      );
-    }
-    if (levelIdx === 2) {
-      // Braun ET66 Calculator
-      return (
-        '<g id="product-art">' +
-        '<rect class="product-chassis' + (isPure ? ' pure' : '') + '" x="210" y="55" width="180" height="290" rx="14"' + chassisPaint(isPure) + '/>' +
-        // LCD window
-        '<rect x="230" y="75" width="140" height="42" rx="4" fill="#8f9985" stroke="#1c1815" stroke-width="2"/>' +
-        '<text x="360" y="104" text-anchor="end" font-family="monospace" font-size="20" font-weight="bold" fill="#1b2416">0.</text>' +
-        // Round key grid (4 rows of 4 circular convex buttons)
-        '<g fill="' + (isPure ? '#3a332d' : '#221e1a') + '">' +
-        '<circle cx="245" cy="145" r="11"/><circle cx="282" cy="145" r="11"/><circle cx="318" cy="145" r="11"/>' +
-        '<circle cx="245" cy="180" r="11"/><circle cx="282" cy="180" r="11"/><circle cx="318" cy="180" r="11"/>' +
-        '<circle cx="245" cy="215" r="11"/><circle cx="282" cy="215" r="11"/><circle cx="318" cy="215" r="11"/>' +
-        '<circle cx="245" cy="250" r="11"/><circle cx="282" cy="250" r="11"/><circle cx="318" cy="250" r="11"/>' +
-        '</g>' +
-        // Operational keys (Yellow/Brown/Orange)
-        '<circle cx="355" cy="145" r="11" fill="#a85828"/>' +
-        '<circle cx="355" cy="180" r="11" fill="#a85828"/>' +
-        '<circle cx="355" cy="215" r="11" fill="#a85828"/>' +
-        '<circle cx="355" cy="250" r="11" fill="#c96024"/>' +
-        '<circle cx="245" cy="285" r="11" fill="#246e42"/>' +
-        (isPure ? '<text x="300" y="325" text-anchor="middle" font-family="sans-serif" font-size="8" font-weight="bold" fill="#34c759">ET66 ARCHETYPE</text>' : '') +
-        '</g>'
-      );
-    }
+    if (levelIdx === 1) return lampArtwork(isPure);
+    if (levelIdx === 2) return et66Artwork(isPure);
     return '';
   }
 
