@@ -1,8 +1,8 @@
 {{ define "main" }}
 {{ $p := hugo.Data.profile }}
 <h1>{{ .Title }}</h1>
-<p>The best way to reach me is LinkedIn.</p>
-<p><a class="btn" href="{{ $p.links.linkedin }}" rel="me">Message me on LinkedIn</a></p>
+<p class="contact-lede">The best way to reach me is LinkedIn.</p>
+<div class="contact-actions"><a class="btn" href="{{ $p.links.linkedin }}" rel="me">Message me on LinkedIn</a></div>
 <p class="pause-line" data-pause data-egg role="status" aria-live="polite" hidden></p>
 <p class="egg-row" data-egg><a class="quiet" href="/rehearsal/">Rehearsal</a></p>
 {{ end }}
