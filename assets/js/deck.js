@@ -60,6 +60,17 @@
     })(t0);
   }
 
+  // The card nearest the scroll position. The last cards cannot reach the left edge, so targets are
+  // clamped to the maximum scroll, and the current card is kept when it is already as far as it can go.
+  function nearest(el, leftOf, list, cur) {
+    var max = el.scrollWidth - el.clientWidth, pos = el.scrollLeft;
+    var at = function (j) { return Math.min(leftOf(j), max); };
+    if (Math.abs(at(cur) - pos) <= 2) return cur;
+    var best = 0, d = 1e9;
+    list.forEach(function (c, j) { var dx = Math.abs(at(j) - pos); if (dx < d) { d = dx; best = j; } });
+    return best;
+  }
+
   // --- Selection ---
   function cardLeft(i) { return cards[i].offsetLeft - track.offsetLeft; }
   function select(i, opts) {
@@ -132,8 +143,7 @@
     if (isExpanded) return;
     clearTimeout(scrollT);
     scrollT = setTimeout(function () {
-      var best = 0, d = 1e9;
-      cards.forEach(function (c, j) { var dx = Math.abs(cardLeft(j) - track.scrollLeft); if (dx < d) { d = dx; best = j; } });
+      var best = nearest(track, cardLeft, cards, idx);
       if (best !== idx) select(best, { scroll: false });
     }, 90);
   }, { passive: true });
@@ -217,8 +227,7 @@
       if (cExpanded) return;
       clearTimeout(cScroll);
       cScroll = setTimeout(function () {
-        var best = 0, d = 1e9;
-        cCards.forEach(function (c, j) { var dx = Math.abs(cLeft(j) - cTrack.scrollLeft); if (dx < d) { d = dx; best = j; } });
+        var best = nearest(cTrack, cLeft, cCards, cIdx);
         if (best !== cIdx) cSelect(best, { scroll: false });
       }, 90);
     }, { passive: true });

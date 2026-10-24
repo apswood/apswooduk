@@ -150,7 +150,7 @@ a.pill-h{text-decoration:none}a.pill-h:hover,.pill-link:hover .pill rect{filter:
 .themes .chip:disabled{opacity:.4;cursor:default}
 .deck-track{list-style:none;margin:0;padding:0;display:grid;gap:16px}
 .is-deck .deck-track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;padding:6px 6px 14px;scrollbar-width:none;align-items:flex-start}
-.is-deck .cards.deck-track{align-items:stretch;gap:18px;padding:24px 20px 36px;margin:-16px -20px -28px}
+.is-deck .cards.deck-track{align-items:stretch;gap:18px;padding:40px var(--m) 56px;margin:-32px calc(-1 * var(--m)) -48px;scroll-padding-inline:var(--m)}
 .is-deck .deck-track::-webkit-scrollbar{display:none}
 .is-deck .deck-track:focus-visible{outline:3px solid var(--focus);outline-offset:4px;border-radius:8px}
 .is-deck .rcard{flex:0 0 100%;scroll-snap-align:start;min-height:28rem}
