@@ -21,7 +21,7 @@
   var ctx = null;
 
   var currentLevelIdx = 0;
-  var gameState = 'ready'; // ready, playing, won, finished
+  var gameState = 'ready'; // ready, playing, won, caught
   var skier = {
     x: 320,
     y: 120, // screen position
@@ -42,7 +42,7 @@
   var obstacles = [];
   var ramps = [];
   var cabin = null;
-  var yeti = { active: false, x: 320, dist: -200, frame: 0, waving: false };
+  var yeti = { active: false, x: 320, dist: -200, frame: 0, mode: 'chase' };
   var courseLength = 3200;
   var gatesPassed = 0;
   var totalGates = 0;
@@ -293,7 +293,7 @@
     yeti.dist = -300;
     yeti.x = 320;
     yeti.frame = 0;
-    yeti.waving = false;
+    yeti.mode = 'chase';
 
     skier.x = 320;
     skier.y = 120;
@@ -437,24 +437,30 @@
       });
     }
 
-    // Yeti Chase Logic (Level 3)
+    // Yeti chase (level 3). Like the classic, it comes from uphill and is a
+    // little faster than you: a clean run stays ahead, a couple of falls and it catches you.
     if (yeti.active) {
-      if (skier.dist > 2300 && yeti.dist < -50) {
-        yeti.dist = skier.dist - 350;
-        yeti.x = skier.x;
+      var lvl = LEVELS[currentLevelIdx];
+      if (yeti.dist < -50 && skier.dist > courseLength * 0.45) {
+        yeti.dist = skier.dist - 250;
+        yeti.x = skier.x < 320 ? 560 : 80;
         var ann = modal.querySelector('[data-nordic-announce]');
-        if (ann) ann.textContent = 'A friendly Nordic Yeti joins the run! Ski to the finish cabin!';
+        if (ann) ann.textContent = 'The Yeti is coming down the slope after you! Keep skiing and avoid falls.';
       }
       if (yeti.dist > 0) {
-        // Yeti runs toward skier at slight speed advantage
-        var yetiTargetX = skier.x;
-        yeti.x += (yetiTargetX - yeti.x) * 0.04;
-        yeti.dist += skier.speed * 1.05;
+        yeti.dist += lvl.speed * 1.1;
+        var dxY = skier.x - yeti.x;
+        yeti.x += Math.max(-3.2, Math.min(3.2, dxY * 0.08));
         yeti.frame++;
-
-        // Don't let Yeti overtake until finish
-        if (yeti.dist > skier.dist - 65 && skier.dist < courseLength) {
-          yeti.dist = skier.dist - 65;
+        var gap = skier.dist - yeti.dist;
+        if (!skier.isJumping && gap < 20 && Math.abs(dxY) < 22) {
+          gameState = 'caught';
+          yeti.mode = 'grab';
+          yeti.x = skier.x;
+          yeti.dist = skier.dist - 6;
+          playJumpSound();
+          renderCaughtBanner();
+          return;
         }
       }
     }
@@ -470,7 +476,7 @@
       if (yeti.active) {
         yeti.dist = courseLength + 40;
         yeti.x = 210;
-        yeti.waving = true;
+        yeti.mode = 'wave';
       }
 
       if (currentLevelIdx === LEVELS.length - 1) {
@@ -548,18 +554,21 @@
       }
     }
 
-    // Draw Yeti (if active and on screen)
-    if (yeti.active && yeti.dist > 0) {
-      var yscreenY = yeti.dist - camY;
-      if (yscreenY >= -80 && yscreenY <= 520) {
-        drawYeti(ctx, yeti.x, yscreenY, yeti.frame, yeti.waving);
-      }
+    // Draw Yeti (if active and on screen), with a warning while it is still uphill
+    var yetiOn = yeti.active && yeti.dist > 0;
+    var yscreenY = yeti.dist - camY;
+    if (gameState !== 'playing') yeti.frame++;
+    if (yetiOn && yeti.mode !== 'grab' && yscreenY >= -80 && yscreenY <= 520) {
+      drawYeti(ctx, yeti.x, yscreenY, yeti.frame, yeti.mode);
     }
 
     drawSpray(ctx, camY);
 
     // Draw Skier
     drawSkier(ctx, skier.x, skier.y, skier.angle, skier.isJumping, skier.jumpZ);
+
+    if (yetiOn && yeti.mode === 'grab') drawYeti(ctx, yeti.x, yscreenY, yeti.frame, 'grab');
+    if (yetiOn && gameState === 'playing' && yscreenY < -30) drawYetiWarning(ctx, yeti.x, skier.dist - yeti.dist);
 
     updateStats();
   }
@@ -1234,93 +1243,189 @@
     c.restore();
   }
 
-  function drawYeti(c, x, y, frame, waving) {
+  // Jagged ellipse for shaggy fur
+  function furBlob(c, cx, cy, rx, ry, spikes, phase) {
+    c.beginPath();
+    for (var i = 0; i <= spikes * 2; i++) {
+      var a = (i / (spikes * 2)) * Math.PI * 2 + phase;
+      var k = i % 2 ? 1.12 : 0.94;
+      var px = cx + Math.cos(a) * rx * k;
+      var py = cy + Math.sin(a) * ry * k;
+      if (i === 0) c.moveTo(px, py);
+      else c.lineTo(px, py);
+    }
+    c.closePath();
+  }
+
+  function furLimb(c, x1, y1, x2, y2, w) {
+    c.lineCap = 'round';
+    c.strokeStyle = '#8aa2b8';
+    c.lineWidth = w + 2.5;
+    c.beginPath();
+    c.moveTo(x1, y1);
+    c.lineTo(x2, y2);
+    c.stroke();
+    c.strokeStyle = '#f4f8fc';
+    c.lineWidth = w;
+    c.stroke();
+    c.fillStyle = '#dbe6ef';
+    c.beginPath();
+    c.arc(x2, y2, w * 0.62, 0, Math.PI * 2);
+    c.fill();
+  }
+
+  // mode: 'chase' (arms up, roaring), 'grab' (hugging the skier), 'wave' (at the lodge)
+  function drawYeti(c, x, y, frame, mode) {
     c.save();
     c.translate(x, y);
+    var run = Math.sin(frame * 0.35);
+    var bob = mode === 'chase' ? Math.abs(run) * -3 : 0;
 
-    // Shadow
-    c.fillStyle = 'rgba(180, 195, 210, 0.45)';
-    c.beginPath();
-    c.ellipse(0, 22, 24, 10, 0, 0, Math.PI * 2);
-    c.fill();
+    snowShadow(c, 4, 30, 26, 8);
+    c.translate(0, bob);
 
-    // Fluffy White Yeti body
-    c.fillStyle = '#ffffff';
-    c.beginPath();
-    c.ellipse(0, 0, 22, 26, 0, 0, Math.PI * 2);
-    c.fill();
+    // Legs and big feet
+    var legL = mode === 'chase' ? run * 6 : 0;
+    furLimb(c, -8, 12, -9, 26 + legL, 10);
+    furLimb(c, 8, 12, 9, 26 - legL, 10);
 
-    // Fur tufts
-    c.fillStyle = '#eef3f8';
-    c.beginPath();
-    c.arc(-14, 6, 6, 0, Math.PI * 2);
-    c.arc(14, 6, 6, 0, Math.PI * 2);
-    c.fill();
-
-    // Yeti Head
-    c.fillStyle = '#ffffff';
-    c.beginPath();
-    c.arc(0, -18, 16, 0, Math.PI * 2);
-    c.fill();
-
-    // Friendly face (light ice-blue face mask)
-    c.fillStyle = '#cbe4f2';
-    c.beginPath();
-    c.ellipse(0, -17, 10, 9, 0, 0, Math.PI * 2);
-    c.fill();
-
-    // Friendly eyes & warm smile
-    c.fillStyle = '#1a2936';
-    c.beginPath();
-    c.arc(-4, -18, 2, 0, Math.PI * 2);
-    c.arc(4, -18, 2, 0, Math.PI * 2);
-    c.fill();
-
-    // Smile
-    c.strokeStyle = '#1a2936';
-    c.lineWidth = 1.6;
-    c.beginPath();
-    c.arc(0, -15, 5, 0.2, Math.PI - 0.2);
-    c.stroke();
-
-    // Nordic patterned knitted scarf
-    c.fillStyle = '#d4251f';
-    c.fillRect(-14, -8, 28, 7);
-    c.fillStyle = '#ffe082';
-    c.fillRect(-10, -8, 4, 7);
-    c.fillRect(6, -8, 4, 7);
-
-    // Arms
-    if (waving) {
-      // Waving friendly arm with steaming mug
-      c.strokeStyle = '#ffffff';
-      c.lineWidth = 8;
-      c.lineCap = 'round';
-      c.beginPath();
-      c.moveTo(-16, -4);
-      c.lineTo(-28, -26);
-      c.stroke();
-      // Mug of hot lingonberry glögg
-      c.fillStyle = '#d4251f';
-      c.fillRect(-35, -34, 10, 10);
-      c.fillStyle = '#fff';
-      c.beginPath();
-      c.arc(-30, -38, 3, 0, Math.PI * 2);
-      c.fill();
-    } else {
-      // Running arms
-      var armSwing = Math.sin(frame * 0.25) * 10;
-      c.strokeStyle = '#ffffff';
-      c.lineWidth = 7;
-      c.lineCap = 'round';
-      c.beginPath();
-      c.moveTo(-16, -4);
-      c.lineTo(-24, 8 + armSwing);
-      c.moveTo(16, -4);
-      c.lineTo(24, 8 - armSwing);
-      c.stroke();
+    // Arms behind the body when hugging, raised overhead when chasing
+    if (mode === 'chase') {
+      furLimb(c, -15, -10, -24, -40 + run * 6, 9);
+      furLimb(c, 15, -10, 24, -40 - run * 6, 9);
     }
 
+    // Shaggy body
+    furBlob(c, 0, 0, 20, 22, 11, frame * 0.02);
+    c.fillStyle = '#f7fbff';
+    c.fill();
+    c.strokeStyle = '#8aa2b8';
+    c.lineWidth = 1.2;
+    c.stroke();
+    // Cool shadow on the downhill side
+    c.save();
+    c.clip();
+    c.fillStyle = 'rgba(160, 186, 210, 0.45)';
+    c.beginPath();
+    c.ellipse(12, 10, 18, 20, -0.4, 0, Math.PI * 2);
+    c.fill();
+    c.restore();
+    // Belly tufts
+    c.strokeStyle = 'rgba(138, 162, 184, 0.7)';
+    c.lineWidth = 1;
+    c.beginPath();
+    c.moveTo(-6, 2); c.lineTo(-4, 6); c.lineTo(-2, 2);
+    c.moveTo(3, 8); c.lineTo(5, 12); c.lineTo(7, 8);
+    c.stroke();
+
+    // Head
+    furBlob(c, 0, -26, 15, 14, 9, 0.3);
+    c.fillStyle = '#f7fbff';
+    c.fill();
+    c.strokeStyle = '#8aa2b8';
+    c.lineWidth = 1.2;
+    c.stroke();
+
+    // Face
+    c.fillStyle = '#b9cfe0';
+    c.beginPath();
+    c.ellipse(0, -23, 9.5, 8, 0, 0, Math.PI * 2);
+    c.fill();
+    c.fillStyle = '#1a2936';
+    c.beginPath();
+    c.arc(-3.6, -26, 1.9, 0, Math.PI * 2);
+    c.arc(3.6, -26, 1.9, 0, Math.PI * 2);
+    c.fill();
+    c.fillStyle = '#ffffff';
+    c.beginPath();
+    c.arc(-3, -26.6, 0.6, 0, Math.PI * 2);
+    c.arc(4.2, -26.6, 0.6, 0, Math.PI * 2);
+    c.fill();
+    c.strokeStyle = '#1a2936';
+    c.lineWidth = 1.6;
+    c.lineCap = 'round';
+    if (mode === 'wave') {
+      c.beginPath();
+      c.arc(0, -22, 4.5, 0.2, Math.PI - 0.2);
+      c.stroke();
+    } else {
+      // Heavy brows and a roaring mouth with two fangs
+      c.beginPath();
+      c.moveTo(-7, -30.5); c.lineTo(-1.5, -28.5);
+      c.moveTo(7, -30.5); c.lineTo(1.5, -28.5);
+      c.stroke();
+      c.fillStyle = '#4a1a24';
+      c.beginPath();
+      c.ellipse(0, -19.5, 4.6, 3.4 + Math.abs(run), 0, 0, Math.PI * 2);
+      c.fill();
+      c.fillStyle = '#ffffff';
+      c.beginPath();
+      c.moveTo(-3, -22); c.lineTo(-2, -19.5); c.lineTo(-1, -22);
+      c.moveTo(1, -22); c.lineTo(2, -19.5); c.lineTo(3, -22);
+      c.fill();
+    }
+
+    // Nordic knitted scarf, tail streaming behind
+    c.fillStyle = '#d4251f';
+    c.fillRect(-13, -14, 26, 6);
+    c.beginPath();
+    c.moveTo(8, -12);
+    c.lineTo(16 + run * 2, -2);
+    c.lineTo(11 + run * 2, 0);
+    c.lineTo(4, -9);
+    c.fill();
+    c.fillStyle = '#ffe082';
+    c.fillRect(-9, -14, 3, 6);
+    c.fillRect(-1.5, -14, 3, 6);
+    c.fillRect(6, -14, 3, 6);
+
+    if (mode === 'grab') {
+      // Arms wrapped round the front
+      var squeeze = Math.sin(frame * 0.3) * 2;
+      furLimb(c, -16, -8, -6 + squeeze, 8, 9);
+      furLimb(c, 16, -8, 6 - squeeze, 8, 9);
+    } else if (mode === 'wave') {
+      var wave = Math.sin(frame * 0.15) * 5;
+      furLimb(c, -15, -8, -28 + wave, -30, 9);
+      furLimb(c, 15, -8, 20, 8, 9);
+      // Mug of hot lingonberry glögg
+      c.fillStyle = '#d4251f';
+      c.fillRect(17, 2, 9, 10);
+      c.strokeStyle = '#d4251f';
+      c.lineWidth = 2;
+      c.beginPath();
+      c.arc(27, 7, 3, -Math.PI / 2, Math.PI / 2);
+      c.stroke();
+      c.fillStyle = 'rgba(255, 255, 255, 0.8)';
+      c.beginPath();
+      c.arc(21, -2, 2.5, 0, Math.PI * 2);
+      c.arc(23, -7, 3, 0, Math.PI * 2);
+      c.fill();
+    }
+
+    c.restore();
+  }
+
+  // Off-screen warning when the Yeti is closing in from uphill
+  function drawYetiWarning(c, x, gap) {
+    var px = Math.max(40, Math.min(600, x));
+    var pulse = 0.75 + Math.sin(Date.now() / 120) * 0.25;
+    c.save();
+    c.globalAlpha = pulse;
+    c.fillStyle = '#d4251f';
+    c.beginPath();
+    c.moveTo(px, 4);
+    c.lineTo(px + 7, 13);
+    c.lineTo(px - 7, 13);
+    c.closePath();
+    c.fill();
+    c.beginPath();
+    c.roundRect ? c.roundRect(px - 24, 14, 48, 16, 8) : c.rect(px - 24, 14, 48, 16);
+    c.fill();
+    c.fillStyle = '#fff';
+    c.font = 'bold 10px sans-serif';
+    c.textAlign = 'center';
+    c.fillText('YETI ' + Math.round(gap / 10) + 'm', px, 26);
     c.restore();
   }
 
@@ -1358,6 +1463,29 @@
       });
       nextBtn.focus();
     }
+  }
+
+  function renderCaughtBanner() {
+    var bannerWrap = modal.querySelector('[data-nordic-banner-wrap]');
+    if (!bannerWrap) return;
+    var ann = modal.querySelector('[data-nordic-announce]');
+    if (ann) ann.textContent = 'The Yeti caught you. Try the slope again.';
+    bannerWrap.innerHTML =
+      '<div class="nordic-banner" role="status">' +
+      '<div>' +
+      '<h3>Caught by the Yeti!</h3>' +
+      '<p>It only wanted a hug, and someone to share the sauna with. Keep your line clean to stay ahead.</p>' +
+      '</div>' +
+      '<div class="nordic-banner-actions">' +
+      '<button type="button" class="btn" data-nordic-retry>Try again</button>' +
+      '</div>' +
+      '</div>';
+    var retry = bannerWrap.querySelector('[data-nordic-retry]');
+    retry.addEventListener('click', function () {
+      buildCourse(LEVELS[currentLevelIdx]);
+      bannerWrap.innerHTML = '';
+    });
+    retry.focus();
   }
 
   function renderVictory() {
