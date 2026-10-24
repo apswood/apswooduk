@@ -19,47 +19,78 @@
   var currentLevelIdx = 0;
   var levelSolved = false;
   var allLevelsComplete = false;
-  var activePiece = null;
+  var activePiece = null; // piece currently hooked onto the tool
+  var dragging = false;
+  var DOCK = { x: 150, y: 372 };
+  var tool = { x: DOCK.x, y: DOCK.y };
   var steadyMeter = 100;
   var isBuzzing = false;
   var piecesRemaining = [];
 
+  // Each piece is a bit of applied decoration. `art` is drawn in the piece's
+  // local coordinates (origin = the extraction loop) so it travels with it.
   var LEVELS = [
     {
       id: 1,
-      name: 'The Transistor Radio',
-      subtitle: 'Inspired by Braun T3 (1958) - Dieter Rams',
+      name: 'The Pocket Radio',
+      subtitle: 'Braun T3 (1958) - Dieter Rams',
       principle: 'Good design is as little design as possible.',
       pieces: [
         {
           id: 'trim',
-          name: 'Faux-Wood Side Trim',
-          startX: 175,
-          startY: 230,
-          path: [[175, 230], [110, 230], [110, 140], [35, 140]],
+          name: 'Faux-Wood Side Cheek',
+          startX: 161,
+          startY: 205,
+          path: [[161, 205], [100, 205], [100, 320], [35, 320]],
           exitX: 35,
-          exitY: 140,
-          quote: 'Good design is honest: it does not make a product look more luxurious than it is.'
+          exitY: 320,
+          quote: 'Good design is honest: it does not make a product look more luxurious than it is.',
+          art:
+            '<rect x="-13" y="-87" width="24" height="174" rx="9" fill="url(#des-wood)" stroke="#3d2410" stroke-width="1.5"/>' +
+            '<g fill="none" stroke="#4a2a12" stroke-width="0.9" opacity="0.6">' +
+            '<path d="M -8 -82 C -4 -50 -10 -20 -6 10 S -9 60 -7 82"/>' +
+            '<path d="M -2 -84 C 1 -40 -4 -10 0 20 S -3 70 -1 84"/>' +
+            '<path d="M 5 -82 C 7 -60 3 -30 6 0 S 4 50 6 82"/>' +
+            '<ellipse cx="-3" cy="-30" rx="3" ry="8"/>' +
+            '</g>' +
+            '<circle cx="-1" cy="-74" r="2.6" fill="#d9b44a" stroke="#7a5c12"/>' +
+            '<circle cx="-1" cy="74" r="2.6" fill="#d9b44a" stroke="#7a5c12"/>'
         },
         {
           id: 'aerial',
           name: 'Chrome Telescopic Aerial',
-          startX: 220,
-          startY: 110,
-          path: [[220, 110], [220, 45], [110, 45], [35, 45]],
-          exitX: 35,
-          exitY: 45,
-          quote: 'Good design is unobtrusive: products are tools, not decorative trophies.'
+          startX: 420,
+          startY: 112,
+          path: [[420, 112], [505, 112], [505, 55], [565, 55]],
+          exitX: 565,
+          exitY: 55,
+          quote: 'Good design is unobtrusive: products are tools, not decorative trophies.',
+          art:
+            '<g stroke-linecap="round" fill="none">' +
+            '<path d="M 0 -2 L -14 -38 L -26 -70 L -38 -100" stroke="#3b3f45" stroke-width="7"/>' +
+            '<path d="M 0 -2 L -14 -38" stroke="#cfd4da" stroke-width="5.5"/>' +
+            '<path d="M -14 -38 L -26 -70" stroke="#dde1e6" stroke-width="4"/>' +
+            '<path d="M -26 -70 L -38 -100" stroke="#e8ebee" stroke-width="2.6"/>' +
+            '<path d="M -1 -6 L -38 -100" stroke="#fff" stroke-width="0.8" opacity="0.7"/>' +
+            '</g>' +
+            '<circle cx="-14" cy="-38" r="3.4" fill="#aeb4bb" stroke="#3b3f45"/>' +
+            '<circle cx="-26" cy="-70" r="2.8" fill="#aeb4bb" stroke="#3b3f45"/>' +
+            '<circle cx="-38" cy="-100" r="4.5" fill="url(#des-chrome)" stroke="#3b3f45"/>' +
+            '<rect x="-10" y="-4" width="20" height="11" rx="3" fill="url(#des-chrome)" stroke="#3b3f45"/>'
         },
         {
           id: 'stripe',
-          name: 'Metallic Racing Stripe',
-          startX: 425,
-          startY: 260,
-          path: [[425, 260], [485, 260], [485, 160], [565, 160]],
+          name: 'Go-Faster Racing Stripe',
+          startX: 360,
+          startY: 268,
+          path: [[360, 268], [360, 335], [470, 335], [470, 372], [565, 372]],
           exitX: 565,
-          exitY: 160,
-          quote: 'Good design is thorough down to the last detail: nothing is arbitrary.'
+          exitY: 372,
+          quote: 'Good design is thorough down to the last detail: nothing is arbitrary.',
+          art:
+            '<polygon points="-204,-13 86,-13 78,-5 -204,-5" fill="#c8321f" stroke="#7d1a0e" stroke-width="0.8"/>' +
+            '<polygon points="-204,-2 76,-2 70,4 -204,4" fill="url(#des-chrome)" stroke="#5b6168" stroke-width="0.8"/>' +
+            '<text x="-150" y="-6.5" font-family="Georgia,serif" font-style="italic" font-size="7" fill="#ffe7b0">Super De Luxe</text>'
         }
       ]
     },
@@ -71,33 +102,49 @@
       pieces: [
         {
           id: 'frill',
-          name: 'Gilded Shade Frills',
-          startX: 400,
-          startY: 280,
-          path: [[400, 280], [400, 355], [260, 355], [35, 355]],
-          exitX: 35,
-          exitY: 355,
-          quote: 'Good design is aesthetic: the visual quality of a product is integral to its utility.'
+          name: 'Gilded Shade Tassels',
+          startX: 380,
+          startY: 148,
+          path: [[380, 148], [470, 148], [470, 250], [565, 250]],
+          exitX: 565,
+          exitY: 250,
+          quote: 'Good design is aesthetic: the visual quality of a product is integral to its utility.',
+          art:
+            '<path d="M 11 -18 Q 8 -8 4 -13 Q 1 -3 -3 -8 Q -6 2 -10 -3" fill="none" stroke="#d4af37" stroke-width="2.5"/>' +
+            '<g stroke="#d4af37" stroke-width="1.2" fill="#e8c55a">' +
+            '<line x1="8" y1="-12" x2="8" y2="2"/><circle cx="8" cy="4" r="2.3"/>' +
+            '<line x1="1" y1="-6" x2="1" y2="8"/><circle cx="1" cy="10" r="2.3"/>' +
+            '<line x1="-6" y1="-1" x2="-6" y2="13"/><circle cx="-6" cy="15" r="2.3"/>' +
+            '</g>'
         },
         {
           id: 'finial',
           name: 'Baroque Finial Urn',
-          startX: 275,
-          startY: 105,
-          path: [[275, 105], [275, 40], [430, 40], [565, 40]],
+          startX: 340,
+          startY: 78,
+          path: [[340, 78], [340, 40], [450, 40], [565, 40]],
           exitX: 565,
           exitY: 40,
-          quote: 'Good design is long-lasting: it avoids being fashionable and never becomes outdated.'
+          quote: 'Good design is long-lasting: it avoids being fashionable and never becomes outdated.',
+          art:
+            '<path d="M -5 20 L 5 20 L 3 12 Q 13 5 8 -6 Q 4 -12 0 -13 Q -4 -12 -8 -6 Q -13 5 -3 12 Z" fill="#d4af37" stroke="#6b5318" stroke-width="1.2"/>' +
+            '<path d="M -7 -2 Q 0 4 7 -2" fill="none" stroke="#6b5318" stroke-width="1"/>' +
+            '<circle cx="0" cy="-17" r="3.5" fill="#e8c55a" stroke="#6b5318"/>'
         },
         {
           id: 'bracket',
           name: 'Twisted Iron Flourish',
-          startX: 215,
-          startY: 220,
-          path: [[215, 220], [130, 220], [130, 150], [35, 150]],
+          startX: 275,
+          startY: 240,
+          path: [[275, 240], [150, 240], [150, 150], [35, 150]],
           exitX: 35,
           exitY: 150,
-          quote: 'Good design is understandable: it clarifies the structure of the product.'
+          quote: 'Good design is understandable: it clarifies the structure of the product.',
+          art:
+            '<g fill="none" stroke="#a49685" stroke-width="3" stroke-linecap="round">' +
+            '<path d="M -3 0 C -22 -8 -30 12 -16 14 C -7 15 -7 5 -12 5"/>' +
+            '<path d="M 3 0 C 22 8 30 -12 16 -14 C 7 -15 7 -5 12 -5"/>' +
+            '</g>'
         }
       ]
     },
@@ -110,32 +157,44 @@
         {
           id: 'flap',
           name: 'Faux-Leather Flip Cover',
-          startX: 180,
-          startY: 190,
-          path: [[180, 190], [115, 190], [115, 90], [35, 90]],
+          startX: 210,
+          startY: 200,
+          path: [[210, 200], [115, 200], [115, 90], [35, 90]],
           exitX: 35,
           exitY: 90,
-          quote: 'Good design is intuitive: controls should be immediately self-explanatory.'
+          quote: 'Good design is intuitive: controls should be immediately self-explanatory.',
+          art:
+            '<rect x="-14" y="-138" width="26" height="276" rx="8" fill="#5a3a26" stroke="#2e1c10" stroke-width="1.5"/>' +
+            '<rect x="-9" y="-132" width="16" height="264" rx="5" fill="none" stroke="#c9a27a" stroke-width="1" stroke-dasharray="3 2.5"/>'
         },
         {
           id: 'bezel',
           name: 'Gold Marketing Bezel',
           startX: 300,
-          startY: 75,
-          path: [[300, 75], [300, 35], [440, 35], [565, 35]],
+          startY: 70,
+          path: [[300, 70], [300, 30], [440, 30], [565, 30]],
           exitX: 565,
-          exitY: 35,
-          quote: 'Good design is quiet: an everyday tool should not demand unnecessary attention.'
+          exitY: 30,
+          quote: 'Good design is quiet: an everyday tool should not demand unnecessary attention.',
+          art:
+            '<rect x="-74" y="1" width="148" height="50" rx="6" fill="none" stroke="#d4af37" stroke-width="5"/>' +
+            '<text x="0" y="62" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="8" fill="#d4af37">Executive Deluxe</text>'
         },
         {
           id: 'sliders',
           name: 'Confusing Slide Switches',
-          startX: 420,
-          startY: 310,
-          path: [[420, 310], [500, 310], [500, 220], [565, 220]],
+          startX: 360,
+          startY: 322,
+          path: [[360, 322], [480, 322], [480, 220], [565, 220]],
           exitX: 565,
           exitY: 220,
-          quote: 'Good design is innovative: new technology enables ever cleaner execution.'
+          quote: 'Good design is innovative: new technology enables ever cleaner execution.',
+          art:
+            '<g stroke="#000" stroke-width="1">' +
+            '<rect x="-108" y="-6" width="22" height="10" rx="2" fill="#111"/><rect x="-106" y="-5" width="9" height="8" rx="1" fill="#c0c4c8"/>' +
+            '<rect x="-80" y="-6" width="22" height="10" rx="2" fill="#111"/><rect x="-69" y="-5" width="9" height="8" rx="1" fill="#c0c4c8"/>' +
+            '<rect x="-52" y="-6" width="22" height="10" rx="2" fill="#111"/><rect x="-46" y="-5" width="9" height="8" rx="1" fill="#c0c4c8"/>' +
+            '</g>'
         }
       ]
     }
@@ -162,17 +221,28 @@
     '.des-meter-fill.danger{background:#ff3b30}' +
     '.des-arena-wrap{background:#1a1714;border:2px solid #3c342c;border-radius:10px;padding:10px;box-shadow:inset 0 0 16px rgba(0,0,0,0.8);position:relative;touch-action:none;user-select:none;-webkit-user-select:none}' +
     '.des-arena{width:100%;height:auto;max-height:480px;display:block;margin:0 auto;overflow:visible}' +
-    '.wire-channel{stroke:#383028;stroke-width:32;fill:none;stroke-linecap:round;stroke-linejoin:round;transition:stroke .15s}' +
-    '.wire-channel.buzz{stroke:#992211;filter:drop-shadow(0 0 8px #ff3322)}' +
-    '.wire-core{stroke:#6b5a4a;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:4 4}' +
-    '.wire-target{fill:rgba(52,199,89,0.2);stroke:#34c759;stroke-width:2.5;stroke-dasharray:3 3;cursor:default}' +
-    '.wire-piece{cursor:grab;outline:none}' +
-    '.wire-piece:focus-visible .piece-handle{stroke:var(--focus,#9a3b00);stroke-width:4}' +
-    '.wire-piece.grabbed{cursor:grabbing}' +
-    '.piece-handle{fill:#d4af37;stroke:#6b5318;stroke-width:2.5;transition:transform .1s}' +
-    '.piece-label{font-family:var(--head,sans-serif);font-size:10px;font-weight:bold;fill:#1a140b;text-anchor:middle;pointer-events:none}' +
-    '.product-chassis{fill:#2b2622;stroke:#473e36;stroke-width:3;filter:drop-shadow(0 6px 14px rgba(0,0,0,0.6))}' +
-    '.product-chassis.pure{fill:#36302a;stroke:var(--accent,#1f5f7a);stroke-width:4;filter:drop-shadow(0 0 14px rgba(31,95,122,0.4))}' +
+    '.wire-shadow,.wire-base,.wire-twist,.wire-glint{fill:none;stroke-linecap:round;stroke-linejoin:round}' +
+    '.wire-shadow{stroke:rgba(0,0,0,0.55);stroke-width:6}' +
+    '.wire-base{stroke:#9c5a24;stroke-width:4.5;transition:stroke .15s}' +
+    '.wire-twist{stroke:#e3a568;stroke-width:4.5;stroke-dasharray:1.6 2.8;stroke-linecap:butt}' +
+    '.wire-glint{stroke:rgba(255,236,205,0.55);stroke-width:1}' +
+    '.wire-base.buzz{stroke:#ff3b30;filter:drop-shadow(0 0 6px #ff3322)}' +
+    '.wire-twist.buzz{stroke:#ffc2b8}' +
+    '.wire-post{fill:#2a2522;stroke:#5a504a;stroke-width:1.5}' +
+    '.wire-target{fill:rgba(52,199,89,0.14);stroke:#34c759;stroke-width:2;stroke-dasharray:3 3;cursor:default}' +
+    '.tool-hit{cursor:grab;outline:none}' +
+    '.des-arena:has(.des-tool.grabbed) .tool-hit{cursor:grabbing}' +
+    '.tool-dock{fill:rgba(255,255,255,0.03);stroke:#3a332d;stroke-width:1.5;stroke-dasharray:4 4}' +
+    '.piece-eye{fill:none;stroke:#c9ced4;stroke-width:2;filter:drop-shadow(0 1px 1px rgba(0,0,0,0.7))}' +
+    '.piece-handle{fill:none;stroke:#c9ced4;stroke-width:3.2;filter:drop-shadow(1px 2px 1px rgba(0,0,0,0.7));transition:stroke .15s}' +
+    '.piece-stem{stroke:#c9ced4;stroke-width:3.2;stroke-linecap:round}' +
+    '.piece-grip{stroke:#b3261e;stroke-width:9;stroke-linecap:round}' +
+    '.des-arena:has(.tool-hit:hover) .piece-handle,.des-tool.grabbed .piece-handle{stroke:#fff}' +
+    '.des-tool.buzz .piece-handle{stroke:#ff3b30}' +
+    '.des-arena:has(.tool-hit:focus-visible) .piece-handle{stroke:var(--focus,#9a3b00);stroke-width:4.5}' +
+    '.piece-art{pointer-events:none}' +
+    '.product-chassis{filter:drop-shadow(0 6px 14px rgba(0,0,0,0.6))}' +
+    '.product-chassis.pure{filter:drop-shadow(0 0 16px rgba(120,190,220,0.45))}' +
     '.des-banner{background:var(--surface,#ece4d3);border:2px solid var(--accent,#1f5f7a);border-radius:8px;padding:12px 16px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;width:100%;box-sizing:border-box}' +
     '.des-banner h3{margin:0;font-size:1.1rem;color:var(--ink)}' +
     '.des-banner p{margin:2px 0 0;font-size:.9rem;color:var(--muted)}' +
@@ -183,7 +253,59 @@
     '.des-victory-btns{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:8px}' +
     '.des-quote-bar{font-style:italic;font-size:.85rem;color:var(--muted);min-height:1.4em;text-align:center;padding:2px 8px}' +
     '.des-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}' +
-    '@media(max-width:600px){.des-modal{padding:12px}.wire-channel{stroke-width:38}}';
+    '@media(max-width:600px){.des-modal{padding:12px}}';
+
+  var SVG_DEFS =
+    '<defs>' +
+    '<linearGradient id="des-body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4f2ed"/><stop offset="1" stop-color="#d9d5cd"/></linearGradient>' +
+    '<radialGradient id="des-dial" cx="0.4" cy="0.35" r="0.75"><stop offset="0" stop-color="#fbfaf7"/><stop offset="1" stop-color="#dcd8d0"/></radialGradient>' +
+    '<linearGradient id="des-wood" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6e4220"/><stop offset="0.45" stop-color="#a06a35"/><stop offset="1" stop-color="#7a4a24"/></linearGradient>' +
+    '<linearGradient id="des-chrome" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f7f9fb"/><stop offset="0.5" stop-color="#9aa1a9"/><stop offset="0.55" stop-color="#d6dbe0"/><stop offset="1" stop-color="#6c737b"/></linearGradient>' +
+    '<pattern id="des-mat" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="#221d19" stroke-width="1"/></pattern>' +
+    '</defs>';
+
+  function wireSvg(d, buzz) {
+    var b = buzz ? ' buzz' : '';
+    return (
+      '<path class="wire-shadow" d="' + d + '" transform="translate(2,3)"/>' +
+      '<path class="wire-base' + b + '" d="' + d + '"/>' +
+      '<path class="wire-twist' + b + '" d="' + d + '"/>' +
+      '<path class="wire-glint" d="' + d + '" transform="translate(-0.6,-0.8)"/>'
+    );
+  }
+
+  // Braun T3: off-white body, square-gridded speaker perforations on the left,
+  // big flush tuning disc on the right.
+  function t3Artwork(isPure) {
+    var holes = '';
+    for (var r = 0; r < 11; r++) {
+      for (var c = 0; c < 11; c++) {
+        holes += '<circle cx="' + (178 + c * 12) + '" cy="' + (146 + r * 12) + '" r="2.5"/>';
+      }
+    }
+    var ticks = '';
+    for (var i = 0; i < 40; i++) {
+      var a = (i / 40) * Math.PI * 2;
+      var r1 = i % 5 === 0 ? 43 : 47;
+      ticks += '<line x1="' + (375 + Math.cos(a) * r1).toFixed(1) + '" y1="' + (200 + Math.sin(a) * r1).toFixed(1) +
+        '" x2="' + (375 + Math.cos(a) * 51).toFixed(1) + '" y2="' + (200 + Math.sin(a) * 51).toFixed(1) + '"/>';
+    }
+    return (
+      '<g id="product-art">' +
+      '<rect class="product-chassis' + (isPure ? ' pure' : '') + '" x="150" y="120" width="300" height="170" rx="14" fill="url(#des-body)" stroke="#bdb8ae" stroke-width="1.5"/>' +
+      '<rect x="153" y="122" width="294" height="4" rx="2" fill="#fff" opacity="0.6"/>' +
+      '<g fill="#3d3a36">' + holes + '</g>' +
+      '<circle cx="375" cy="200" r="60" fill="#c9c4bb"/>' +
+      '<circle cx="375" cy="200" r="57" fill="url(#des-dial)" stroke="#b5b0a6"/>' +
+      '<g stroke="#77736c" stroke-width="1">' + ticks + '</g>' +
+      '<circle cx="375" cy="200" r="31" fill="none" stroke="#cbc6bd"/>' +
+      '<circle cx="375" cy="200" r="15" fill="#e6e2da" stroke="#b5b0a6"/>' +
+      '<path d="M 371 128 L 379 128 L 375 135 Z" fill="#3d3a36"/>' +
+      '<text x="173" y="283" font-family="Helvetica,Arial,sans-serif" font-size="8" font-weight="bold" letter-spacing="0.5" fill="#8a857c">BRAUN</text>' +
+      (isPure ? '<text x="300" y="312" text-anchor="middle" font-family="sans-serif" font-size="8" font-weight="bold" fill="#34c759">LESS, BUT BETTER</text>' : '') +
+      '</g>'
+    );
+  }
 
   function distToSegment(px, py, x1, y1, x2, y2) {
     var dx = x2 - x1;
@@ -298,40 +420,20 @@
     });
   }
 
+  function chassisPaint(isPure) {
+    return isPure ? ' fill="#36302a" stroke="#1f5f7a" stroke-width="4"' : ' fill="#2b2622" stroke="#473e36" stroke-width="3"';
+  }
+
   function getProductArtwork(levelIdx, isPure) {
     if (levelIdx === 0) {
-      // Braun T3 Radio
-      return (
-        '<g id="product-art">' +
-        '<rect class="product-chassis' + (isPure ? ' pure' : '') + '" x="180" y="70" width="240" height="260" rx="16"/>' +
-        // Speaker grille
-        '<g fill="' + (isPure ? '#201b17' : '#181412') + '">' +
-        '<circle cx="300" cy="225" r="54" fill="' + (isPure ? '#201b17' : '#181412') + '"/>' +
-        '<circle cx="300" cy="225" r="52" fill="none" stroke="' + (isPure ? '#4a4037' : '#302822') + '" stroke-width="1.5"/>' +
-        '</g>' +
-        // Perforations in speaker
-        '<g fill="' + (isPure ? '#fff' : '#6b5c4f') + '" opacity="0.75">' +
-        '<circle cx="280" cy="210" r="2.5"/><circle cx="300" cy="210" r="2.5"/><circle cx="320" cy="210" r="2.5"/>' +
-        '<circle cx="270" cy="225" r="2.5"/><circle cx="290" cy="225" r="2.5"/><circle cx="310" cy="225" r="2.5"/><circle cx="330" cy="225" r="2.5"/>' +
-        '<circle cx="280" cy="240" r="2.5"/><circle cx="300" cy="240" r="2.5"/><circle cx="320" cy="240" r="2.5"/>' +
-        '</g>' +
-        // Tuning Dial
-        '<circle cx="300" cy="125" r="36" fill="' + (isPure ? '#e8e2d8' : '#736658') + '" stroke="#1a1613" stroke-width="2"/>' +
-        '<circle cx="300" cy="125" r="32" fill="none" stroke="#2b231d" stroke-width="1" stroke-dasharray="2 3"/>' +
-        '<line x1="300" y1="125" x2="300" y2="94" stroke="#c9382b" stroke-width="2" stroke-linecap="round"/>' +
-        '<circle cx="300" cy="125" r="4" fill="#222"/>' +
-        '<text x="300" y="148" text-anchor="middle" font-family="sans-serif" font-size="7" font-weight="bold" fill="#222">BRAUN</text>' +
-        // Pure status badge
-        (isPure ? '<text x="300" y="318" text-anchor="middle" font-family="sans-serif" font-size="8" font-weight="bold" fill="#34c759">LESS, BUT BETTER</text>' : '') +
-        '</g>'
-      );
+      return t3Artwork(isPure);
     }
     if (levelIdx === 1) {
       // Anglepoise Lamp
       return (
         '<g id="product-art">' +
         // Heavy base
-        '<rect class="product-chassis' + (isPure ? ' pure' : '') + '" x="220" y="300" width="160" height="30" rx="6"/>' +
+        '<rect class="product-chassis' + (isPure ? ' pure' : '') + '" x="220" y="300" width="160" height="30" rx="6"' + chassisPaint(isPure) + '/>' +
         '<circle cx="300" cy="300" r="10" fill="#1b1714"/>' +
         // Articulated cantilever arm
         '<line x1="300" y1="300" x2="250" y2="180" stroke="' + (isPure ? '#d4af37' : '#52453a') + '" stroke-width="5" stroke-linecap="round"/>' +
@@ -352,7 +454,7 @@
       // Braun ET66 Calculator
       return (
         '<g id="product-art">' +
-        '<rect class="product-chassis' + (isPure ? ' pure' : '') + '" x="210" y="55" width="180" height="290" rx="14"/>' +
+        '<rect class="product-chassis' + (isPure ? ' pure' : '') + '" x="210" y="55" width="180" height="290" rx="14"' + chassisPaint(isPure) + '/>' +
         // LCD window
         '<rect x="230" y="75" width="140" height="42" rx="4" fill="#8f9985" stroke="#1c1815" stroke-width="2"/>' +
         '<text x="360" y="104" text-anchor="end" font-family="monospace" font-size="20" font-weight="bold" fill="#1b2416">0.</text>' +
@@ -389,6 +491,8 @@
     currentLevelIdx = levelIdx;
     levelSolved = false;
     activePiece = null;
+    dragging = false;
+    tool = { x: DOCK.x, y: DOCK.y };
     steadyMeter = 100;
     isBuzzing = false;
     var level = LEVELS[levelIdx];
@@ -404,16 +508,56 @@
         exitX: p.exitX,
         exitY: p.exitY,
         quote: p.quote,
+        art: p.art,
         extracted: false
       };
     });
+  }
+
+  function toolSvg() {
+    var cls = 'des-tool' + (dragging ? ' grabbed' : '') + (activePiece ? ' hooked' : '') + (isBuzzing ? ' buzz' : '');
+    return (
+      '<g class="' + cls + '" transform="translate(' + tool.x + ',' + tool.y + ')">' +
+      '<line class="piece-stem" x1="15.5" y1="15.5" x2="30" y2="30"/>' +
+      '<line class="piece-grip" x1="31" y1="31" x2="48" y2="48"/>' +
+      '<circle class="piece-handle" cx="0" cy="0" r="22"/>' +
+      '</g>'
+    );
+  }
+
+  // The wire passes under the loop on one side and over it on the other. The
+  // whole loop is drawn beneath the wires; this redraws the arc where the wire
+  // exits (towards the bin) on top, giving the over-under depth cue.
+  function toolFrontSvg() {
+    if (!activePiece) return '';
+    var pts = activePiece.path;
+    var best = Infinity;
+    var ang = 0;
+    for (var i = 0; i < pts.length - 1; i++) {
+      var d = distToSegment(tool.x, tool.y, pts[i][0], pts[i][1], pts[i + 1][0], pts[i + 1][1]);
+      if (d < best) {
+        best = d;
+        ang = Math.atan2(pts[i + 1][1] - pts[i][1], pts[i + 1][0] - pts[i][0]);
+      }
+    }
+    var r = 22;
+    var span = 0.55;
+    var x1 = (Math.cos(ang - span) * r).toFixed(2);
+    var y1 = (Math.sin(ang - span) * r).toFixed(2);
+    var x2 = (Math.cos(ang + span) * r).toFixed(2);
+    var y2 = (Math.sin(ang + span) * r).toFixed(2);
+    var cls = 'des-tool des-tool-front' + (dragging ? ' grabbed' : '') + (isBuzzing ? ' buzz' : '');
+    return (
+      '<g class="' + cls + '" transform="translate(' + tool.x + ',' + tool.y + ')">' +
+      '<path class="piece-handle" d="M ' + x1 + ' ' + y1 + ' A ' + r + ' ' + r + ' 0 0 1 ' + x2 + ' ' + y2 + '"/>' +
+      '</g>'
+    );
   }
 
   function renderArena() {
     if (!modal) return;
     var level = LEVELS[currentLevelIdx];
     var arena = modal.querySelector('[data-des-arena]');
-    var bannerWrap = modal.querySelector('[data-des-banner-wrap]');
     var statClutter = modal.querySelector('[data-des-stat-clutter]');
     var statPurity = modal.querySelector('[data-des-stat-purity]');
     var meterFill = modal.querySelector('[data-des-meter-fill]');
@@ -437,63 +581,68 @@
 
     var isPure = extractedCount === level.pieces.length;
 
-    var svgContent = '';
-    // Background glow / drop zones
+    var svgContent = SVG_DEFS;
+    // Workbench cutting mat
     svgContent += '<rect width="600" height="400" fill="#151210" rx="8"/>';
+    svgContent += '<rect width="600" height="400" fill="url(#des-mat)" rx="8"/>';
 
-    // Extraction Channels for unextracted pieces
-    piecesRemaining.forEach(function (p) {
-      if (p.extracted) return;
-      var d = pathToD(p.path);
-      var isPieceActive = activePiece && activePiece.id === p.id;
-      var channelCls = 'wire-channel' + (isPieceActive && isBuzzing ? ' buzz' : '');
-      svgContent += '<path class="' + channelCls + '" d="' + d + '"/>';
-      svgContent += '<path class="wire-core" d="' + d + '"/>';
-      // Scrap Drop Target at exit
-      svgContent += '<circle class="wire-target" cx="' + p.exitX + '" cy="' + p.exitY + '" r="22"/>';
-      svgContent += '<text x="' + p.exitX + '" y="' + (p.exitY + 4) + '" text-anchor="middle" font-family="sans-serif" font-size="8" font-weight="bold" fill="#34c759">RECYCLE</text>';
-    });
+    // Tool rest, where the hook waits between pieces
+    svgContent += '<circle class="tool-dock" cx="' + DOCK.x + '" cy="' + DOCK.y + '" r="26"/>';
 
     // Central Product Chassis
     svgContent += getProductArtwork(currentLevelIdx, isPure);
 
-    // Draggable / Grab-able Pieces
+    // Clutter still attached to the product, each with an eyelet to hook
     piecesRemaining.forEach(function (p) {
       if (p.extracted) return;
-      var isPieceActive = activePiece && activePiece.id === p.id;
       svgContent +=
-        '<g class="wire-piece' + (isPieceActive ? ' grabbed' : '') + '" data-piece-id="' + p.id + '" transform="translate(' + p.x + ',' + p.y + ')" role="button" tabindex="0" aria-label="Grab ' + p.name + '. Use mouse, touch, or arrow keys to extract along the channel.">' +
-        // Precision Extraction Ring
-        '<circle class="piece-handle" cx="0" cy="0" r="18"/>' +
-        '<circle cx="0" cy="0" r="12" fill="' + (isPieceActive ? '#ff3b30' : '#1b1612') + '" stroke="#fff" stroke-width="1.5"/>' +
-        '<text class="piece-label" x="0" y="3">&#9986;</text>' +
+        '<g class="piece-art" transform="translate(' + p.x + ',' + p.y + ')">' + p.art +
+        '<circle class="piece-eye" cx="0" cy="0" r="5"/>' +
         '</g>';
     });
 
+    // The loop sits under the wires so the wire reads as threaded through it
+    svgContent += toolSvg();
+
+    // Buzz wires and recycling bins for unextracted pieces
+    piecesRemaining.forEach(function (p) {
+      if (p.extracted) return;
+      var isPieceActive = activePiece && activePiece.id === p.id;
+      svgContent += '<circle class="wire-target" cx="' + p.exitX + '" cy="' + p.exitY + '" r="22"/>';
+      svgContent += wireSvg(pathToD(p.path), isPieceActive && isBuzzing);
+      svgContent += '<circle class="wire-post" cx="' + p.exitX + '" cy="' + p.exitY + '" r="5"/>';
+      svgContent += '<text x="' + p.exitX + '" y="' + (p.exitY + 34) + '" text-anchor="middle" font-family="sans-serif" font-size="7.5" font-weight="bold" letter-spacing="0.5" fill="#34c759">RECYCLE</text>';
+    });
+
+    // Near side of the loop, drawn over the wire so it reads as threaded through
+    svgContent += toolFrontSvg();
+
+    // Invisible grab target on top of everything, matching the tool's shape
+    svgContent +=
+      '<g class="tool-hit" data-des-tool transform="translate(' + tool.x + ',' + tool.y + ')" role="button" tabindex="0" aria-label="' +
+      (activePiece ? 'Hook attached to ' + activePiece.name + '. Use arrow keys to guide it along the wire to the recycling bin.' : 'Hook tool. Move it onto a piece of clutter to attach it, or press Enter to hook the next piece.') + '">' +
+      '<circle cx="0" cy="0" r="25" fill="transparent"/>' +
+      '<line x1="12" y1="12" x2="48" y2="48" stroke="transparent" stroke-width="16" stroke-linecap="round"/>' +
+      '</g>';
+
+    var hadFocus = arena.contains(document.activeElement);
     arena.innerHTML = svgContent;
 
-    // Attach Pointer and Keyboard handlers to pieces
-    var pieceEls = arena.querySelectorAll('.wire-piece');
-    pieceEls.forEach(function (el) {
-      var pid = el.getAttribute('data-piece-id');
-      var pObj = piecesRemaining.find(function (p) { return p.id === pid; });
-      if (!pObj) return;
-
-      el.addEventListener('pointerdown', function (e) {
-        e.preventDefault();
-        grabPiece(pObj, e);
-      });
-
-      el.addEventListener('keydown', function (e) {
-        if (e.key === ' ' || e.key === 'Enter') {
-          e.preventDefault();
-          if (activePiece && activePiece.id === pObj.id) dropPiece();
-          else grabPiece(pObj, null);
-        } else if (activePiece && activePiece.id === pObj.id) {
-          handleKeyNudge(e);
-        }
-      });
+    var toolEl = arena.querySelector('[data-des-tool]');
+    toolEl.addEventListener('pointerdown', function (e) {
+      e.preventDefault();
+      grabTool(e);
     });
+    toolEl.addEventListener('keydown', function (e) {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        if (!activePiece) hookNext();
+      } else {
+        handleKeyNudge(e);
+      }
+    });
+    // innerHTML rebuild drops focus; restore it so keyboard play continues
+    if (hadFocus) toolEl.focus();
 
     // Check if level just won
     if (isPure && !levelSolved) {
@@ -511,47 +660,62 @@
     }
   }
 
-  function grabPiece(pObj, pointerEvt) {
-    activePiece = pObj;
+  function hookPiece(p) {
+    activePiece = p;
+    tool.x = p.x;
+    tool.y = p.y;
     playClick();
+    var announce = modal.querySelector('[data-des-announce]');
+    if (announce) announce.textContent = 'Hooked ' + p.name + '. Guide the loop along the wire to the recycling bin without touching it.';
+    var quoteBar = modal.querySelector('[data-des-quote-bar]');
+    if (quoteBar) quoteBar.textContent = 'Hooked: ' + p.name + '. Now run it along the wire to the recycling bin.';
+  }
+
+  function hookNext() {
+    var next = piecesRemaining.filter(function (p) { return !p.extracted; })[0];
+    if (!next) return;
+    hookPiece(next);
+    renderArena();
+  }
+
+  function grabTool(pointerEvt) {
+    dragging = true;
     renderArena();
 
-    var announce = modal.querySelector('[data-des-announce]');
-    if (announce) {
-      announce.textContent = 'Grabbed ' + pObj.name + '. Guide it along the extraction wire without buzzing the borders.';
+    var arena = modal.querySelector('[data-des-arena]');
+    var svgW = 600, svgH = 400;
+
+    function toSvg(e) {
+      var r = arena.getBoundingClientRect();
+      if (!r.width || !r.height) return [tool.x, tool.y];
+      return [(e.clientX - r.left) * (svgW / r.width), (e.clientY - r.top) * (svgH / r.height)];
     }
 
-    if (pointerEvt) {
-      var arena = modal.querySelector('[data-des-arena]');
-      var rect = arena.getBoundingClientRect();
-      var svgW = 600, svgH = 400;
+    // Keep the tool where it was grabbed rather than snapping its centre to the pointer
+    var start = toSvg(pointerEvt);
+    var offX = tool.x - start[0];
+    var offY = tool.y - start[1];
 
-      function onPointerMove(e) {
-        if (!activePiece) return;
-        var r = arena.getBoundingClientRect();
-        var scaleX = svgW / r.width;
-        var scaleY = svgH / r.height;
-        var svgX = (e.clientX - r.left) * scaleX;
-        var svgY = (e.clientY - r.top) * scaleY;
-        updatePiecePos(svgX, svgY);
-      }
-
-      function onPointerUp() {
-        window.removeEventListener('pointermove', onPointerMove);
-        window.removeEventListener('pointerup', onPointerUp);
-        dropPiece();
-      }
-
-      window.addEventListener('pointermove', onPointerMove);
-      window.addEventListener('pointerup', onPointerUp);
+    function onPointerMove(e) {
+      if (!dragging) return;
+      var pt = toSvg(e);
+      moveTool(pt[0] + offX, pt[1] + offY);
     }
+
+    function onPointerUp() {
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', onPointerUp);
+      dropTool();
+    }
+
+    window.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('pointerup', onPointerUp);
   }
 
   function handleKeyNudge(e) {
-    if (!activePiece) return;
     var step = 8;
-    var nx = activePiece.x;
-    var ny = activePiece.y;
+    var nx = tool.x;
+    var ny = tool.y;
 
     if (e.key === 'ArrowUp') ny -= step;
     else if (e.key === 'ArrowDown') ny += step;
@@ -560,13 +724,25 @@
     else return;
 
     e.preventDefault();
-    updatePiecePos(nx, ny);
+    moveTool(nx, ny);
   }
 
-  function updatePiecePos(nx, ny) {
-    if (!activePiece) return;
-    activePiece.x = Math.max(10, Math.min(590, nx));
-    activePiece.y = Math.max(10, Math.min(390, ny));
+  function moveTool(nx, ny) {
+    tool.x = Math.max(10, Math.min(590, nx));
+    tool.y = Math.max(10, Math.min(390, ny));
+
+    if (!activePiece) {
+      // Free movement until the loop reaches an eyelet, then it hooks on
+      var hit = piecesRemaining.filter(function (p) {
+        return !p.extracted && Math.hypot(tool.x - p.x, tool.y - p.y) < 16;
+      })[0];
+      if (hit) hookPiece(hit);
+      renderArena();
+      return;
+    }
+
+    activePiece.x = tool.x;
+    activePiece.y = tool.y;
 
     // Collision check: Distance to path centerline
     var dist = distToPath(activePiece.x, activePiece.y, activePiece.path);
@@ -581,11 +757,12 @@
       }
       steadyMeter = Math.max(0, steadyMeter - 1.6);
       if (steadyMeter <= 0) {
-        // Reset piece back to starting socket
+        // Reset piece back to its socket, still hooked, and let go of the drag
         stopBuzzerSound();
         isBuzzing = false;
-        activePiece.x = activePiece.startX;
-        activePiece.y = activePiece.startY;
+        dragging = false;
+        activePiece.x = tool.x = activePiece.startX;
+        activePiece.y = tool.y = activePiece.startY;
         steadyMeter = 100;
         playClick();
         var announce = modal.querySelector('[data-des-announce]');
@@ -616,10 +793,10 @@
     renderArena();
   }
 
-  function dropPiece() {
+  function dropTool() {
     stopBuzzerSound();
     isBuzzing = false;
-    activePiece = null;
+    dragging = false;
     renderArena();
   }
 
@@ -720,7 +897,7 @@
       '<div class="des-arena-wrap">' +
       '<svg class="des-arena" data-des-arena viewBox="0 0 600 400" preserveAspectRatio="xMidYMid meet" role="application" aria-label="Precision extraction workbench"></svg>' +
       '</div>' +
-      '<div class="des-quote-bar" data-des-quote-bar>Extract the decorative clutter without buzzing the functional core.</div>' +
+      '<div class="des-quote-bar" data-des-quote-bar>Drag the hook onto a piece of clutter, then guide it along the wire to the recycling bin.</div>' +
       '<div class="des-sr" data-des-announce role="status" aria-live="polite"></div>' +
       '<div class="des-banner-wrap" data-des-banner-wrap></div>';
 
