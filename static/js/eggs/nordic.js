@@ -37,6 +37,7 @@
 
   var input = { left: false, right: false, jump: false, touchX: null };
   var tracks = []; // ski trail points
+  var sprays = []; // snow kicked up by carving and falls
   var gates = [];
   var obstacles = [];
   var ramps = [];
@@ -213,6 +214,7 @@
     obstacles = [];
     ramps = [];
     tracks = [];
+    sprays = [];
     gatesPassed = 0;
     totalGates = level.gateCount;
     courseLength = level.length;
@@ -228,6 +230,7 @@
         dist: curDist,
         x1: centerX - gateWidth / 2,
         x2: centerX + gateWidth / 2,
+        color: i % 2 ? 'blue' : 'red',
         passed: false,
         missed: false
       });
@@ -374,6 +377,30 @@
       if (tracks.length > 250) tracks.shift();
     }
 
+    if (!skier.isJumping && (Math.abs(skier.vx) > 1.6 || skier.tumbleTimer > 0)) {
+      var dir = Math.sign(skier.vx) || 1;
+      var n = skier.tumbleTimer > 0 ? 3 : 2;
+      for (var s = 0; s < n; s++) {
+        var life = 16 + Math.random() * 14;
+        sprays.push({
+          x: skier.x + dir * (4 + Math.random() * 6),
+          dist: skier.dist + 8 + Math.random() * 10,
+          vx: dir * (0.6 + Math.random() * 1.6) + (Math.random() - 0.5),
+          vd: skier.speed * (0.55 + Math.random() * 0.3),
+          r: 1 + Math.random() * 2,
+          life: life,
+          max: life
+        });
+      }
+    }
+    sprays = sprays.filter(function (p) {
+      p.x += p.vx;
+      p.dist += p.vd;
+      p.vx *= 0.92;
+      p.life--;
+      return p.life > 0;
+    });
+
     // Check Ramps
     ramps.forEach(function (rmp) {
       if (!rmp.used && Math.abs(skier.dist - rmp.dist) < 18 && Math.abs(skier.x - rmp.x) < rmp.w / 2) {
@@ -472,28 +499,17 @@
 
     // Snow base with soft gradient
     var snowGrad = ctx.createLinearGradient(0, 0, 0, 440);
-    snowGrad.addColorStop(0, '#f8fafc');
-    snowGrad.addColorStop(1, '#edf2f7');
+    snowGrad.addColorStop(0, '#f9fbfd');
+    snowGrad.addColorStop(1, '#e6eef6');
     ctx.fillStyle = snowGrad;
     ctx.fillRect(0, 0, 640, 440);
 
     var camY = skier.dist - skier.y;
 
+    drawSnowTexture(ctx, camY);
+
     // Draw Ski Tracks in snow
-    ctx.strokeStyle = '#d6e2ec';
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    tracks.forEach(function (pt) {
-      var screenY = pt.dist - camY;
-      if (screenY >= -30 && screenY <= 470) {
-        var off = 4;
-        ctx.moveTo(pt.x - off, screenY);
-        ctx.lineTo(pt.x - off, screenY + 6);
-        ctx.moveTo(pt.x + off, screenY);
-        ctx.lineTo(pt.x + off, screenY + 6);
-      }
-    });
-    ctx.stroke();
+    drawTracks(ctx, camY);
 
     // Draw Ramps
     ramps.forEach(function (rmp) {
@@ -507,7 +523,7 @@
     gates.forEach(function (g) {
       var sy = g.dist - camY;
       if (sy >= -60 && sy <= 500) {
-        drawGate(ctx, g.x1, g.x2, sy, g.passed);
+        drawGate(ctx, g, sy);
       }
     });
 
@@ -540,108 +556,273 @@
       }
     }
 
+    drawSpray(ctx, camY);
+
     // Draw Skier
     drawSkier(ctx, skier.x, skier.y, skier.angle, skier.isJumping, skier.jumpZ);
 
     updateStats();
   }
 
+  // Seeded 0..1 value so snow texture stays put as the slope scrolls
+  function hash(n) {
+    var s = Math.sin(n * 127.1 + 311.7) * 43758.5453;
+    return s - Math.floor(s);
+  }
+
+  function drawSnowTexture(c, camY) {
+    // Wind ripples and soft hollows, fixed to the slope
+    var band = 36;
+    var k0 = Math.floor(camY / band) - 1;
+    var k1 = Math.floor((camY + 440) / band) + 1;
+    c.lineCap = 'round';
+    for (var k = k0; k <= k1; k++) {
+      for (var j = 0; j < 2; j++) {
+        var seed = k * 7 + j * 3;
+        var x = hash(seed) * 640;
+        var y = k * band + hash(seed + 1) * band - camY;
+        var len = 30 + hash(seed + 2) * 70;
+        c.strokeStyle = 'rgba(160, 184, 208, 0.22)';
+        c.lineWidth = 1.4;
+        c.beginPath();
+        c.moveTo(x - len / 2, y);
+        c.quadraticCurveTo(x, y - 5, x + len / 2, y + 1);
+        c.stroke();
+        c.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+        c.lineWidth = 1;
+        c.beginPath();
+        c.moveTo(x - len / 2 + 2, y - 1.6);
+        c.quadraticCurveTo(x, y - 6.6, x + len / 2 - 2, y - 0.6);
+        c.stroke();
+      }
+    }
+
+    // Piste edges fall away into shade
+    var edgeL = c.createLinearGradient(0, 0, 60, 0);
+    edgeL.addColorStop(0, 'rgba(120, 150, 180, 0.28)');
+    edgeL.addColorStop(1, 'rgba(120, 150, 180, 0)');
+    c.fillStyle = edgeL;
+    c.fillRect(0, 0, 60, 440);
+    var edgeR = c.createLinearGradient(640, 0, 580, 0);
+    edgeR.addColorStop(0, 'rgba(120, 150, 180, 0.28)');
+    edgeR.addColorStop(1, 'rgba(120, 150, 180, 0)');
+    c.fillStyle = edgeR;
+    c.fillRect(580, 0, 60, 440);
+  }
+
+  function drawTracks(c, camY) {
+    // Two continuous carved grooves, broken wherever the skier was airborne
+    [-4, 4].forEach(function (off) {
+      [['rgba(150, 178, 204, 0.55)', 2.2, 0], ['rgba(255, 255, 255, 0.95)', 1, 1.1]].forEach(function (pass) {
+        c.strokeStyle = pass[0];
+        c.lineWidth = pass[1];
+        c.lineJoin = 'round';
+        c.beginPath();
+        var prev = null;
+        tracks.forEach(function (pt) {
+          var sy = pt.dist - camY;
+          var sx = pt.x + off * Math.cos(pt.angle) + pass[2];
+          if (!prev || pt.dist - prev.dist > 12) c.moveTo(sx, sy);
+          else c.lineTo(sx, sy);
+          prev = pt;
+        });
+        c.stroke();
+      });
+    });
+  }
+
+  function drawSpray(c, camY) {
+    sprays.forEach(function (p) {
+      var a = Math.max(0, p.life / p.max);
+      c.fillStyle = 'rgba(255, 255, 255, ' + (0.95 * a) + ')';
+      c.strokeStyle = 'rgba(150, 178, 204, ' + (0.6 * a) + ')';
+      c.lineWidth = 0.8;
+      c.beginPath();
+      c.arc(p.x, p.dist - camY, p.r, 0, Math.PI * 2);
+      c.fill();
+      c.stroke();
+    });
+  }
+
+  function snowShadow(c, x, y, rx, ry) {
+    c.fillStyle = 'rgba(120, 150, 185, 0.28)';
+    c.beginPath();
+    c.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
+    c.fill();
+  }
+
+  // Skier seen from behind and above, heading down the screen. Skis follow
+  // the steering angle; the body counter-rotates a little, like a real carve.
   function drawSkier(c, x, y, angle, jumping, jz) {
     c.save();
-    c.translate(x, y - jz);
+    c.translate(x, y);
+    snowShadow(c, 3, 14, 14 + jz * 0.15, 6);
+    c.translate(0, -jz);
+    var lift = 1 + jz * 0.012;
+    c.scale(lift, lift);
 
-    // Shadow on snow
+    // Skis
     c.save();
-    c.translate(0, jz);
-    c.fillStyle = 'rgba(180, 195, 210, 0.45)';
-    c.beginPath();
-    c.ellipse(0, 14, 16 + jz * 0.2, 7, 0, 0, Math.PI * 2);
-    c.fill();
+    c.rotate(-angle * 0.85);
+    [-5, 5].forEach(function (sx) {
+      c.fillStyle = '#16384a';
+      c.beginPath();
+      c.moveTo(sx - 2, -14);
+      c.lineTo(sx + 2, -14);
+      c.lineTo(sx + 2, 20);
+      c.quadraticCurveTo(sx + 2, 25, sx, 26);
+      c.quadraticCurveTo(sx - 2, 25, sx - 2, 20);
+      c.closePath();
+      c.fill();
+      c.fillStyle = '#e8ecef';
+      c.fillRect(sx - 0.6, -12, 1.2, 30);
+      c.fillStyle = '#ff6b4a';
+      c.beginPath();
+      c.moveTo(sx - 2, 19);
+      c.lineTo(sx + 2, 19);
+      c.quadraticCurveTo(sx + 2, 25, sx, 26);
+      c.quadraticCurveTo(sx - 2, 25, sx - 2, 19);
+      c.fill();
+    });
+    // Boots
+    c.fillStyle = '#222b33';
+    c.fillRect(-7.5, -2, 5, 7);
+    c.fillRect(2.5, -2, 5, 7);
     c.restore();
 
-    c.rotate(angle * 0.7);
+    c.rotate(-angle * 0.35);
 
-    // Twin Skis
-    c.fillStyle = '#1f5f7a'; // Nordic blue skis
-    c.fillRect(-8, -14, 3.5, 34);
-    c.fillRect(4.5, -14, 3.5, 34);
+    // Poles, planted beside the skis
+    c.strokeStyle = '#3b4249';
+    c.lineWidth = 1.4;
+    c.beginPath();
+    c.moveTo(-13, -14);
+    c.lineTo(-16, 8);
+    c.moveTo(13, -14);
+    c.lineTo(16, 8);
+    c.stroke();
+    c.strokeStyle = '#3b4249';
+    c.lineWidth = 1;
+    c.beginPath();
+    c.ellipse(-16, 7, 3, 1.4, 0, 0, Math.PI * 2);
+    c.ellipse(16, 7, 3, 1.4, 0, 0, Math.PI * 2);
+    c.stroke();
 
-    // Ski tips (curved front)
-    c.fillStyle = '#ff6b4a';
-    c.fillRect(-8, -17, 3.5, 4);
-    c.fillRect(4.5, -17, 3.5, 4);
+    // Legs
+    c.strokeStyle = '#1f2f4a';
+    c.lineWidth = 4.5;
+    c.lineCap = 'round';
+    c.beginPath();
+    c.moveTo(-3.5, -14);
+    c.lineTo(-5, 0);
+    c.moveTo(3.5, -14);
+    c.lineTo(5, 0);
+    c.stroke();
 
-    // Skier body (Red Nordic parka)
+    // Arms
+    c.strokeStyle = '#b81f1a';
+    c.lineWidth = 4;
+    c.beginPath();
+    c.moveTo(-7, -24);
+    c.lineTo(-13, -14);
+    c.moveTo(7, -24);
+    c.lineTo(13, -14);
+    c.stroke();
+    c.fillStyle = '#1b1f24';
+    c.beginPath();
+    c.arc(-13, -14, 2.2, 0, Math.PI * 2);
+    c.arc(13, -14, 2.2, 0, Math.PI * 2);
+    c.fill();
+
+    // Jacket with a Nordic knit yoke
     c.fillStyle = '#d4251f';
     c.beginPath();
-    c.ellipse(0, 0, 9, 13, 0, 0, Math.PI * 2);
+    c.ellipse(0, -20, 8.5, 9, 0, 0, Math.PI * 2);
     c.fill();
+    c.fillStyle = '#f4f1ea';
+    c.fillRect(-8, -26, 16, 3.5);
+    c.fillStyle = '#d4251f';
+    for (var i = -6; i <= 6; i += 4) {
+      c.beginPath();
+      c.moveTo(i - 1.5, -26);
+      c.lineTo(i, -23.8);
+      c.lineTo(i + 1.5, -26);
+      c.fill();
+    }
 
-    // Nordic knit beanie with pom-pom
+    // Beanie with pom-pom
     c.fillStyle = '#2b3a4a';
     c.beginPath();
-    c.arc(0, -6, 6.5, 0, Math.PI * 2);
+    c.arc(0, -31, 5.6, 0, Math.PI * 2);
     c.fill();
-    c.fillStyle = '#fff';
+    c.fillStyle = '#f4f1ea';
+    c.fillRect(-5.6, -30, 11.2, 2.4);
+    c.fillStyle = '#d4251f';
     c.beginPath();
-    c.arc(0, -12, 3, 0, Math.PI * 2);
-    c.fill();
-
-    // Ski poles
-    c.strokeStyle = '#333';
-    c.lineWidth = 1.8;
-    c.beginPath();
-    c.moveTo(-10, -2);
-    c.lineTo(-18, 12);
-    c.moveTo(10, -2);
-    c.lineTo(18, 12);
-    c.stroke();
-    c.fillStyle = '#222';
-    c.beginPath();
-    c.arc(-18, 12, 2.5, 0, Math.PI * 2);
-    c.arc(18, 12, 2.5, 0, Math.PI * 2);
+    c.arc(0, -37, 2.8, 0, Math.PI * 2);
     c.fill();
 
     c.restore();
   }
 
+  // Spruce tier with drooping, snow-laden branch tips
+  function spruceTier(c, apexY, baseY, half, lobes) {
+    var step = (half * 2) / lobes;
+    c.beginPath();
+    c.moveTo(0, apexY);
+    c.lineTo(-half, baseY);
+    for (var i = 0; i < lobes; i++) {
+      var x0 = -half + i * step;
+      c.quadraticCurveTo(x0 + step / 2, baseY - 5, x0 + step, baseY);
+    }
+    c.closePath();
+  }
+
   function drawPine(c, x, y) {
     c.save();
     c.translate(x, y);
-    // Tree shadow
-    c.fillStyle = 'rgba(190, 205, 218, 0.4)';
-    c.beginPath();
-    c.ellipse(4, 18, 18, 8, 0, 0, Math.PI * 2);
-    c.fill();
+    snowShadow(c, 8, 20, 22, 7);
 
-    // Trunk
     c.fillStyle = '#4a3b32';
-    c.fillRect(-3, 10, 6, 12);
+    c.fillRect(-2.5, 12, 5, 9);
 
-    // Pine tiers (rich dark Nordic green with snow caps)
     var tiers = [
-      { y: 12, w: 38, h: 18 },
-      { y: 0, w: 30, h: 16 },
-      { y: -12, w: 22, h: 14 }
+      { a: 2, b: 16, w: 21, n: 4 },
+      { a: -10, b: 5, w: 17, n: 4 },
+      { a: -21, b: -6, w: 13, n: 3 },
+      { a: -31, b: -17, w: 8, n: 2 }
     ];
     tiers.forEach(function (t) {
-      c.fillStyle = '#1d3824';
-      c.beginPath();
-      c.moveTo(0, t.y - t.h);
-      c.lineTo(-t.w / 2, t.y);
-      c.lineTo(t.w / 2, t.y);
-      c.closePath();
+      spruceTier(c, t.a, t.b, t.w, t.n);
+      c.fillStyle = '#183526';
       c.fill();
-
-      // Snow on tier
-      c.fillStyle = '#f0f5fa';
+      // Lit side
+      c.save();
+      c.clip();
+      c.fillStyle = '#25503a';
+      c.fillRect(0, t.a - 2, t.w + 2, t.b - t.a + 4);
+      c.restore();
+      // Snow settled along the branch tips
+      var step = (t.w * 2) / t.n;
+      c.strokeStyle = '#f4f8fb';
+      c.lineWidth = 2;
+      c.lineCap = 'round';
       c.beginPath();
-      c.moveTo(0, t.y - t.h);
-      c.lineTo(-t.w / 4, t.y - t.h / 2);
-      c.lineTo(t.w / 4, t.y - t.h / 2);
-      c.closePath();
-      c.fill();
+      for (var i = 0; i < t.n; i += 2) {
+        var x0 = -t.w + i * step;
+        c.moveTo(x0 + 1.5, t.b - 2.5);
+        c.quadraticCurveTo(x0 + step / 2, t.b - 7, x0 + step - 1.5, t.b - 2.5);
+      }
+      c.stroke();
     });
+    // Snow cap
+    c.fillStyle = '#f4f8fb';
+    c.beginPath();
+    c.moveTo(0, -33);
+    c.lineTo(-4, -25);
+    c.quadraticCurveTo(0, -27, 4, -25);
+    c.closePath();
+    c.fill();
 
     c.restore();
   }
@@ -649,28 +830,63 @@
   function drawBirch(c, x, y) {
     c.save();
     c.translate(x, y);
-    // Shadow
-    c.fillStyle = 'rgba(190, 205, 218, 0.35)';
+    // Long low-sun shadow
+    c.fillStyle = 'rgba(120, 150, 185, 0.22)';
     c.beginPath();
-    c.ellipse(6, 14, 12, 6, 0, 0, Math.PI * 2);
+    c.moveTo(-2, 14);
+    c.lineTo(26, 22);
+    c.lineTo(28, 19);
+    c.lineTo(2, 12);
     c.fill();
 
-    // White paper birch trunk with black notches
-    c.fillStyle = '#f5f5f5';
-    c.fillRect(-3, -22, 6, 36);
-    c.fillStyle = '#222';
-    c.fillRect(-3, -14, 3, 2);
-    c.fillRect(0, -6, 3, 2);
-    c.fillRect(-3, 2, 4, 2);
+    // Bare winter branches
+    c.strokeStyle = '#6b5a50';
+    c.lineCap = 'round';
+    c.lineWidth = 1.2;
+    c.beginPath();
+    c.moveTo(0, -18); c.lineTo(-11, -32); c.lineTo(-14, -40);
+    c.moveTo(-8, -28); c.lineTo(-4, -36);
+    c.moveTo(0, -24); c.lineTo(10, -38); c.lineTo(11, -46);
+    c.moveTo(7, -34); c.lineTo(14, -38);
+    c.moveTo(0, -36); c.lineTo(-5, -48);
+    c.moveTo(0, -38); c.lineTo(4, -50);
+    c.stroke();
+    c.lineWidth = 0.6;
+    c.beginPath();
+    c.moveTo(-14, -40); c.lineTo(-17, -44);
+    c.moveTo(-14, -40); c.lineTo(-12, -46);
+    c.moveTo(11, -46); c.lineTo(15, -49);
+    c.moveTo(11, -46); c.lineTo(9, -51);
+    c.moveTo(-5, -48); c.lineTo(-8, -52);
+    c.moveTo(4, -50); c.lineTo(7, -54);
+    c.stroke();
 
-    // Birch canopy (golden autumn/winter flecks)
-    c.fillStyle = 'rgba(212, 175, 55, 0.7)';
+    // Paper-white tapered trunk
+    c.fillStyle = '#f2efe7';
     c.beginPath();
-    c.arc(0, -28, 14, 0, Math.PI * 2);
+    c.moveTo(-3.2, 14);
+    c.lineTo(-1.4, -40);
+    c.lineTo(1.4, -40);
+    c.lineTo(3.2, 14);
+    c.closePath();
     c.fill();
-    c.fillStyle = '#fff';
+    c.fillStyle = 'rgba(150, 160, 175, 0.45)';
     c.beginPath();
-    c.arc(0, -32, 6, 0, Math.PI * 2);
+    c.moveTo(-3.2, 14);
+    c.lineTo(-1.4, -40);
+    c.lineTo(-0.4, -40);
+    c.lineTo(-1.6, 14);
+    c.closePath();
+    c.fill();
+    // Dark lenticels
+    c.fillStyle = '#1e1e1e';
+    [[-3, 9, 3.4], [0, 3, 2.6], [-2.5, -4, 2.2], [0.2, -11, 2.6], [-2, -18, 2], [0, -25, 1.8], [-1, -31, 1.5]].forEach(function (m) {
+      c.fillRect(m[0], m[1], m[2], 1.2);
+    });
+    // Snow at the foot
+    c.fillStyle = '#ffffff';
+    c.beginPath();
+    c.ellipse(0, 14, 6, 2.4, 0, 0, Math.PI * 2);
     c.fill();
     c.restore();
   }
@@ -678,148 +894,247 @@
   function drawRock(c, x, y) {
     c.save();
     c.translate(x, y);
-    c.fillStyle = 'rgba(190, 205, 218, 0.4)';
-    c.beginPath();
-    c.ellipse(2, 6, 16, 7, 0, 0, Math.PI * 2);
-    c.fill();
+    snowShadow(c, 4, 7, 17, 6);
 
-    c.fillStyle = '#596570';
+    c.fillStyle = '#56616c';
     c.beginPath();
-    c.ellipse(0, 0, 15, 10, -0.2, 0, Math.PI * 2);
+    c.moveTo(-15, 4);
+    c.lineTo(-11, -6);
+    c.lineTo(-2, -10);
+    c.lineTo(9, -8);
+    c.lineTo(15, 0);
+    c.lineTo(12, 7);
+    c.lineTo(-8, 8);
+    c.closePath();
     c.fill();
-
-    // Snow cap
-    c.fillStyle = '#f8fafc';
+    // Lit facet
+    c.fillStyle = '#7b8792';
     c.beginPath();
-    c.ellipse(-2, -5, 11, 5, 0, 0, Math.PI * 2);
+    c.moveTo(-2, -10);
+    c.lineTo(9, -8);
+    c.lineTo(15, 0);
+    c.lineTo(3, 1);
+    c.closePath();
+    c.fill();
+    // Shadow facet
+    c.fillStyle = '#434c55';
+    c.beginPath();
+    c.moveTo(-15, 4);
+    c.lineTo(-8, 8);
+    c.lineTo(3, 1);
+    c.lineTo(-6, -2);
+    c.closePath();
+    c.fill();
+    // Drifted snow cap
+    c.fillStyle = '#f7fafc';
+    c.beginPath();
+    c.moveTo(-12, -5);
+    c.quadraticCurveTo(-6, -12, 2, -11);
+    c.quadraticCurveTo(10, -10, 12, -4);
+    c.quadraticCurveTo(6, -6, 2, -4);
+    c.quadraticCurveTo(-4, -2, -12, -5);
     c.fill();
     c.restore();
   }
 
   function drawAaltoStool(c, x, y) {
-    // Alvar Aalto Stool 60
+    // Alvar Aalto Stool 60: three L-bent birch legs under a round seat
     c.save();
     c.translate(x, y);
-    c.fillStyle = 'rgba(190, 205, 218, 0.4)';
-    c.beginPath();
-    c.ellipse(0, 8, 14, 5, 0, 0, Math.PI * 2);
-    c.fill();
+    snowShadow(c, 3, 9, 15, 5);
 
-    // Bent birch legs
-    c.strokeStyle = '#c49a6c';
-    c.lineWidth = 3;
+    c.strokeStyle = '#c99a63';
+    c.lineWidth = 3.2;
+    c.lineCap = 'round';
     c.beginPath();
-    c.moveTo(-9, -2);
-    c.lineTo(-10, 8);
-    c.moveTo(0, -2);
-    c.lineTo(0, 8);
-    c.moveTo(9, -2);
-    c.lineTo(10, 8);
+    c.moveTo(-10, -2); c.quadraticCurveTo(-12, 0, -11, 9);
+    c.moveTo(10, -2); c.quadraticCurveTo(12, 0, 11, 9);
+    c.moveTo(0, 2); c.quadraticCurveTo(0, 4, 0, 11);
     c.stroke();
 
-    // Round bentwood top
-    c.fillStyle = '#e8c99b';
+    var top = c.createLinearGradient(0, -10, 0, 2);
+    top.addColorStop(0, '#f1d9b0');
+    top.addColorStop(1, '#d9b37f');
+    c.fillStyle = '#b8864f';
     c.beginPath();
-    c.ellipse(0, -4, 13, 7, 0, 0, Math.PI * 2);
+    c.ellipse(0, -2, 13.5, 7, 0, 0, Math.PI * 2);
     c.fill();
-    c.strokeStyle = '#a87848';
-    c.lineWidth = 1;
-    c.stroke();
+    c.fillStyle = top;
+    c.beginPath();
+    c.ellipse(0, -4, 13.5, 6.5, 0, 0, Math.PI * 2);
+    c.fill();
+    // A dusting of snow on the seat
+    c.fillStyle = 'rgba(255, 255, 255, 0.9)';
+    c.beginPath();
+    c.ellipse(-3, -5.5, 6, 2.6, -0.2, 0, Math.PI * 2);
+    c.fill();
     c.restore();
   }
 
   function drawEggChair(c, x, y) {
-    // Arne Jacobsen Egg Chair
+    // Arne Jacobsen Egg Chair: wrap-around shell on a swivel star base
     c.save();
     c.translate(x, y);
-    c.fillStyle = 'rgba(190, 205, 218, 0.4)';
-    c.beginPath();
-    c.ellipse(0, 14, 18, 6, 0, 0, Math.PI * 2);
-    c.fill();
+    snowShadow(c, 3, 16, 18, 6);
 
-    // Chrome 4-star base
-    c.strokeStyle = '#999';
+    c.strokeStyle = '#a7adb3';
     c.lineWidth = 2;
+    c.lineCap = 'round';
     c.beginPath();
-    c.moveTo(-10, 14);
-    c.lineTo(10, 14);
-    c.moveTo(0, 6);
-    c.lineTo(0, 14);
+    c.moveTo(0, 6); c.lineTo(0, 14);
+    c.moveTo(-11, 16); c.lineTo(11, 12);
+    c.moveTo(-9, 12); c.lineTo(9, 16);
     c.stroke();
 
-    // Sculptural organic shell (Classic Scandinavian Teal / Cobalt)
+    // Outer shell with its swept-back wings
     c.fillStyle = '#1f5f7a';
     c.beginPath();
-    c.ellipse(0, 0, 15, 18, 0, 0, Math.PI * 2);
+    c.moveTo(0, -20);
+    c.bezierCurveTo(12, -20, 17, -10, 16, -2);
+    c.bezierCurveTo(15, 4, 11, 8, 6, 9);
+    c.lineTo(-6, 9);
+    c.bezierCurveTo(-11, 8, -15, 4, -16, -2);
+    c.bezierCurveTo(-17, -10, -12, -20, 0, -20);
     c.fill();
-    c.fillStyle = '#16485d';
+    // Inner seat and back
+    c.fillStyle = '#174a60';
     c.beginPath();
-    c.ellipse(0, 3, 11, 13, 0, 0, Math.PI * 2);
+    c.moveTo(0, -14);
+    c.bezierCurveTo(8, -14, 10, -6, 9, 0);
+    c.lineTo(9, 6);
+    c.lineTo(-9, 6);
+    c.lineTo(-9, 0);
+    c.bezierCurveTo(-10, -6, -8, -14, 0, -14);
+    c.fill();
+    c.fillStyle = '#2b7896';
+    c.beginPath();
+    c.ellipse(0, 4, 8, 3, 0, 0, Math.PI * 2);
+    c.fill();
+    // Snow on the crown
+    c.fillStyle = '#f7fafc';
+    c.beginPath();
+    c.ellipse(0, -18.5, 8, 2.4, 0, 0, Math.PI * 2);
     c.fill();
     c.restore();
   }
 
   function drawRamp(c, x, y, w, h) {
+    // Snow kicker: shaded take-off face, blue lip line, landing shadow
     c.save();
     c.translate(x, y);
-    c.fillStyle = '#a8683b';
-    c.fillRect(-w / 2, -h / 2, w, h);
-    c.fillStyle = '#f8fafc';
-    c.fillRect(-w / 2, -h / 2, w, 4);
-
-    // Chevron arrow indicating jump
-    c.strokeStyle = '#fff';
-    c.lineWidth = 3;
+    c.fillStyle = 'rgba(110, 145, 185, 0.35)';
     c.beginPath();
-    c.moveTo(-14, 5);
-    c.lineTo(0, -4);
-    c.lineTo(14, 5);
+    c.ellipse(0, h / 2 + 6, w / 2 + 4, 7, 0, 0, Math.PI * 2);
+    c.fill();
+
+    var face = c.createLinearGradient(0, -h / 2, 0, h / 2);
+    face.addColorStop(0, '#ffffff');
+    face.addColorStop(1, '#cfdeec');
+    c.fillStyle = face;
+    c.beginPath();
+    c.moveTo(-w / 2 + 6, -h / 2);
+    c.lineTo(w / 2 - 6, -h / 2);
+    c.lineTo(w / 2, h / 2);
+    c.lineTo(-w / 2, h / 2);
+    c.closePath();
+    c.fill();
+    c.strokeStyle = 'rgba(140, 170, 200, 0.6)';
+    c.lineWidth = 1;
     c.stroke();
+    c.strokeStyle = '#1f5f7a';
+    c.lineWidth = 2.5;
+    c.beginPath();
+    c.moveTo(-w / 2, h / 2);
+    c.lineTo(w / 2, h / 2);
+    c.stroke();
+
+    // Chevrons pointing downhill
+    c.strokeStyle = '#ff6b4a';
+    c.lineWidth = 2.5;
+    c.lineCap = 'round';
+    c.lineJoin = 'round';
+    [-5, 3].forEach(function (cy) {
+      c.beginPath();
+      c.moveTo(-9, cy - 4);
+      c.lineTo(0, cy + 2);
+      c.lineTo(9, cy - 4);
+      c.stroke();
+    });
+    // Marker poles
+    [-w / 2, w / 2].forEach(function (px) {
+      c.fillStyle = '#ff6b4a';
+      c.fillRect(px - 1.5, h / 2 - 18, 3, 18);
+      c.fillStyle = '#fff';
+      c.fillRect(px - 1.5, h / 2 - 12, 3, 4);
+    });
     c.restore();
   }
 
-  function drawGate(c, x1, x2, y, passed) {
-    var poleColor = passed ? '#34c759' : '#d4251f';
-    var flagColor = passed ? '#28a745' : '#0a3fb8';
-
-    // Left pole (Red flag)
-    c.fillStyle = '#333';
-    c.fillRect(x1 - 2, y - 28, 4, 30);
-    c.fillStyle = '#d4251f';
-    c.beginPath();
-    c.moveTo(x1 + 2, y - 28);
-    c.lineTo(x1 + 22, y - 20);
-    c.lineTo(x1 + 2, y - 12);
-    c.closePath();
-    c.fill();
-
-    // Right pole (Blue flag)
-    c.fillStyle = '#333';
-    c.fillRect(x2 - 2, y - 28, 4, 30);
-    c.fillStyle = flagColor;
-    c.beginPath();
-    c.moveTo(x2 - 2, y - 28);
-    c.lineTo(x2 - 22, y - 20);
-    c.lineTo(x2 - 2, y - 12);
-    c.closePath();
-    c.fill();
+  // Giant-slalom style gate: a pair of poles with a panel either side of the
+  // opening. Gates alternate red and blue down the course.
+  function drawGate(c, g, y) {
+    var panel = g.color === 'blue' ? '#1f4fb8' : '#d4251f';
+    [[g.x1 - 16, g.x1], [g.x2, g.x2 + 16]].forEach(function (pair) {
+      // Pole shadows
+      c.strokeStyle = 'rgba(120, 150, 185, 0.35)';
+      c.lineWidth = 2;
+      c.beginPath();
+      c.moveTo(pair[0], y); c.lineTo(pair[0] + 12, y + 6);
+      c.moveTo(pair[1], y); c.lineTo(pair[1] + 12, y + 6);
+      c.stroke();
+      // Panel
+      c.fillStyle = panel;
+      c.fillRect(pair[0], y - 26, pair[1] - pair[0], 15);
+      c.fillStyle = 'rgba(255, 255, 255, 0.85)';
+      c.fillRect(pair[0], y - 20, pair[1] - pair[0], 2.5);
+      // Poles
+      c.fillStyle = panel;
+      c.fillRect(pair[0] - 1.5, y - 30, 3, 31);
+      c.fillRect(pair[1] - 1.5, y - 30, 3, 31);
+      c.fillStyle = '#ffffff';
+      c.fillRect(pair[0] - 1.5, y - 8, 3, 3);
+      c.fillRect(pair[1] - 1.5, y - 8, 3, 3);
+    });
+    if (g.passed) {
+      c.strokeStyle = '#2e9e4f';
+      c.lineWidth = 3;
+      c.lineCap = 'round';
+      c.lineJoin = 'round';
+      var cx = (g.x1 + g.x2) / 2;
+      c.beginPath();
+      c.moveTo(cx - 6, y - 16);
+      c.lineTo(cx - 1, y - 11);
+      c.lineTo(cx + 8, y - 21);
+      c.stroke();
+    }
   }
 
   function drawFinishBanner(c, y) {
     c.save();
     c.translate(320, y);
-    // Finish poles
-    c.fillStyle = '#333';
-    c.fillRect(-220, -40, 6, 42);
-    c.fillRect(214, -40, 6, 42);
-
-    // Banner ribbon
+    // Post shadows
+    c.fillStyle = 'rgba(120, 150, 185, 0.3)';
+    c.beginPath();
+    c.ellipse(-214, 2, 10, 3, 0, 0, Math.PI * 2);
+    c.ellipse(220, 2, 10, 3, 0, 0, Math.PI * 2);
+    c.fill();
+    // Timber posts
+    c.fillStyle = '#6b4a32';
+    c.fillRect(-222, -46, 8, 48);
+    c.fillRect(214, -46, 8, 48);
+    // Banner with chequered trim
     c.fillStyle = '#d4251f';
-    c.fillRect(-220, -36, 440, 20);
+    c.fillRect(-214, -44, 428, 24);
+    for (var i = 0; i < 428 / 6; i++) {
+      c.fillStyle = i % 2 ? '#ffffff' : '#1b1f24';
+      c.fillRect(-214 + i * 6, -44, 6, 3);
+      c.fillStyle = i % 2 ? '#1b1f24' : '#ffffff';
+      c.fillRect(-214 + i * 6, -23, 6, 3);
+    }
     c.fillStyle = '#fff';
     c.font = 'bold 12px sans-serif';
     c.textAlign = 'center';
-    c.fillText('FINISH  -  MAL', 0, -22);
+    c.fillText('MÅL  ·  FINISH', 0, -28);
     c.restore();
   }
 
@@ -827,30 +1142,48 @@
     c.save();
     c.translate(x, y);
 
-    // Shadow
-    c.fillStyle = 'rgba(180, 195, 210, 0.45)';
-    c.beginPath();
-    c.ellipse(0, 48, 90, 24, 0, 0, Math.PI * 2);
-    c.fill();
+    snowShadow(c, 10, 48, 96, 22);
 
-    // Falu Red timber walls
+    // Falu red board-and-batten walls
     c.fillStyle = '#8b251e';
     c.fillRect(-75, -20, 150, 65);
+    c.strokeStyle = 'rgba(60, 14, 10, 0.45)';
+    c.lineWidth = 1;
+    c.beginPath();
+    for (var bx = -69; bx < 75; bx += 8) {
+      c.moveTo(bx, -18);
+      c.lineTo(bx, 45);
+    }
+    c.stroke();
+    // White corner boards
+    c.fillStyle = '#f4f1ea';
+    c.fillRect(-77, -20, 5, 65);
+    c.fillRect(72, -20, 5, 65);
 
-    // Modernist warm glowing windows
-    c.fillStyle = '#ffe082';
-    c.fillRect(-55, 0, 32, 28);
-    c.fillRect(25, 0, 32, 28);
-    c.strokeStyle = '#4a1512';
-    c.lineWidth = 2;
-    c.strokeRect(-55, 0, 32, 28);
-    c.strokeRect(25, 0, 32, 28);
+    // Glowing windows in white frames with glazing bars
+    [[-57, 2], [25, 2]].forEach(function (w) {
+      c.fillStyle = '#f4f1ea';
+      c.fillRect(w[0] - 3, w[1] - 3, 38, 32);
+      c.fillStyle = '#ffd36b';
+      c.fillRect(w[0], w[1], 32, 26);
+      c.fillStyle = '#ffeaa8';
+      c.fillRect(w[0], w[1], 32, 10);
+      c.fillStyle = '#f4f1ea';
+      c.fillRect(w[0] + 15, w[1], 2, 26);
+      c.fillRect(w[0], w[1] + 12, 32, 2);
+    });
 
-    // Warm timber door
-    c.fillStyle = '#c49a6c';
+    // Door with white frame
+    c.fillStyle = '#f4f1ea';
+    c.fillRect(-15, 7, 30, 38);
+    c.fillStyle = '#2f4f5f';
     c.fillRect(-12, 10, 24, 35);
+    c.fillStyle = '#d9b44a';
+    c.beginPath();
+    c.arc(7, 28, 1.6, 0, Math.PI * 2);
+    c.fill();
 
-    // Modernist pitched timber roof covered with thick snow
+    // Dark timber roof under a thick blanket of snow
     c.fillStyle = '#3a241e';
     c.beginPath();
     c.moveTo(0, -60);
@@ -858,36 +1191,45 @@
     c.lineTo(90, -20);
     c.closePath();
     c.fill();
-
-    // Snow on roof
-    c.fillStyle = '#f8fafc';
+    c.fillStyle = '#f7fafc';
     c.beginPath();
-    c.moveTo(0, -64);
-    c.lineTo(-94, -20);
-    c.lineTo(-84, -14);
-    c.lineTo(0, -54);
-    c.lineTo(84, -14);
-    c.lineTo(94, -20);
+    c.moveTo(0, -66);
+    c.lineTo(-96, -21);
+    c.quadraticCurveTo(-90, -14, -84, -18);
+    c.quadraticCurveTo(-60, -14, -50, -24);
+    c.lineTo(0, -50);
+    c.lineTo(50, -24);
+    c.quadraticCurveTo(64, -14, 84, -18);
+    c.quadraticCurveTo(90, -14, 96, -21);
     c.closePath();
     c.fill();
+    c.strokeStyle = 'rgba(150, 178, 204, 0.6)';
+    c.lineWidth = 1;
+    c.stroke();
 
-    // Chimney & gentle sauna steam smoke
-    c.fillStyle = '#555';
+    // Chimney and drifting sauna steam
+    c.fillStyle = '#5a5552';
     c.fillRect(40, -62, 16, 26);
-    c.fillStyle = 'rgba(255, 255, 255, 0.7)';
+    c.fillStyle = '#f7fafc';
+    c.fillRect(38, -64, 20, 4);
+    c.fillStyle = 'rgba(255, 255, 255, 0.75)';
     c.beginPath();
-    c.arc(48, -72, 8, 0, Math.PI * 2);
-    c.arc(52, -88, 12, 0, Math.PI * 2);
-    c.arc(58, -108, 16, 0, Math.PI * 2);
+    c.arc(48, -74, 7, 0, Math.PI * 2);
+    c.arc(53, -88, 10, 0, Math.PI * 2);
+    c.arc(60, -106, 13, 0, Math.PI * 2);
     c.fill();
+    c.strokeStyle = 'rgba(150, 170, 190, 0.35)';
+    c.stroke();
 
     // Sign
     c.fillStyle = '#e8c99b';
-    c.fillRect(-28, -14, 56, 14);
+    c.fillRect(-30, -16, 60, 14);
+    c.strokeStyle = '#6b4a32';
+    c.strokeRect(-30, -16, 60, 14);
     c.fillStyle = '#222';
     c.font = 'bold 8px sans-serif';
     c.textAlign = 'center';
-    c.fillText('SAUNA LODGE', 0, -4);
+    c.fillText('SAUNA LODGE', 0, -6);
 
     c.restore();
   }
@@ -1104,7 +1446,11 @@
     document.body.appendChild(backdrop);
 
     canvas = modal.querySelector('.nordic-canvas');
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = 640 * dpr;
+    canvas.height = 440 * dpr;
     ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     // Controls
     var closeBtn = modal.querySelector('[data-nordic-close]');
