@@ -138,20 +138,57 @@
     '.steam-stat{font-weight:600}' +
     '.steam-stat span{font-weight:normal;color:var(--muted)}' +
     '.steam-stage{display:flex;flex-direction:column;align-items:center;gap:14px;position:relative}' +
-    '.steam-machine{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;max-width:820px;margin:0 auto;overflow-x:auto;padding:8px 2px}' +
+    '.steam-machine{display:flex;align-items:flex-start;justify-content:center;gap:12px;width:100%;max-width:820px;margin:0 auto;overflow-x:auto;padding:8px 2px}' +
     '.steam-boiler,.steam-pump{flex:0 0 auto;width:120px;display:flex;flex-direction:column;align-items:center;text-align:center}' +
-    '.steam-boiler svg,.steam-pump svg{width:100%;height:auto;display:block}' +
-    '.steam-grid-wrap{flex:0 0 auto;background:#181614;padding:8px;border-radius:10px;box-shadow:inset 0 0 12px rgba(0,0,0,0.8),0 2px 6px rgba(0,0,0,0.2);border:2px solid #3d352e}' +
-    '.steam-grid{display:grid;gap:5px;justify-content:center}' +
-    '.pipe-tile{width:68px;height:68px;min-width:44px;min-height:44px;padding:0;border:0;background:#24201c;border-radius:6px;cursor:pointer;position:relative;display:flex;align-items:center;justify-content:center;outline:none;box-shadow:inset 0 0 0 1px #3a3229,0 2px 4px rgba(0,0,0,0.4);transition:transform .18s cubic-bezier(.2,.8,.3,1),filter .15s}' +
-    '.pipe-tile:hover{filter:brightness(1.15)}' +
-    '.pipe-tile:focus-visible{outline:3px solid var(--focus,#9a3b00);outline-offset:2px;z-index:2}' +
-    '.pipe-tile svg{width:100%;height:100%;display:block;pointer-events:none}' +
-    '@media(max-width:680px){.pipe-tile{width:54px;height:54px}.steam-boiler,.steam-pump{width:86px}.steam-modal{padding:14px}}' +
+    '.steam-boiler svg,.steam-pump svg{width:100%;height:auto;display:block;overflow:visible}' +
+    '.steam-grid-wrap{position:relative;flex:0 0 auto;background:linear-gradient(#2a2622,#1b1815);padding:8px;border-radius:10px;box-shadow:inset 0 0 12px rgba(0,0,0,0.8),0 2px 6px rgba(0,0,0,0.2);border:2px solid #3d352e}' +
+    '.steam-grid{display:grid;gap:0;justify-content:center}' +
+    '.steam-port{position:absolute;width:26px;background:linear-gradient(#2a2d31,#7b8188 35%,#25282c);pointer-events:none;z-index:1;transition:background .3s}' +
+    '.steam-port.hot{background:linear-gradient(#4a220c,#e0965a 35%,#4a220c)}' +
+    '.steam-port-in{left:-18px}.steam-port-out{right:-18px}' +
+    '.pipe-tile{width:72px;height:72px;min-width:44px;min-height:44px;padding:0;border:0;background:transparent;border-radius:6px;cursor:pointer;position:relative;display:flex;align-items:center;justify-content:center;outline:none;transition:transform .18s cubic-bezier(.2,.8,.3,1),filter .15s}' +
+    '.pipe-tile:hover{filter:brightness(1.18)}' +
+    '.pipe-tile:focus-visible{outline:3px solid var(--focus,#9a3b00);outline-offset:-1px;z-index:2}' +
+    '.pipe-tile svg{width:100%;height:100%;display:block;pointer-events:none;overflow:visible}' +
+    '@media(max-width:680px){.pipe-tile{width:56px;height:56px}.steam-boiler,.steam-pump{width:86px}.steam-modal{padding:14px}}' +
     '@media(max-width:480px){.pipe-tile{width:46px;height:46px}.steam-boiler,.steam-pump{width:70px}}' +
-    '.steam-flow-core{transition:stroke .2s,fill .2s}' +
-    '.pipe-tile.steamed .steam-flow-core{stroke:#ffba42;filter:drop-shadow(0 0 3px #ffa200)}' +
-    '.pipe-tile.steamed .steam-flow-inner{stroke:#fff6d6}' +
+    '.p-plate{fill:#2c2824;stroke:#3d362f;stroke-width:1.5}' +
+    '.p-rivet{fill:#4a4239}' +
+    '.p-edge{stroke:#15171a;stroke-width:32}' +
+    '.p-body{stroke:#5d636a;stroke-width:27;transition:stroke .3s}' +
+    '.p-sheen{stroke:#a3aab1;stroke-width:6;opacity:.5;transition:stroke .3s}' +
+    '.p-flow{stroke:#fff3d6;stroke-width:5;stroke-dasharray:4 12;stroke-linecap:round;opacity:0}' +
+    '.p-flange{fill:#3d4247;stroke:#15171a;stroke-width:1;transition:fill .3s}' +
+    '.p-bolt{fill:#c29238}' +
+    '.p-cast{fill:#4d5359;stroke:#15171a;stroke-width:1.5;transition:fill .3s}' +
+    '.p-cast-ring{fill:none;stroke:#c29238;stroke-width:2}' +
+    '.pipe-tile.steamed .p-body{stroke:#b5622a}' +
+    '.pipe-tile.steamed .p-sheen{stroke:#f3b47c;opacity:.7}' +
+    '.pipe-tile.steamed .p-flange{fill:#7a3d18}' +
+    '.pipe-tile.steamed .p-cast{fill:#9c5222}' +
+    '.pipe-tile.steamed .p-flow{opacity:.85;animation:steam-flow .7s linear infinite}' +
+    '.steam-leak circle{fill:rgba(255,255,255,0.8)}' +
+    '.steam-leak{transform-box:fill-box;transform-origin:center;animation:steam-leak 1.1s ease-out infinite}' +
+    '.steam-smoke circle{fill:rgba(205,205,205,0.75)}' +
+    '.steam-smoke{opacity:0;transform-box:fill-box;transform-origin:center}' +
+    '.steam-lit .steam-smoke{animation:steam-smoke 2.4s ease-out infinite}' +
+    '.steam-fire{animation:steam-fire 1.3s ease-in-out infinite alternate}' +
+    '.steam-beam{transform-box:view-box;transform-origin:60px 40px;transform:rotate(-8deg)}' +
+    '.steam-rod-l{transform:translateY(5.3px)}.steam-rod-r{transform:translateY(-5.3px)}' +
+    '.steam-running .steam-beam{animation:steam-beam 1.6s ease-in-out infinite alternate}' +
+    '.steam-running .steam-rod-l{animation:steam-rod-l 1.6s ease-in-out infinite alternate}' +
+    '.steam-running .steam-rod-r{animation:steam-rod-r 1.6s ease-in-out infinite alternate}' +
+    '.steam-water{opacity:0}' +
+    '.steam-running .steam-water{opacity:1;stroke-dasharray:4 4;animation:steam-water .4s linear infinite}' +
+    '.steam-running .steam-trough{fill:#5fb3e6}' +
+    '@keyframes steam-flow{to{stroke-dashoffset:-16}}' +
+    '@keyframes steam-leak{0%{opacity:.9;transform:scale(.4)}100%{opacity:0;transform:scale(1.7)}}' +
+    '@keyframes steam-smoke{0%{opacity:.85;transform:translate(0,0) scale(.6)}100%{opacity:0;transform:translate(8px,-34px) scale(1.9)}}' +
+    '@keyframes steam-fire{from{opacity:.6}to{opacity:1}}' +
+    '@keyframes steam-beam{from{transform:rotate(-8deg)}to{transform:rotate(8deg)}}' +
+    '@keyframes steam-rod-l{from{transform:translateY(5.3px)}to{transform:translateY(-5.3px)}}' +
+    '@keyframes steam-rod-r{from{transform:translateY(-5.3px)}to{transform:translateY(5.3px)}}' +
+    '@keyframes steam-water{to{stroke-dashoffset:-8}}' +
     '.steam-banner{background:var(--surface,#ece4d3);border:2px solid var(--accent,#1f5f7a);border-radius:8px;padding:12px 16px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;width:100%;box-sizing:border-box}' +
     '.steam-banner h3{margin:0;font-size:1.1rem;color:var(--ink)}' +
     '.steam-banner p{margin:2px 0 0;font-size:.9rem;color:var(--muted)}' +
@@ -161,12 +198,7 @@
     '.steam-victory-card p{max-width:54ch;margin:0 auto;color:var(--ink)}' +
     '.steam-victory-btns{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:8px}' +
     '.steam-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}' +
-    '.steam-wheel{transform-origin:50px 50px}' +
-    '.steam-running .steam-wheel{animation:steam-wheel-turn 2.4s linear infinite}' +
-    '.steam-running .steam-piston{animation:steam-piston-bob 1.2s ease-in-out infinite alternate}' +
-    '@keyframes steam-wheel-turn{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}' +
-    '@keyframes steam-piston-bob{from{transform:translateY(0)}to{transform:translateY(8px)}}' +
-    '@media(prefers-reduced-motion:reduce){.pipe-tile{transition:none}.steam-running .steam-wheel,.steam-running .steam-piston{animation:none}}';
+    '@media(prefers-reduced-motion:reduce){.pipe-tile{transition:none}.pipe-tile.steamed .p-flow,.steam-leak,.steam-lit .steam-smoke,.steam-fire,.steam-running .steam-beam,.steam-running .steam-rod-l,.steam-running .steam-rod-r,.steam-running .steam-water{animation:none}}';
 
   function rotMask(mask, r) {
     var m = mask;
@@ -251,138 +283,184 @@
     });
   }
 
-  function createTileSvg(type) {
-    var outerCast = '#383028';
-    var brassFlange = '#c29238';
-    var emptyCore = '#1c1815';
+  // Pipe ends sit on the tile edges, in the tile's unrotated frame
+  var END_POS = {};
+  END_POS[N] = { x: 50, y: 0 };
+  END_POS[E] = { x: 100, y: 50 };
+  END_POS[S] = { x: 50, y: 100 };
+  END_POS[W] = { x: 0, y: 50 };
 
-    if (type === 'straight') {
-      return (
-        '<svg viewBox="0 0 100 100" aria-hidden="true">' +
-        '<line x1="50" y1="0" x2="50" y2="100" stroke="' + outerCast + '" stroke-width="28" stroke-linecap="square"/>' +
-        '<line class="steam-flow-core" x1="50" y1="0" x2="50" y2="100" stroke="' + emptyCore + '" stroke-width="16"/>' +
-        '<line class="steam-flow-inner" x1="50" y1="0" x2="50" y2="100" stroke="transparent" stroke-width="5"/>' +
-        '<rect x="31" y="0" width="38" height="6" fill="' + brassFlange + '" rx="2"/>' +
-        '<rect x="31" y="94" width="38" height="6" fill="' + brassFlange + '" rx="2"/>' +
-        '<circle cx="36" cy="3" r="1.5" fill="#1b1612"/>' +
-        '<circle cx="64" cy="3" r="1.5" fill="#1b1612"/>' +
-        '<circle cx="36" cy="97" r="1.5" fill="#1b1612"/>' +
-        '<circle cx="64" cy="97" r="1.5" fill="#1b1612"/>' +
-        '<rect x="32" y="47" width="36" height="6" fill="' + brassFlange + '" rx="1" opacity="0.8"/>' +
-        '</svg>'
-      );
-    }
-    if (type === 'elbow') {
-      return (
-        '<svg viewBox="0 0 100 100" aria-hidden="true">' +
-        '<path d="M 50,0 Q 50,50 100,50" fill="none" stroke="' + outerCast + '" stroke-width="28" stroke-linecap="square"/>' +
-        '<path class="steam-flow-core" d="M 50,0 Q 50,50 100,50" fill="none" stroke="' + emptyCore + '" stroke-width="16"/>' +
-        '<path class="steam-flow-inner" d="M 50,0 Q 50,50 100,50" fill="none" stroke="transparent" stroke-width="5"/>' +
-        '<rect x="31" y="0" width="38" height="6" fill="' + brassFlange + '" rx="2"/>' +
-        '<rect x="94" y="31" width="6" height="38" fill="' + brassFlange + '" rx="2"/>' +
-        '<circle cx="36" cy="3" r="1.5" fill="#1b1612"/>' +
-        '<circle cx="64" cy="3" r="1.5" fill="#1b1612"/>' +
-        '<circle cx="97" cy="36" r="1.5" fill="#1b1612"/>' +
-        '<circle cx="97" cy="64" r="1.5" fill="#1b1612"/>' +
-        '<circle cx="50" cy="50" r="12" fill="' + brassFlange + '" opacity="0.9"/>' +
-        '<circle cx="50" cy="50" r="5" fill="#1b1612"/>' +
-        '</svg>'
-      );
-    }
+  function pipePaths(type) {
+    if (type === 'straight') return ['M 50 0 L 50 100'];
+    if (type === 'elbow') return ['M 50 0 A 50 50 0 0 0 100 50'];
+    if (type === 'tee') return ['M 50 0 L 50 100', 'M 50 50 L 100 50'];
+    return [];
+  }
+
+  function flangeSvg(bit) {
+    var p = END_POS[bit];
+    var vertical = bit === N || bit === S;
+    var w = vertical ? 40 : 8;
+    var h = vertical ? 8 : 40;
+    var x = p.x - w / 2;
+    var y = p.y - h / 2;
+    // Keep the flange inside the tile so neighbours butt up flange to flange
+    if (bit === N) y = 0;
+    if (bit === S) y = 92;
+    if (bit === W) x = 0;
+    if (bit === E) x = 92;
+    var bolts = vertical
+      ? [[x + 5, y + 4], [x + w - 5, y + 4]]
+      : [[x + 4, y + 5], [x + 4, y + h - 5]];
+    return (
+      '<rect class="p-flange" x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="1.5"/>' +
+      bolts.map(function (b) { return '<circle class="p-bolt" cx="' + b[0] + '" cy="' + b[1] + '" r="1.8"/>'; }).join('')
+    );
+  }
+
+  // leakMask is in the tile's own (unrotated) frame
+  function createTileSvg(type, base, leakMask) {
+    var paths = pipePaths(type);
+    var layer = function (cls) {
+      return paths.map(function (d) { return '<path class="' + cls + '" d="' + d + '"/>'; }).join('');
+    };
+    var svg =
+      '<svg viewBox="0 0 100 100" aria-hidden="true">' +
+      // Riveted floor plate
+      '<rect class="p-plate" x="1" y="1" width="98" height="98" rx="5"/>' +
+      '<g class="p-rivet"><circle cx="9" cy="9" r="2"/><circle cx="91" cy="9" r="2"/><circle cx="9" cy="91" r="2"/><circle cx="91" cy="91" r="2"/></g>' +
+      '<g fill="none">' +
+      layer('p-edge') + layer('p-body') + layer('p-sheen') + layer('p-flow') +
+      '</g>';
     if (type === 'tee') {
-      return (
-        '<svg viewBox="0 0 100 100" aria-hidden="true">' +
-        '<line x1="50" y1="0" x2="50" y2="100" stroke="' + outerCast + '" stroke-width="28" stroke-linecap="square"/>' +
-        '<line x1="50" y1="50" x2="100" y2="50" stroke="' + outerCast + '" stroke-width="28" stroke-linecap="square"/>' +
-        '<line class="steam-flow-core" x1="50" y1="0" x2="50" y2="100" stroke="' + emptyCore + '" stroke-width="16"/>' +
-        '<line class="steam-flow-core" x1="50" y1="50" x2="100" y2="50" stroke="' + emptyCore + '" stroke-width="16"/>' +
-        '<line class="steam-flow-inner" x1="50" y1="0" x2="50" y2="100" stroke="transparent" stroke-width="5"/>' +
-        '<line class="steam-flow-inner" x1="50" y1="50" x2="100" y2="50" stroke="transparent" stroke-width="5"/>' +
-        '<rect x="31" y="0" width="38" height="6" fill="' + brassFlange + '" rx="2"/>' +
-        '<rect x="31" y="94" width="38" height="6" fill="' + brassFlange + '" rx="2"/>' +
-        '<rect x="94" y="31" width="6" height="38" fill="' + brassFlange + '" rx="2"/>' +
-        '<circle cx="36" cy="3" r="1.5" fill="#1b1612"/>' +
-        '<circle cx="64" cy="3" r="1.5" fill="#1b1612"/>' +
-        '<circle cx="36" cy="97" r="1.5" fill="#1b1612"/>' +
-        '<circle cx="64" cy="97" r="1.5" fill="#1b1612"/>' +
-        '<circle cx="97" cy="36" r="1.5" fill="#1b1612"/>' +
-        '<circle cx="97" cy="64" r="1.5" fill="#1b1612"/>' +
-        '<circle cx="50" cy="50" r="14" fill="' + brassFlange + '"/>' +
-        '<circle cx="50" cy="50" r="6" fill="#1b1612"/>' +
-        '</svg>'
-      );
+      svg += '<circle class="p-cast" cx="50" cy="50" r="19"/><circle class="p-cast-ring" cx="50" cy="50" r="12"/>';
     }
-    return '';
+    DIRS.forEach(function (d) {
+      if (base & d.bit) svg += flangeSvg(d.bit);
+    });
+    DIRS.forEach(function (d) {
+      if (!(leakMask & d.bit)) return;
+      var p = END_POS[d.bit];
+      svg +=
+        '<g class="steam-leak">' +
+        '<circle cx="' + p.x + '" cy="' + p.y + '" r="9"/>' +
+        '<circle cx="' + (p.x + (d.dc * 8)) + '" cy="' + (p.y + (d.dr * 8)) + '" r="6"/>' +
+        '</g>';
+    });
+    return svg + '</svg>';
   }
 
   function getBoilerSvg(psi, steamed) {
-    var dialAngle = steamed ? (psi / 120) * 220 - 110 : -110;
+    var dialAngle = steamed ? (psi / 120) * 240 - 120 : -120;
+    var ticks = '';
+    for (var i = 0; i <= 12; i++) {
+      var a = (-120 + i * 20 - 90) * Math.PI / 180;
+      var r1 = i % 3 === 0 ? 11.5 : 13.5;
+      ticks += '<line x1="' + (57 + Math.cos(a) * r1).toFixed(1) + '" y1="' + (94 + Math.sin(a) * r1).toFixed(1) +
+        '" x2="' + (57 + Math.cos(a) * 16).toFixed(1) + '" y2="' + (94 + Math.sin(a) * 16).toFixed(1) + '"/>';
+    }
+    var rivets = '';
+    for (var x = 22; x <= 92; x += 10) {
+      rivets += '<circle cx="' + x + '" cy="42" r="1.4"/><circle cx="' + x + '" cy="134" r="1.4"/>';
+    }
     return (
-      '<svg viewBox="0 0 120 180" aria-label="Victorian Steam Boiler">' +
-      // Chimney & vent
-      '<rect x="48" y="10" width="24" height="24" fill="#2d2824" stroke="#4a4038" stroke-width="2"/>' +
-      '<polygon points="44,10 76,10 70,2 50,2" fill="#3a322c"/>' +
-      // Main boiler tank
-      '<rect x="15" y="30" width="90" height="110" rx="20" fill="#3a332d" stroke="#5a4f45" stroke-width="3"/>' +
-      // Rivets
-      '<g fill="#c29238">' +
-      '<circle cx="25" cy="40" r="2.5"/><circle cx="95" cy="40" r="2.5"/>' +
-      '<circle cx="25" cy="130" r="2.5"/><circle cx="95" cy="130" r="2.5"/>' +
-      '<circle cx="60" cy="36" r="2.5"/>' +
+      '<svg viewBox="0 0 120 180" aria-label="Victorian steam boiler">' +
+      '<defs>' +
+      '<linearGradient id="stm-boiler" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#142a1f"/><stop offset="0.38" stop-color="#3f6d53"/><stop offset="0.55" stop-color="#2f5541"/><stop offset="1" stop-color="#11241a"/></linearGradient>' +
+      '<linearGradient id="stm-pipe-h" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2d31"/><stop offset="0.35" stop-color="#7b8188"/><stop offset="1" stop-color="#25282c"/></linearGradient>' +
+      '<linearGradient id="stm-brick" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7a3324"/><stop offset="1" stop-color="#4f2016"/></linearGradient>' +
+      '<radialGradient id="stm-glow" cx="0.5" cy="0.6" r="0.6"><stop offset="0" stop-color="#ffd27a"/><stop offset="0.5" stop-color="#ff7a1a"/><stop offset="1" stop-color="#7a1d05"/></radialGradient>' +
+      '</defs>' +
+      // Smoke from the stack once the boiler is feeding pipes
+      '<g class="steam-smoke"><circle cx="58" cy="-2" r="6"/><circle cx="62" cy="-2" r="8"/><circle cx="55" cy="-2" r="7"/></g>' +
+      // Chimney stack
+      '<rect x="50" y="4" width="15" height="28" fill="#26292d" stroke="#141618" stroke-width="1"/>' +
+      '<rect x="47" y="2" width="21" height="5" rx="1" fill="#3a3e43"/>' +
+      '<rect x="50" y="18" width="15" height="3" fill="#c29238"/>' +
+      // Boiler shell in Victorian green with brass bands
+      '<rect x="14" y="28" width="86" height="118" rx="22" fill="url(#stm-boiler)" stroke="#0c1a12" stroke-width="1.5"/>' +
+      '<rect x="14" y="39" width="86" height="6" fill="#c29238"/>' +
+      '<rect x="14" y="131" width="86" height="6" fill="#c29238"/>' +
+      '<rect x="14" y="39" width="86" height="1.5" fill="#f2cf7a" opacity="0.7"/>' +
+      '<rect x="14" y="131" width="86" height="1.5" fill="#f2cf7a" opacity="0.7"/>' +
+      '<g fill="#6b4f15">' + rivets + '</g>' +
+      // Brass nameplate
+      '<rect x="27" y="52" width="60" height="16" rx="8" fill="#c29238" stroke="#7a5818" stroke-width="1.2"/>' +
+      '<text x="57" y="63" text-anchor="middle" font-family="Georgia,serif" font-size="7.5" font-weight="bold" fill="#2b1d06">KEW BRIDGE</text>' +
+      // Pressure gauge
+      '<circle cx="57" cy="94" r="21" fill="#c29238" stroke="#6b4f15" stroke-width="1"/>' +
+      '<circle cx="57" cy="94" r="18" fill="#fbf6e6"/>' +
+      '<path d="M ' + (57 + Math.cos(40 * Math.PI / 180) * 15).toFixed(1) + ' ' + (94 - Math.sin(40 * Math.PI / 180) * 15).toFixed(1) +
+      ' A 15 15 0 0 1 ' + (57 + Math.cos(-30 * Math.PI / 180) * 15).toFixed(1) + ' ' + (94 - Math.sin(-30 * Math.PI / 180) * 15).toFixed(1) +
+      '" fill="none" stroke="#c0392b" stroke-width="3"/>' +
+      '<g stroke="#2b2b2b" stroke-width="1">' + ticks + '</g>' +
+      '<line class="steam-needle" x1="57" y1="94" x2="57" y2="79" stroke="#1b1b1b" stroke-width="1.8" stroke-linecap="round" transform="rotate(' + dialAngle + ' 57 94)"/>' +
+      '<circle cx="57" cy="94" r="2.6" fill="#c29238" stroke="#2b2b2b" stroke-width="0.8"/>' +
+      // Steam take-off with stop valve, running out to the pipe grid
+      '<rect x="96" y="35" width="24" height="18" fill="url(#stm-pipe-h)"/>' +
+      '<rect x="113" y="31" width="7" height="26" rx="1.5" fill="#3b3f44"/>' +
+      '<circle cx="116.5" cy="35" r="1.4" fill="#c29238"/><circle cx="116.5" cy="53" r="1.4" fill="#c29238"/>' +
+      '<rect x="103" y="24" width="4" height="12" fill="#3b3f44"/>' +
+      '<ellipse cx="105" cy="23" rx="9" ry="2.6" fill="none" stroke="#b01f14" stroke-width="2"/>' +
+      // Brick firebox with glowing door
+      '<rect x="22" y="146" width="70" height="24" fill="url(#stm-brick)"/>' +
+      '<g stroke="#3a150d" stroke-width="0.7" opacity="0.8">' +
+      '<line x1="22" y1="154" x2="92" y2="154"/><line x1="22" y1="162" x2="92" y2="162"/>' +
+      '<line x1="34" y1="146" x2="34" y2="154"/><line x1="58" y1="146" x2="58" y2="154"/><line x1="82" y1="146" x2="82" y2="154"/>' +
+      '<line x1="46" y1="162" x2="46" y2="170"/><line x1="70" y1="162" x2="70" y2="170"/>' +
       '</g>' +
-      // Boiler brass nameplate
-      '<rect x="28" y="52" width="64" height="18" rx="3" fill="#c29238" stroke="#7a5818" stroke-width="1.5"/>' +
-      '<text x="60" y="64" text-anchor="middle" font-family="sans-serif" font-size="7.5" font-weight="bold" fill="#261b07">KEW STEAM</text>' +
-      // Pressure gauge dial
-      '<circle cx="60" cy="94" r="20" fill="#fffef7" stroke="#c29238" stroke-width="3.5"/>' +
-      '<circle cx="60" cy="94" r="17" fill="none" stroke="#222" stroke-width="1" stroke-dasharray="2 3"/>' +
-      '<line x1="60" y1="94" x2="60" y2="80" stroke="#b01f14" stroke-width="2" stroke-linecap="round" transform="rotate(' + dialAngle + ' 60 94)"/>' +
-      '<circle cx="60" cy="94" r="3" fill="#222"/>' +
-      // Firebox door
-      '<rect x="36" y="122" width="48" height="18" rx="4" fill="#1b1714" stroke="#54483e" stroke-width="2"/>' +
-      '<circle cx="48" cy="131" r="3" fill="#ff6a00"/>' +
-      '<circle cx="60" cy="131" r="3.5" fill="#ff9900"/>' +
-      '<circle cx="72" cy="131" r="3" fill="#ff6a00"/>' +
-      // Outlet pipe on the right leading into grid
-      '<rect x="104" y="37" width="16" height="18" fill="#4d4239" stroke="#6b5c4f" stroke-width="2"/>' +
-      '<rect x="114" y="34" width="6" height="24" fill="#c29238" rx="1"/>' +
+      '<rect x="40" y="149" width="34" height="18" rx="3" fill="#1b1714" stroke="#c29238" stroke-width="1.2"/>' +
+      '<g class="steam-fire"><rect x="44" y="153" width="26" height="3" rx="1.5" fill="url(#stm-glow)"/><rect x="44" y="158.5" width="26" height="3" rx="1.5" fill="url(#stm-glow)"/></g>' +
+      // Stone plinth
+      '<rect x="6" y="170" width="108" height="9" rx="1.5" fill="#8b857a"/>' +
+      '<rect x="6" y="170" width="108" height="2" fill="#a9a397"/>' +
       '</svg>'
     );
   }
 
+  // A Cornish beam engine: steam cylinder on the left lifts one end of the
+  // rocking beam; the pump rod on the right draws water up to the trough.
   function getPumpWheelSvg(psi, isRunning) {
-    var dialAngle = isRunning ? (psi / 120) * 220 - 110 : -110;
     return (
-      '<svg viewBox="0 0 120 180" aria-label="Cornish Pump Engine and Flywheel">' +
-      // Beam pivot column
-      '<rect x="18" y="130" width="84" height="42" fill="#26221f" stroke="#4a4038" stroke-width="2"/>' +
-      '<rect x="35" y="80" width="14" height="55" fill="#38322c" stroke="#594d42" stroke-width="2"/>' +
-      // Pump cylinder & piston rod
-      '<g class="steam-piston">' +
-      '<rect x="38" y="58" width="8" height="34" fill="#a89a8c" stroke="#594f45" stroke-width="1.5"/>' +
-      '<rect x="32" y="90" width="20" height="8" rx="2" fill="#c29238"/>' +
+      '<svg viewBox="0 0 120 180" aria-label="Cornish beam pumping engine">' +
+      '<defs>' +
+      '<linearGradient id="stm-cyl" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#25282c"/><stop offset="0.4" stop-color="#6f757c"/><stop offset="1" stop-color="#202326"/></linearGradient>' +
+      '<linearGradient id="stm-col" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1d3a2b"/><stop offset="0.45" stop-color="#4a7a5f"/><stop offset="1" stop-color="#16301f"/></linearGradient>' +
+      '<linearGradient id="stm-pipe-h2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2d31"/><stop offset="0.35" stop-color="#7b8188"/><stop offset="1" stop-color="#25282c"/></linearGradient>' +
+      '</defs>' +
+      // Engine-house floor
+      '<rect x="0" y="168" width="120" height="11" rx="1.5" fill="#8b857a"/>' +
+      '<rect x="0" y="168" width="120" height="2" fill="#a9a397"/>' +
+      // Beam column (bob wall stand-in), painted green with brass capital
+      '<rect x="54" y="44" width="12" height="124" fill="url(#stm-col)"/>' +
+      '<rect x="50" y="160" width="20" height="8" fill="#3b3f44"/>' +
+      '<rect x="51" y="44" width="18" height="6" rx="1" fill="#c29238"/>' +
+      // Steam cylinder fed from the pipe grid
+      '<rect x="8" y="104" width="28" height="56" rx="3" fill="url(#stm-cyl)" stroke="#141618" stroke-width="1"/>' +
+      '<rect x="6" y="104" width="32" height="5" rx="1" fill="#c29238"/>' +
+      '<rect x="6" y="155" width="32" height="5" rx="1" fill="#c29238"/>' +
+      '<rect x="0" y="141" width="10" height="18" fill="url(#stm-pipe-h2)"/>' +
+      '<rect x="0" y="137" width="5" height="26" rx="1.2" fill="#3b3f44"/>' +
+      // Piston rod, rising and falling with the beam
+      '<g class="steam-rod-l"><rect x="19.5" y="36" width="5" height="70" fill="#b8bdc2" stroke="#5b6168" stroke-width="0.6"/><rect x="16" y="34" width="12" height="5" rx="1" fill="#3b3f44"/></g>' +
+      // Pump barrel and rod on the right
+      '<g class="steam-rod-r"><rect x="97.5" y="36" width="5" height="92" fill="#8f7a5a" stroke="#4d3f2b" stroke-width="0.6"/><rect x="94" y="34" width="12" height="5" rx="1" fill="#3b3f44"/></g>' +
+      '<rect x="91" y="122" width="18" height="40" rx="2" fill="#3b3f44" stroke="#141618" stroke-width="1"/>' +
+      '<rect x="89" y="122" width="22" height="4" rx="1" fill="#c29238"/>' +
+      // Discharge spout and trough
+      '<path d="M 109 132 L 117 132 L 117 138 L 109 138 Z" fill="#3b3f44"/>' +
+      '<path class="steam-water" d="M 116 138 Q 118 150 116 164" fill="none" stroke="#5fb3e6" stroke-width="3" stroke-linecap="round"/>' +
+      '<rect x="104" y="160" width="16" height="8" rx="1.5" fill="#5a4a3a"/>' +
+      '<rect class="steam-trough" x="106" y="161.5" width="12" height="3" fill="#2f6f99"/>' +
+      // Rocking beam with brass bosses, pivoting on the column
+      '<g class="steam-beam">' +
+      '<path d="M 10 34 L 110 34 L 110 40 Q 60 54 10 40 Z" fill="#2b2f33" stroke="#141618" stroke-width="1"/>' +
+      '<path d="M 14 36 L 106 36" stroke="#6f757c" stroke-width="1.2"/>' +
+      '<circle cx="22" cy="37" r="4" fill="#c29238" stroke="#6b4f15"/>' +
+      '<circle cx="100" cy="37" r="4" fill="#c29238" stroke="#6b4f15"/>' +
+      '<circle cx="60" cy="40" r="6" fill="#c29238" stroke="#6b4f15"/>' +
+      '<circle cx="60" cy="40" r="2" fill="#2b2f33"/>' +
       '</g>' +
-      // Grand Flywheel (rotates when running)
-      '<g class="steam-wheel" transform-origin="78 78">' +
-      '<circle cx="78" cy="78" r="36" fill="none" stroke="#3d352e" stroke-width="9"/>' +
-      '<circle cx="78" cy="78" r="36" fill="none" stroke="#c29238" stroke-width="2"/>' +
-      '<circle cx="78" cy="78" r="10" fill="#c29238" stroke="#5a4212" stroke-width="2"/>' +
-      // 6 Spokes
-      '<line x1="78" y1="42" x2="78" y2="114" stroke="#706254" stroke-width="3"/>' +
-      '<line x1="47" y1="60" x2="109" y2="96" stroke="#706254" stroke-width="3"/>' +
-      '<line x1="47" y1="96" x2="109" y2="60" stroke="#706254" stroke-width="3"/>' +
-      // Counterweight
-      '<path d="M 94,52 A 36 36 0 0 1 114,78 L 100,78 A 22 22 0 0 0 88,60 Z" fill="#b08428"/>' +
-      '<circle cx="78" cy="78" r="4" fill="#1b1714"/>' +
-      '</g>' +
-      // Inlet pipe connection on left
-      '<rect x="0" y="145" width="18" height="18" fill="#4d4239" stroke="#6b5c4f" stroke-width="2"/>' +
-      '<rect x="0" y="142" width="6" height="24" fill="#c29238" rx="1"/>' +
-      // Gauge
-      '<circle cx="35" cy="30" r="16" fill="#fffef7" stroke="#c29238" stroke-width="3"/>' +
-      '<line x1="35" y1="30" x2="35" y2="18" stroke="#b01f14" stroke-width="2" stroke-linecap="round" transform="rotate(' + dialAngle + ' 35 30)"/>' +
-      '<circle cx="35" cy="30" r="2.5" fill="#222"/>' +
-      '<text x="35" y="42" text-anchor="middle" font-family="sans-serif" font-size="5.5" font-weight="bold" fill="#333">PUMP PSI</text>' +
       '</svg>'
     );
   }
@@ -412,11 +490,13 @@
   function evaluateSteam(level) {
     var rows = level.rows;
     var cols = level.cols;
+    var totalTiles = rows * cols;
 
     // Reset steam on all cells
     for (var r = 0; r < rows; r++) {
       for (var c = 0; c < cols; c++) {
         gridState[r][c].steamed = false;
+        gridState[r][c].leak = 0;
       }
     }
 
@@ -424,7 +504,7 @@
     var inCell = gridState[level.inlet.r][level.inlet.c];
     var inMask = rotMask(inCell.base, inCell.rot);
     if (!(inMask & level.inlet.from)) {
-      return { pumpConnected: false, allConnected: false, connectedCount: 0 };
+      return { pumpConnected: false, allConnected: false, connectedCount: 0, totalTiles: totalTiles };
     }
 
     // BFS steam propagation
@@ -464,7 +544,27 @@
     var outMask = rotMask(outCell.base, outCell.rot);
     var pumpConnected = outCell.steamed && !!(outMask & level.outlet.to);
 
-    var totalTiles = rows * cols;
+    // Open ends on live pipes vent steam, except at the boiler and pump connections
+    for (var lr = 0; lr < rows; lr++) {
+      for (var lc = 0; lc < cols; lc++) {
+        var lcell = gridState[lr][lc];
+        if (!lcell.steamed) continue;
+        var lmask = rotMask(lcell.base, lcell.rot);
+        DIRS.forEach(function (d) {
+          if (!(lmask & d.bit)) return;
+          var nr2 = lr + d.dr, nc2 = lc + d.dc;
+          if (nr2 >= 0 && nr2 < rows && nc2 >= 0 && nc2 < cols) {
+            var nb = gridState[nr2][nc2];
+            if (rotMask(nb.base, nb.rot) & d.opp) return;
+          } else if ((lr === level.inlet.r && lc === level.inlet.c && d.bit === level.inlet.from) ||
+                     (lr === level.outlet.r && lc === level.outlet.c && d.bit === level.outlet.to)) {
+            return;
+          }
+          lcell.leak |= d.bit;
+        });
+      }
+    }
+
     var allConnected = connectedCount === totalTiles;
 
     return {
@@ -496,7 +596,10 @@
     if (statConn) statConn.textContent = evalRes.connectedCount + ' / ' + evalRes.totalTiles;
     if (statPsi) statPsi.textContent = (isRunning ? level.psi : Math.round((evalRes.connectedCount / evalRes.totalTiles) * (level.psi * 0.7))) + ' PSI';
 
-    if (boilerWrap) boilerWrap.innerHTML = getBoilerSvg(level.psi, evalRes.connectedCount > 0);
+    if (boilerWrap) {
+      boilerWrap.innerHTML = getBoilerSvg(level.psi, evalRes.connectedCount > 0);
+      boilerWrap.classList.toggle('steam-lit', evalRes.connectedCount > 0);
+    }
     if (pumpWrap) {
       pumpWrap.innerHTML = getPumpWheelSvg(level.psi, isRunning);
       pumpWrap.classList.toggle('steam-running', isRunning);
@@ -519,7 +622,7 @@
           'Pipe row ' + (r + 1) + ' col ' + (c + 1) + ', ' + cell.type + ', rotated ' + (cell.rot * 90) + ' degrees. ' +
           (cell.steamed ? 'Steam flowing.' : 'No steam.') + ' Click to rotate.'
         );
-        btn.innerHTML = createTileSvg(cell.type);
+        btn.innerHTML = createTileSvg(cell.type, cell.base, rotMask(cell.leak, (4 - cell.rot % 4) % 4));
 
         (function (rowIdx, colIdx, btnEl) {
           btnEl.addEventListener('click', function () {
@@ -530,6 +633,19 @@
         gridEl.appendChild(btn);
       }
     }
+
+    var gridWrap = gridEl.parentNode;
+    gridWrap.querySelectorAll('.steam-port').forEach(function (el) { el.remove(); });
+    var inCell = gridState[level.inlet.r][level.inlet.c];
+    var portIn = document.createElement('span');
+    portIn.className = 'steam-port steam-port-in' + (evalRes.connectedCount > 0 ? ' hot' : '');
+    portIn.setAttribute('data-row', level.inlet.r);
+    var portOut = document.createElement('span');
+    portOut.className = 'steam-port steam-port-out' + (isRunning || gridState[level.outlet.r][level.outlet.c].steamed ? ' hot' : '');
+    portOut.setAttribute('data-row', level.outlet.r);
+    gridWrap.appendChild(portIn);
+    gridWrap.appendChild(portOut);
+    alignMachine();
 
     // Check if level was just completed
     if (isRunning && !levelSolved) {
@@ -551,6 +667,33 @@
     } else if (!isRunning) {
       bannerWrap.innerHTML = '';
     }
+  }
+
+  // Line the boiler outlet and the engine inlet up with the grid rows they feed
+  function alignMachine() {
+    if (!modal) return;
+    var level = LEVELS[currentLevelIdx];
+    var gridWrap = modal.querySelector('.steam-grid-wrap');
+    var wrapRect = gridWrap.getBoundingClientRect();
+    if (!wrapRect.height) return;
+    var rowMid = function (r) {
+      var t = modal.querySelector('[data-r="' + r + '"][data-c="0"]');
+      var tr = t.getBoundingClientRect();
+      return { y: tr.top + tr.height / 2 - wrapRect.top, h: tr.height };
+    };
+    var inRow = rowMid(level.inlet.r);
+    var outRow = rowMid(level.outlet.r);
+    var boiler = modal.querySelector('[data-steam-boiler]');
+    var pump = modal.querySelector('[data-steam-pump]');
+    var scale = boiler.getBoundingClientRect().width / 120;
+    boiler.style.marginTop = Math.max(0, inRow.y - 44 * scale) + 'px';
+    pump.style.marginTop = Math.max(0, outRow.y - 150 * scale) + 'px';
+    gridWrap.querySelectorAll('.steam-port').forEach(function (el) {
+      var row = +el.getAttribute('data-row') === level.inlet.r && el.classList.contains('steam-port-in') ? inRow : outRow;
+      var ph = row.h * 0.27;
+      el.style.height = ph + 'px';
+      el.style.top = (row.y - ph / 2 - 2) + 'px';
+    });
   }
 
   function rotateTile(r, c) {
@@ -676,6 +819,7 @@
 
     backdrop.appendChild(modal);
     document.body.appendChild(backdrop);
+    window.addEventListener('resize', alignMachine);
 
     // Event handlers
     var closeBtn = modal.querySelector('[data-steam-close]');
@@ -747,6 +891,7 @@
 
     var backdrop = modal.parentNode;
     backdrop.hidden = false;
+    alignMachine();
 
     // Trap focus inside modal
     var firstFocusable = modal.querySelector('button, a');
