@@ -12,7 +12,7 @@ hugo --minify                  # build into public/
 `hugo new experience/my-case-study.md`, fill in the front matter, write prose. For a thought post set `kind: "thought"` and a `summary`; it needs no attribution. Both appear as cards on the Experience page (themes are defined in `data/themes.yaml`; `highlight: true` puts a card in the default Highlights theme). Keep `publish` and `build.render` in step (`publish: true` means remove the `build:` block).
 
 ## Approving a claim
-In `data/experience.yaml`, set `publish: true` on an outcome that has a valid `attribution` (Led, Co-led, Contributed, Supported). Unpublished items are never rendered.
+In `data/experience.yaml`, set `publish: true` on an outcome that has a valid `attribution` (Led, Co-led, Contributed, Supported). Unpublished items are never rendered. A role can also carry `learnt` items (`kind: lesson` or `kind: skill`, plus `lenses`, `capabilities` and `publish`). They have no attribution, render under the outcomes as "What I took away", join themes by capability and lens, and can join Highlights with `highlight: true` (at most one per role).
 
 ## Easter eggs (Stage 4a)
 All eggs are lazy-loaded from `static/js/eggs/`, switched off when Easter Egg mode is turned off (footer toggle) and hidden in print. The egg list is `data/eggs.yaml`.

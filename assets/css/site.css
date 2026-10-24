@@ -131,6 +131,13 @@ a.pill-h{text-decoration:none}a.pill-h:hover,.pill-link:hover .pill rect{filter:
 .routcomes{list-style:none;margin:0 0 1em;padding:0}.routcomes li{margin:0 0 .8em}
 .rcard .tag{color:#0B132B;border-color:#0B132B;background:#F5F2EB}
 .rempty{font-size:.95rem;color:#4b5256}
+/* What I took away: lessons and skills render as pull-quotes under the outcomes, told apart by their icon */
+.rlearnt{list-style:none;margin:0 0 1em;padding:.9em 0 .2em;border-top:1px dashed var(--c);border-bottom:1px dashed var(--c)}
+.rlearnt::before{content:"What I took away";display:block;font-family:var(--head);font-weight:600;font-size:.82rem;letter-spacing:.05em;text-transform:uppercase;color:var(--c);margin:0 0 .6em}
+.rlearnt li{margin:0 0 .8em;display:flex;gap:.55em;align-items:baseline}
+.rl-icon{flex:0 0 auto;font-style:normal;line-height:1}
+.rl{border-left:3px solid var(--c);padding:.1em 0 .1em .8em;font-style:italic}
+.rlearnt:not(:has(> li:not([hidden]))){display:none}
 .rtags{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
 .rtags li{background:var(--c);color:#fff;font-family:var(--head);font-weight:600;font-size:.78rem;border-radius:999px;padding:2px 11px;margin:0}
 .extra{margin-top:clamp(32px,6vw,72px)}

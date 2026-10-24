@@ -13,7 +13,11 @@ grep -rniE "roundel|new johnston|johnston 100|oyster|\bTfL\b|london underground"
 grep -rnE "<script[^>]+src=[\"']?https?://|<link[^>]+href=[\"']?https?://[^>]*(\.css|font)" public --include='*.html' | grep -q . && bad "third-party script or stylesheet"
 grep -rnE "document\.cookie" public static assets layouts -l | grep -q . && bad "cookie use"
 grep -q 'src="/\?[^/h]' public/404.html && bad "404 has a relative asset path"
-for f in $(grep -rl "publish: false" data | head -0); do :; done
+awk '/^ *- text: "/{t=$0; sub(/^ *- text: "/,"",t); sub(/"[^"]*$/,"",t)} /^ *publish: false/{print t}' data/experience.yaml | while IFS= read -r t; do
+  p=$(printf '%s' "$t" | sed "s/[&'\"<>].*//" | cut -c1-40)
+  [ ${#p} -ge 15 ] && grep -rqF "$p" public --include='*.html' && echo "$p"
+done > /tmp/aw-leak
+[ -s /tmp/aw-leak ] && bad "unpublished experience item in built output: $(head -1 /tmp/aw-leak)"
 if ! grep -q "Last reviewed" public/index.html; then bad "footer lacks Last reviewed"; fi
 [ $block -eq 0 ] && echo "prepublish checks passed" || echo "prepublish checks FAILED (see blockers above)"
 exit $block

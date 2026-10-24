@@ -18,6 +18,16 @@
       <li data-themes="{{ delimit $themes " " }}">{{ partial "attribution.html" .attribution }}{{ with .status }} <span class="tag tag-status">{{ . }}</span>{{ end }} {{ .text }}</li>
       {{- end }}{{ end }}
     </ul>
+    {{- /* What I took away. learnt items carry no attribution. At most one per role joins Highlights, via highlight: true. data-outcomes lets the theme filter treat them like outcomes. */}}
+    {{- with where ($r.learnt | default slice) "publish" true }}
+    <ul class="rlearnt" data-outcomes aria-label="What I took away">
+      {{- range . }}
+      {{- if not (in (slice "lesson" "skill") .kind) }}{{ errorf "learnt item %q needs kind: lesson or skill" .text }}{{ end }}
+      {{- $themes := partial "themes-for.html" (dict "caps" .capabilities "lenses" .lenses "kind" .kind "highlight" .highlight) }}
+      <li class="rl rl-{{ .kind }}" data-themes="{{ delimit $themes " " }}"><span class="rl-icon" aria-hidden="true">{{ if eq .kind "skill" }}🌱{{ else }}💡{{ end }}</span><span class="sr-only">{{ if eq .kind "skill" }}Skill: {{ else }}Lesson: {{ end }}</span>{{ .text }}</li>
+      {{- end }}
+    </ul>
+    {{- end }}
     <p class="rempty" hidden>Nothing from this role falls under that theme. Try All.</p>
     <ul class="rtags" aria-label="Skills and platforms">
       {{- range $caps | uniq | sort }}<li>{{ index hugo.Data.capabilities . | default (humanize .) }}</li>{{ end }}

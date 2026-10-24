@@ -1,9 +1,14 @@
-# Attribution must be one of: Led, Co-led, Contributed, Supported.
+# Attribution must be one of: Led, Co-led, Contributed, Supported. Outcomes only.
 # Only outcomes with publish: true are rendered. lenses: operating-model | hands-on.
 # highlight (optional): true puts the outcome in the default Highlights theme on the Experience page.
 # publish_summary: the role summary renders only when this is true.
 # status (optional): only for pilots and proofs of concept.
+# learnt (optional, per role): what I took away from the role.
+#   kind: skill | lesson. learnt items carry no attribution, because they are mine by definition.
+#   Only items with publish: true are rendered. highlight: true adds the item to Highlights, at most one per role.
+#   Lessons never name customers or criticise former colleagues or leaders.
 # Approved for publication by Andrew, 22 Oct 2026. Figures and team sizes are deliberately kept generic.
+# learnt items, new outcomes and publish flags approved by Andrew, 24 Oct 2026.
 
 - title: "Head of Technical Delivery"
   org: "Six Degrees"
@@ -64,6 +69,48 @@
       lenses: [operating-model]
       capabilities: [service-delivery]
       publish: true
+  learnt:
+    - text: "People cope better with a difficult decision than an unclear one"
+      kind: lesson
+      lenses: [operating-model]
+      capabilities: [leadership, people, operating-model]
+      publish: true
+      highlight: true
+    - text: "Successful backups and successful recovery are not the same thing"
+      kind: lesson
+      lenses: [hands-on]
+      capabilities: [cyber-recovery, major-incident]
+      publish: true
+    - text: "I naturally look for the best in people and try to help them improve. I've also learnt that when someone is in the wrong role, or the organisation has moved on and they haven't, you have to move quickly. Form has to follow function."
+      kind: lesson
+      lenses: [operating-model]
+      capabilities: [leadership, people]
+      publish: true
+    - text: "Get the data somewhere trustworthy first, then automate on top of it"
+      kind: skill
+      lenses: [hands-on, operating-model]
+      capabilities: [automation, ai-with-oversight]
+      publish: true
+    - text: "Governing AI is less about restricting people than giving them safe tools that are easier to use than the alternatives"
+      kind: lesson
+      lenses: [operating-model]
+      capabilities: [ai-with-oversight]
+      publish: true
+    - text: "Moving to a proactive service model taught me that the hardest thing to shift is mindset, not process"
+      kind: lesson
+      lenses: [operating-model]
+      capabilities: [problem-management, operating-model]
+      publish: false
+    - text: "Most ticket problems come from workload and poor visibility, not poor intentions, so visibility works better than more oversight"
+      kind: lesson
+      lenses: [operating-model]
+      capabilities: [service-delivery, leadership]
+      publish: false
+    - text: "Advising leaders is about evidence and risk, not winning the argument"
+      kind: lesson
+      lenses: [operating-model]
+      capabilities: [leadership]
+      publish: false
 
 - title: "Head of Managed Services"
   org: "Six Degrees"
@@ -88,6 +135,33 @@
       lenses: [hands-on]
       capabilities: [cloud]
       publish: true
+    - text: "Harmonised the morning stand-ups across teams around common goals, and refreshed objectives so they linked to wider organisational goals"
+      attribution: "Led"
+      lenses: [operating-model]
+      capabilities: [operating-model, leadership]
+      publish: true
+  learnt:
+    - text: "Moving to managing managers meant delegating more and coaching each person differently. Some were strongest on the people side and others on delivery, so I brought those strengths together and encouraged people to learn from each other across teams."
+      kind: skill
+      lenses: [operating-model]
+      capabilities: [leadership, people]
+      publish: true
+    - text: "Teams can keep their own routines as long as they share the same goals"
+      kind: lesson
+      lenses: [operating-model]
+      capabilities: [operating-model, leadership]
+      publish: true
+    - text: "Data and objectives have to line up, with dashboards to work from. Not having them was what made the case for transforming our monitoring."
+      kind: lesson
+      lenses: [operating-model]
+      capabilities: [monitoring, platform-transformation]
+      publish: true
+    - text: "Accurate monitoring can make a service look worse before it gets better, because it exposes what the old tools were hiding"
+      kind: lesson
+      lenses: [hands-on, operating-model]
+      capabilities: [monitoring, platform-transformation]
+      publish: true
+      highlight: true
 
 - title: "Centre of Excellence Manager, Secure and Public Sector"
   org: "Six Degrees"
@@ -117,12 +191,39 @@
       lenses: [hands-on]
       capabilities: [major-incident, engineering]
       publish: true
+  learnt:
+    - text: "We had built our internal platforms close to zero trust before 2020, so moving to remote working was the easy part. Managing people remotely was the hardest."
+      kind: lesson
+      lenses: [operating-model]
+      capabilities: [security, people]
+      publish: true
+    - text: "A workaround under pressure has to be checked against every tenant on shared infrastructure"
+      kind: lesson
+      lenses: [hands-on]
+      capabilities: [major-incident]
+      publish: true
+      highlight: true
+    - text: "Working to external accreditation, from ISO 27001 and SOC 2 to ITHC and NCSC guidance"
+      kind: skill
+      lenses: [hands-on]
+      capabilities: [regulated, security]
+      publish: true
+    - text: "The real cost of running unsupported end-of-life infrastructure is the customer's confidence afterwards, not the outage"
+      kind: lesson
+      lenses: [hands-on]
+      capabilities: [engineering, major-incident]
+      publish: false
+    - text: "Recovery needs specialist depth and knowledge of the estate and its customers, working together"
+      kind: lesson
+      lenses: [hands-on]
+      capabilities: [major-incident]
+      publish: false
 
 - title: "Service Desk Manager"
   org: "Carrenza"
   from: 2017-02
   to: 2020-01
-  summary: "I ran the consolidated service desk through the acquisition and its integration into Six Degrees, as the main technical escalation point across networking, servers and VMware. That included peak-load support for major ecommerce sites and televised charity events."
+  summary: "I ran the consolidated service desk through Carrenza's integration into Six Degrees, as the main technical escalation point across networking, servers and VMware. That included peak-load support for major ecommerce sites and televised charity events."
   publish_summary: true
   outcomes:
     - text: "Migrated the service desk onto ServiceNow during the integration, carrying across customer contacts, SLAs and the knowledge base"
@@ -131,17 +232,29 @@
       capabilities: [service-transition, itsm]
       publish: true
       highlight: true
-    - text: "Sustained SLA performance through the acquisition and integration"
+    - text: "Sustained SLA performance through the integration into Six Degrees"
       attribution: "Led"
       lenses: [operating-model]
       capabilities: [service-delivery]
       publish: true
+  learnt:
+    - text: "Bringing a small, scrappy team into a larger, more structured organisation means keeping what made them good while taking on the structure"
+      kind: lesson
+      lenses: [operating-model]
+      capabilities: [leadership, people, service-transition]
+      publish: true
+    - text: "High-traffic events are won in the preparation. We ran 24/7 cover for days at a time without a dedicated 24/7 team, so everyone needed a runbook, a shift they had agreed to, the right contacts and regular checkpoints. Any new tool or third party went into that plan too, because that's often where the surprises came from."
+      kind: skill
+      lenses: [operating-model]
+      capabilities: [service-transition, regulated]
+      publish: true
+      highlight: true
 
 - title: "Service Desk Team Lead"
   org: "Carrenza"
   from: 2016-03
   to: 2017-02
-  summary: "I was a technical escalation point across customer estates and mentored junior engineers, helping turn the support function into a structured ITIL operation during rapid client onboarding."
+  summary: "I was a technical escalation point across customer estates and mentored junior engineers, helping turn the support function into a structured ITIL operation during rapid client onboarding. Carrenza was acquired by Six Degrees in 2016."
   publish_summary: true
   outcomes:
     - text: "Part of the technical rollout and customer planning for Jira Service Management, which let the team measure SLAs for the first time"
@@ -150,6 +263,23 @@
       capabilities: [itsm]
       publish: true
       highlight: true
+    - text: "Built a billing API and a status dashboard so a key client could see their usage, costs and environment health for themselves"
+      attribution: "Led"
+      lenses: [hands-on]
+      capabilities: [engineering, monitoring, service-delivery]
+      publish: true
+  learnt:
+    - text: "Once we measured SLAs, the service became more than a list of tickets. People started talking about the service, not just the technology."
+      kind: lesson
+      lenses: [operating-model]
+      capabilities: [itsm, service-delivery]
+      publish: true
+      highlight: true
+    - text: "Supporting live televised charity nights, from the build to watching the systems through the night"
+      kind: skill
+      lenses: [hands-on]
+      capabilities: [service-delivery]
+      publish: true
 
 - title: "Systems Engineer"
   org: "Carrenza"
@@ -164,3 +294,55 @@
       capabilities: [engineering, automation]
       publish: true
       highlight: true
+    - text: "Rebuilt our Nagios instances as part of a wider hardening project, moving to SNMPv3 and splitting a central instance into isolated ones without losing a single view of alerting, and saw the rebuild through to completion"
+      attribution: "Contributed"
+      lenses: [hands-on]
+      capabilities: [monitoring, security]
+      publish: true
+    - text: "Evaluated open-source monitoring alternatives including Zabbix and Icinga, built a proof of concept, and settled on Thruk with the Livestatus API as one front end across our existing Nagios instances"
+      attribution: "Contributed"
+      lenses: [hands-on]
+      capabilities: [monitoring, platform-transformation]
+      publish: true
+    - text: "Helped a customer's website scale for big launches using configuration management, after it buckled under peak load in my first weeks on call"
+      attribution: "Contributed"
+      lenses: [hands-on]
+      capabilities: [automation, engineering]
+      publish: true
+  learnt:
+    - text: "My first big outage on call taught me when to ask for help, how to keep a customer updated under pressure, and what can safely wait until Monday"
+      kind: lesson
+      lenses: [hands-on]
+      capabilities: [major-incident]
+      publish: true
+    - text: "Early cloud taught me that customers should pay for capacity only when they need it. Once they could deploy through an API themselves, a managed service could be layered to suit each one, from infrastructure only to fully managed."
+      kind: lesson
+      lenses: [operating-model]
+      capabilities: [cloud, service-design]
+      publish: true
+    - text: "From painful experience, always take a dated backup before any change. Then compare it with the result and write the change back into configuration management code like Chef or Ansible, so the next run doesn't undo it."
+      kind: skill
+      lenses: [hands-on]
+      capabilities: [engineering, automation]
+      publish: true
+      highlight: true
+    - text: "Designing for predictable results through idempotency, which I still apply well beyond servers"
+      kind: skill
+      lenses: [hands-on, operating-model]
+      capabilities: [automation, engineering]
+      publish: true
+    - text: "Pragmatism beats complexity. A light open-source front end gave us one view of every monitoring instance without a costly rebuild."
+      kind: lesson
+      lenses: [hands-on, operating-model]
+      capabilities: [monitoring]
+      publish: true
+    - text: "Linux at scale and VMware, learnt on the job from generous senior engineers"
+      kind: skill
+      lenses: [hands-on]
+      capabilities: [engineering]
+      publish: true
+    - text: "You get out what you put in, and it's always better to work in a great team"
+      kind: lesson
+      lenses: [operating-model]
+      capabilities: [people]
+      publish: true

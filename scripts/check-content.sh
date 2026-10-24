@@ -26,6 +26,8 @@ for f in content/experience/*.md; do
   a=$(grep -m1 '^attribution:' "$f")
   case "$a" in *TODO\(andrew\)*|*\"Led\"*|*\"Co-led\"*|*\"Contributed\"*|*\"Supported\"*) ;; *) echo "FAIL: $f has no valid attribution"; fail=1;; esac
 done
+# learnt items: kind must be lesson or skill, and they never carry an attribution.
+awk '/^  learnt:/{l=1;next} /^  [a-z_]+:/||/^- /{l=0} l&&/kind:/{ if ($0 !~ /kind: (lesson|skill)[ \r]*$/) {print "FAIL: bad learnt kind in data/experience.yaml line " NR ": " $0; bad=1} } l&&/attribution:/{print "FAIL: learnt item has an attribution in data/experience.yaml line " NR; bad=1} /^- /{h=0} l&&/highlight: true/{ if (++h>1) {print "FAIL: more than one highlighted learnt item in a role, data/experience.yaml line " NR; bad=1} } END{exit bad}' data/experience.yaml || fail=1
 for k in publish_summary; do
   n=$(grep -c "^  summary:" data/experience.yaml); m=$(grep -c "^  $k:" data/experience.yaml)
   [ "$n" = "$m" ] || { echo "FAIL: every role needs $k"; fail=1; }
