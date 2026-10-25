@@ -5,7 +5,7 @@ summary: "Bug discovery has been industrialised. A monthly patch cycle behind a 
 lenses: [hands-on, operating-model]
 capabilities: [security, automation, service-delivery]
 highlight: true
-weight: 8
+weight: 10
 publish: true
 ---
 

@@ -7,7 +7,7 @@ capabilities: [ai-with-oversight, automation, service-governance]
 sector: "Personal project"
 status: "In active development"
 lesson: "AI is most useful in operations when it advises clearly and leaves the decision with a person."
-weight: 3
+weight: 4
 highlight: true
 publish: true
 ---

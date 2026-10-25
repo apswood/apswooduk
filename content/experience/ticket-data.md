@@ -5,7 +5,7 @@ summary: "Ticket data is a good record of the work that fits neatly into a ticke
 lenses: [operating-model]
 capabilities: [service-delivery, leadership]
 highlight: true
-weight: 4
+weight: 6
 publish: true
 ---
 

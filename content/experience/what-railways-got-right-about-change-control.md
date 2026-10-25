@@ -4,7 +4,7 @@ kind: "thought"
 summary: "A checkbox in a change ticket only proves that someone intended to be careful. An interlock is what stops the outage."
 lenses: [hands-on, operating-model]
 capabilities: [engineering, automation, service-governance]
-weight: 13
+weight: 15
 publish: true
 ---
 

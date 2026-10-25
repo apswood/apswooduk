@@ -5,7 +5,7 @@ summary: "A team can hit every target it's given and still be measuring the wron
 lenses: [operating-model]
 capabilities: [service-delivery, leadership, strategy]
 highlight: true
-weight: 6
+weight: 8
 publish: true
 ---
 

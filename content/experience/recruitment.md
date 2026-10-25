@@ -4,7 +4,7 @@ kind: "thought"
 summary: "A hiring freeze that lasts one quarter can leave an operational team short for most of a year. Budget for the recovery, not just the saving."
 lenses: [operating-model]
 capabilities: [leadership, people]
-weight: 11
+weight: 13
 publish: true
 ---
 

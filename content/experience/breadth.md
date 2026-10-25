@@ -4,7 +4,7 @@ kind: "thought"
 summary: "I don't have a wall of vendor certifications. I have a long career following problems from the routing table to the contract to the boardroom."
 lenses: [hands-on]
 capabilities: [major-incident, engineering, leadership]
-weight: 10
+weight: 12
 publish: true
 ---
 

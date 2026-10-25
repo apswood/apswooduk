@@ -4,7 +4,7 @@ kind: "thought"
 summary: "You probably don't need a new platform to start using AI in service governance. You need the data you already have and someone willing to wire it together."
 lenses: [hands-on, operating-model]
 capabilities: [automation, ai-with-oversight, service-governance]
-weight: 9
+weight: 11
 publish: true
 ---
 

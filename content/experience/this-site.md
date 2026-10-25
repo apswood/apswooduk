@@ -7,7 +7,7 @@ capabilities: [automation, ai-with-oversight, engineering]
 sector: "Personal project"
 status: "Live"
 lesson: "The useful part of AI-assisted building is the guardrails you write around it, not the speed."
-weight: 4
+weight: 5
 publish: true
 ---
 

@@ -4,7 +4,7 @@ kind: "thought"
 summary: "After every major outage the instinct is to buy more redundancy. For most mid-market businesses, the commercial case has to be made before the technical one."
 lenses: [operating-model]
 capabilities: [cloud, strategy, commercial]
-weight: 12
+weight: 14
 publish: true
 ---
 

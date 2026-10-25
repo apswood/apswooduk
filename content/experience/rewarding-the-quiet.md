@@ -4,7 +4,7 @@ kind: "thought"
 summary: "In managed services, a flat ticket graph can leave a finance director wondering what they're paying for. Service reviews should make prevention visible."
 lenses: [operating-model]
 capabilities: [commercial, service-delivery, strategy]
-weight: 14
+weight: 16
 publish: true
 ---
 

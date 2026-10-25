@@ -8,7 +8,7 @@ roles: ["2022-05-head-of-technical-delivery"]
 sector: "Retail and distribution"
 status: "Complete"
 lesson: "Successful backups and successful recovery are not always the same thing."
-weight: 5
+weight: 7
 highlight: true
 publish: true
 ---

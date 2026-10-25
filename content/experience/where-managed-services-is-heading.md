@@ -4,7 +4,7 @@ kind: "thought"
 summary: "Managed services is splitting in two: low-margin generalists selling reactive tickets, and specialist partners selling operational resilience."
 lenses: [operating-model]
 capabilities: [strategy, commercial, security]
-weight: 15
+weight: 17
 publish: true
 ---
 

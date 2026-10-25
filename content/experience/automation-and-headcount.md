@@ -4,7 +4,7 @@ kind: "thought"
 summary: "Pitch automation as a way to need fewer engineers and you lose the people who know where the real problems are."
 lenses: [operating-model]
 capabilities: [automation, leadership, people]
-weight: 7
+weight: 9
 publish: true
 ---
 
