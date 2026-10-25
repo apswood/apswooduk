@@ -1,35 +1,130 @@
 # apswood.uk
 
-Interactive CV and portfolio, built with Hugo (extended). Deployed by Cloudflare, see `docs/DEPLOY.md`. `TICKETS.md` and `REVIEW.md` are the historical build plan and review.
+This repository is the source for [www.apswood.uk](https://www.apswood.uk/), my interactive CV
+and portfolio. The site's content is personal. This README is for anyone interested in what's
+under the bonnet: how the site is built, checked, and deployed, and how AI agents contribute to it.
+
+This repository isn't intended as a template. A reusable version with the architecture and
+checks but none of the personal content may follow.
+
+## Purpose
+
+The project has three aims:
+
+1.  Make a CV that's more fun than a traditional one, with things to discover along the way,
+    while stating plainly whether I led, co-led, contributed to, or supported each outcome.
+2.  Serve as a working exercise in scripting, static-site tooling, and AI-assisted development.
+3.  Keep the overhead low enough that an AI agent can make, check, and commit a change safely.
+
+To meet the third aim, the site has no server, database, framework, third-party scripts, or
+cookies. Everything is plain text that standard tools can read and check.
+
+## Architecture
 
 ```
-hugo server                    # local preview
-bash scripts/check-content.sh  # lint content and regenerate OPEN_ITEMS.md
-hugo --minify                  # build into public/
+data/*.yaml, content/**/*.md       Single source of content
+            |
+            v
+Hugo templates (layouts/)  ---->  public/  (HTML, CSS, JS, fonts)
+            |
+scripts/    checks run before and after the build
+            |
+            v
+push to master --> GitHub Actions: checks and CodeQL
+               --> Cloudflare Workers Builds: checks, build, deploy as static assets
 ```
 
-## Adding a case study or thought post
-`hugo new experience/my-case-study.md`, fill in the front matter, write prose. For a thought post set `kind: "thought"` and a `summary`; it needs no attribution. Both appear as cards on the Experience page (themes are defined in `data/themes.yaml`; `highlight: true` puts a card in the default Highlights theme). Keep `publish` and `build.render` in step (`publish: true` means remove the `build:` block).
+| Layer | What it does | Location |
+|---|---|---|
+| Content data | Roles, outcomes, lessons, skills, certifications, and profile | `data/*.yaml` |
+| Pages | Case studies, thought posts, and section introductions | `content/` |
+| Templates | Plain Hugo layouts and partials, with no theme dependency | `layouts/` |
+| Styles and scripts | Plain CSS and small vanilla JavaScript files, minified and fingerprinted by Hugo Pipes | `assets/` |
+| Static files | Self-hosted fonts, optional easter egg scripts, headers, and redirects | `static/` |
+| Checks | Content lint, publish gate test, and a scan of the built site | `scripts/` |
+| Hosting | Cloudflare serves `public/` as static assets | `wrangler.jsonc`, `static/_headers` |
 
-## Approving a claim
-In `data/experience.yaml`, set `publish: true` on an outcome that has a valid `attribution` (Led, Co-led, Contributed, Supported). Unpublished items are never rendered. A role can also carry `learnt` items (`kind: lesson` or `kind: skill`, plus `lenses`, `capabilities` and `publish`). They have no attribution, render under the outcomes as "What I took away", join themes by capability and lens, and can join Highlights with `highlight: true` (at most one per role).
+The design has these properties:
 
-## Easter eggs (Stage 4a)
-All eggs are lazy-loaded from `static/js/eggs/`, switched off when Easter Egg mode is turned off (footer toggle) and hidden in print. The egg list is `data/eggs.yaml`.
+-   **One source, several views.** The same YAML drives the Experience page, the theme filters,
+    and the printable CV, so changing a claim updates all of them.
+-   **Progressive enhancement.** The site works without JavaScript. The route map, carousels,
+    themes, and lens toggle are layered on top of plain lists and links.
+-   **Same-origin only.** The content security policy in `static/_headers` allows only the site's
+    own scripts, styles, fonts, and images.
+-   **Pinned toolchain.** `scripts/ci-build.sh` installs Hugo 0.168.0 and verifies its checksum,
+    so every build uses the same version.
 
-- **Add a terminal command:** in `static/js/eggs/terminal.js`, add its name to `COMMANDS` and a `case` in `run()`. Data it needs goes in `layouts/partials/egg-data.html`, which publishes `/terminal.json`.
-- **Add a dig find:** append to `finds` in `data/dig.yaml` (stratum id, x and y percentages, name, caption). If it needs a new icon, add an entry to `icons` in `static/js/eggs/dig.js`.
-- **Status page:** edit `data/status.yaml`.
-- **404 page:** `layouts/404.html` is fully standalone (inline CSS and JS). Hugo builds it to `404.html`. Set that as the bucket's error document. Do not change the bucket setting from this repository.
-- **Reset your own progress:** clear the `aw-found` key in the browser's local storage.
+The site also has optional easter eggs. They're lazy-loaded from `static/js/eggs/`, listed in
+`data/eggs.yaml`, hidden in print, and switched off by the toggle in the footer.
 
-## Stretch eggs (Stage 4b)
-Rehearsal flowchart: `data/rehearsal.yaml`. Notice text: `data/notice.yaml`. Connections graph: `data/connections.yaml`. Retro mode (Konami code), the keyboard, the awkward pause and the inner monologue asides live in `static/js/eggs/`. The ASCII note at the top of the page source is in `layouts/_default/baseof.html` and needs `keepComments` in the Hugo minify settings, which `hugo.toml` sets.
+## Content workflow
 
-## Before publishing
-Run `bash scripts/prepublish-check.sh`. It reports every blocker (visible placeholders, em dashes, banned terms, third-party scripts, cookies). `REVIEW.md` holds the Stage 5 review. `OPEN_ITEMS.md` lists every `TODO(andrew)`.
+### Add a case study or thought post
 
-To publish a role summary set `publish_summary: true` on the role in `data/experience.yaml`. To publish an outcome set `publish: true` on it. Both need your approval first. Deployment is by Cloudflare, see `docs/DEPLOY.md`.
+1.  Run `hugo new experience/SLUG.md`.
+2.  Fill in the front matter and write the body as prose.
+3.  For a thought post, set `kind: "thought"` and add a `summary`. Thought posts don't need an
+    attribution.
+4.  Set `weight` to place the card. Lower numbers appear first, and each page has a unique weight.
+5.  Keep `publish` and `build.render` in step. To publish, set `publish: true` and delete the
+    `build:` block.
+
+Themes are defined in `data/themes.yaml`. To add a card to the default Highlights theme, set
+`highlight: true`.
+
+### Approve a claim
+
+Every outcome in `data/experience.yaml` needs an `attribution` of `Led`, `Co-led`,
+`Contributed`, or `Supported`. An outcome renders only when it has `publish: true`. A role
+summary renders only when the role has `publish_summary: true`.
+
+A role can also list `learnt` items, with `kind: lesson` or `kind: skill`, plus `lenses`,
+`capabilities`, and `publish`. These items have no attribution, render under the outcomes as
+"What I took away", and join themes by capability and lens. To add one item per role to
+Highlights, set `highlight: true` on it.
+
+New content defaults to `publish: false`, and nothing is published until I approve it.
+
+## Quality gates
+
+The checks are code that runs on every build. A build fails if any of the following is true:
+
+-   An outcome or case study has a missing or invalid attribution.
+-   A `learnt` item has an invalid `kind`, has an attribution, or is the second highlighted item
+    in its role.
+-   A page's `publish` flag and build settings disagree.
+-   The source or the built site contains an em dash, banned filler words, or banned brand terms.
+-   Placeholder text such as `TODO(andrew)` would be visible to a visitor.
+-   An unpublished outcome, lesson, or case study appears anywhere in the built site.
+-   The built site loads a third-party script or stylesheet, or uses cookies.
+
+## Working with AI agents
+
+The repository is designed to run on a local clone linked to a Claude session. A change can be
+requested from anywhere, including a phone, and the agent edits the files, runs the checks in
+`scripts/`, commits, and pushes. Every push then goes through the same quality gates before
+Cloudflare deploys it, and the repository holds no credentials or deploy keys.
+
+Agents can draft content, but I review every change and approve anything that goes live.
+
+For transparency, every commit an agent contributes to carries a `Co-Authored-By` trailer that
+names the model. The commit history keeps that attribution, in the same way the site attributes
+each outcome. Commits I made alone carry no trailer.
 
 ## Deployment
-Deployed by Cloudflare on every push to `master`. Headers: `static/_headers`. Asset config: `wrangler.jsonc`. Setup, rollback and settings: `docs/DEPLOY.md`.
+
+Cloudflare builds and deploys the site on every push to `master`. If a check fails, the build
+fails and nothing is deployed. For settings, custom domains, and rollback, see
+[docs/DEPLOY.md](docs/DEPLOY.md).
+
+## Project history
+
+-   `TICKETS.md` and `REVIEW.md`: the original build plan and review.
+-   `IMPROVEMENTS.md`: an earlier improvement list from when the site was hosted on S3.
+-   `OPEN_ITEMS.md`: every `TODO(andrew)` in the source, regenerated by
+    `scripts/check-content.sh`.
+
+## Licence
+
+This project is licensed under the Apache License 2.0. See [LICENSE](LICENSE).
