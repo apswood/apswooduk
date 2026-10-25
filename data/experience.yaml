@@ -76,7 +76,7 @@
       capabilities: [leadership, people, operating-model]
       publish: true
       highlight: true
-    - text: "The value of disagree and commit. Most people can disagree with a decision and still get behind it if they can see where it leads, so establishing the bigger picture early is key. Without it, decisions get reopened, direction keeps changing and trust goes with it."
+    - text: "The value of disagree and commit. Most people can disagree with a decision and still get behind it if they can see where it leads, so establishing the bigger picture early is key. Without it, decisions get reopened, direction keeps changing and trust goes fast."
       kind: skill
       lenses: [operating-model]
       capabilities: [leadership, people]
