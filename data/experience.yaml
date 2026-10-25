@@ -70,12 +70,17 @@
       capabilities: [service-delivery]
       publish: true
   learnt:
-    - text: "People cope better with a difficult decision than an unclear one"
+    - text: "People can accept a hard decision they understand. Broken promises and shifting direction are what lose them."
       kind: lesson
       lenses: [operating-model]
       capabilities: [leadership, people, operating-model]
       publish: true
       highlight: true
+    - text: "The value of disagree and commit. Most people can disagree with a decision and still get behind it if they can see where it leads, so establishing the bigger picture early is key. Without it, decisions get reopened, direction keeps changing and trust goes with it."
+      kind: skill
+      lenses: [operating-model]
+      capabilities: [leadership, people]
+      publish: true
     - text: "Successful backups and successful recovery are not the same thing"
       kind: lesson
       lenses: [hands-on]
