@@ -67,6 +67,7 @@ main{padding-top:clamp(24px,5vw,64px);padding-bottom:clamp(40px,8vw,100px);min-h
 .board-dm::after{content:"";position:absolute;inset:0;border-radius:6px;pointer-events:none;background:radial-gradient(circle,transparent 0 1px,var(--board-bg) 1.4px) 0 0/3px 3px;opacity:.35}
 .dm-row{margin:0 0 .4rem;max-width:none;display:flex;gap:14px;flex-wrap:wrap}
 .dm-time{margin-left:auto}.dm-calling{font-size:.95rem;margin:0}
+.dm-next{margin:.65rem 0 0;padding-top:.55rem;border-top:1px solid color-mix(in srgb,var(--board-ink) 28%,transparent)}
 
 /* Tags */
 .tag{display:inline-block;border:1px solid var(--muted);color:var(--ink);border-radius:4px;padding:0 .5em;font-size:.8rem;font-family:var(--head);font-weight:600;letter-spacing:.03em;vertical-align:.1em}
