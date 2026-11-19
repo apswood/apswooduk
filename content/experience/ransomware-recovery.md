@@ -1,5 +1,5 @@
 ---
-title: "Ransomware recovery for a national distribution business"
+title: "Ransomware recovery for a national plumbing and building supplies distributor"
 attribution: "Co-led"
 role_line: "Led the technical recovery workstream alongside the major incident manager"
 lenses: [operating-model, hands-on]
@@ -13,7 +13,7 @@ highlight: true
 publish: true
 ---
 
-A national distribution business with a branch network was hit by ransomware that reached Active Directory, Citrix and core server workloads. Its branches depend on central IT to trade, and it was clear early on that this was not an isolated problem.
+A national plumbing and building supplies distributor with a branch network was hit by ransomware that reached Active Directory, Citrix and core server workloads. Its branches depend on central IT to trade, and it was clear early on that this was not an isolated problem.
 
 The major incident manager ran the overall incident and customer engagement. I led the technical recovery workstream alongside them. That meant coordinating technical decisions, prioritising the recovery, guiding the engineers and making sure the right specialists were involved at the right time. I also translated between the technical teams and the wider group of stakeholders.
 

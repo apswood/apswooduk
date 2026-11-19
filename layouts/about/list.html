@@ -19,7 +19,7 @@
   </ul>
   {{ with hugo.Data.education }}
   <h2>Education</h2>
-  <p><strong>{{ .title }}</strong>, {{ .org }}, {{ .from }} to {{ .to }}, {{ .grade }}. {{ .project }}</p>
+  <p><strong>{{ .title }}</strong>, {{ .org }}, {{ .from }} to {{ .to }}. {{ .project }}</p>
   <p>{{ .alevels }}</p>
   <p class="meta">Activities: {{ delimit .societies ", " }}.</p>
   {{ end }}

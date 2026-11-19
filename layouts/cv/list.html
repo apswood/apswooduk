@@ -2,7 +2,7 @@
 {{ $p := hugo.Data.profile }}
 <article class="cv">
 <h1>{{ $p.name }}</h1>
-<p class="lede">{{ $p.headline }}, {{ $p.location }}</p>
+<p class="lede">{{ $p.headline }}, {{ $p.location }}{{ with $p.clearance }} | {{ . }}{{ end }}</p>
 {{ range $p.summary }}<p>{{ . }}</p>{{ end }}
 <aside class="cv-cta" aria-label="Up to date CV">
   <p><strong>This page is a summary.</strong> For my full, up to date CV, view my LinkedIn profile and message me to ask for the latest copy.</p>
@@ -16,6 +16,14 @@
 {{ if .publish_summary }}<p>{{ .summary }}</p>{{ end }}
 {{ partial "outcomes.html" .outcomes }}
 </section>
+{{ end }}
+<h2>Certifications</h2>
+<ul>
+  {{ range hugo.Data.certifications }}{{ if .publish }}<li>{{ .name }}, {{ .issuer }}{{ with .year }} ({{ . }}){{ end }}{{ if ne .status "held" }} ({{ .status }}){{ end }}</li>{{ end }}{{ end }}
+</ul>
+{{ with hugo.Data.education }}
+<h2>Education</h2>
+<p><strong>{{ .title }}</strong>, {{ .org }} ({{ .from }} to {{ .to }})</p>
 {{ end }}
 <p class="no-print"><button type="button" class="chip" onclick="window.print()">Print this page</button> <span class="meta">The printed order follows the lens chosen above.</span></p>
 </article>

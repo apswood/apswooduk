@@ -23,7 +23,7 @@
     showTheme();
   }
 
-  // Easter Egg mode: on by default. Turning it off sets the internal serious flag, which switches off every egg and surprise element.
+  // Easter Egg mode: off by default (data-serious="1"). Turning it on removes the serious flag and enables eggs and surprise elements.
   var sBtn = document.getElementById('egg-toggle');
   function isSerious() { return root.dataset.serious === '1'; }
   function showSerious() {
@@ -34,8 +34,8 @@
   if (sBtn) {
     sBtn.hidden = false;
     sBtn.addEventListener('click', function () {
-      if (isSerious()) { delete root.dataset.serious; store('aw-serious', null); }
-      else { root.dataset.serious = '1'; store('aw-serious', '1'); }
+      if (isSerious()) { delete root.dataset.serious; store('aw-eggs', '1'); }
+      else { root.dataset.serious = '1'; store('aw-eggs', null); }
       showSerious();
       document.dispatchEvent(new CustomEvent('aw:serious', { detail: isSerious() }));
     });

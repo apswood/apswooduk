@@ -13,10 +13,11 @@
 - title: "Head of Technical Delivery"
   org: "Six Degrees"
   from: 2022-05
-  summary: "I lead a function created in 2022 when managed services was split in two, covering second and third line Cloud, Data, Connectivity, Unified Comms and Workplace support. The team spans onshore and offshore locations, with one layer of team leads."
+  to: 2026-10
+  summary: "I led a function created in 2022 when managed services was split in two, covering second- and third-line Cloud, Data, Connectivity, Unified Comms and Workplace support. The team spanned onshore and offshore locations, with one layer of team leads."
   publish_summary: true
   outcomes:
-    - text: "Converged separate technical teams into one blended operating model while holding live SLAs"
+    - text: "Consolidated second- and third-line Cloud, Data, Connectivity and UC teams into one operating model while holding live SLAs, cutting cost to serve by around 47%"
       attribution: "Led"
       lenses: [operating-model]
       capabilities: [operating-model, service-delivery]
@@ -27,7 +28,7 @@
       lenses: [operating-model, hands-on]
       capabilities: [problem-management, automation]
       publish: true
-    - text: "Worked with Professional Services leadership to formalise how customer requests move between support and projects, writing the principles and building an AI-assisted triage workflow with decisions kept with people"
+    - text: "Worked with Professional Services leadership to formalise how customer requests moved between support and projects, writing the principles and building an AI-assisted triage workflow with decisions kept with people"
       attribution: "Co-led"
       lenses: [operating-model]
       capabilities: [operating-model, service-design, ai-with-oversight]
@@ -38,37 +39,59 @@
       lenses: [hands-on]
       capabilities: [automation, ai-with-oversight]
       publish: true
-    - text: "Out-of-hours major incident manager and senior escalation point, and technical lead for zero-day assessments on the vulnerability management committee"
+    - text: "Served as out-of-hours major incident manager and senior escalation point, and led the technical assessment of zero-day threats on the vulnerability management committee"
       attribution: "Led"
       lenses: [hands-on]
       capabilities: [major-incident, cyber-recovery]
       publish: true
       highlight: true
-    - text: "Championed proactive automation that contributed to a steady run of improvements and a reduction in major outages"
+    - text: "Championed proactive automation that contributed to 261 proactive improvements in a year and 30% fewer major outages"
       attribution: "Contributed"
       lenses: [operating-model]
       capabilities: [automation, service-delivery]
       publish: true
-    - text: "Mentored engineers across complex hybrid platforms and built a culture of psychological safety, so people feel able to learn, ask and try things without fear"
+    - text: "Mentored engineers across complex hybrid platforms and built a culture of psychological safety, so people felt able to learn, ask and try things without fear"
       attribution: "Led"
       lenses: [operating-model]
       capabilities: [leadership, people]
-      publish: true
-    - text: "Contributed to bid responses and service design, aligning technical architecture proposals with commercial strategy"
-      attribution: "Contributed"
-      lenses: [operating-model]
-      capabilities: [service-design, commercial]
       publish: true
     - text: "Recognised with Above and Beyond awards and company all-hands mentions for leadership in vulnerability management and incident response"
       attribution: "Led"
       lenses: [hands-on]
       capabilities: [major-incident, security, leadership]
       publish: true
-    - text: "Helping drive a sustained improvement in customer satisfaction scores"
+    - text: "Helped drive a 47-point rise in NPS across the business"
       attribution: "Contributed"
       lenses: [operating-model]
       capabilities: [service-delivery]
       publish: true
+    - text: "Member of the Business Leadership Team"
+      attribution: "Contributed"
+      lenses: [operating-model]
+      capabilities: [leadership, strategy]
+      publish: true
+    - text: "Led a function that grew to around 34 engineers under four team leads"
+      attribution: "Led"
+      lenses: [operating-model]
+      capabilities: [leadership, people]
+      publish: true
+    - text: "Helped define and mature the service transition process, from go/no-go reviews before bid to project handover, with teams running technical validation against a readiness checklist and supporting customer acceptance under an Early Life Support OLA; co-wrote the original templates later adopted across patching and event management"
+      attribution: "Co-led"
+      lenses: [operating-model]
+      capabilities: [service-transition, service-design]
+      publish: true
+      highlight: true
+    - text: "Shaped support models, SLAs and transition plans in bids, and worked through gated new product reviews to launch a co-management service and a SASE/SSE network product in 2025"
+      attribution: "Contributed"
+      lenses: [operating-model]
+      capabilities: [service-design, commercial]
+      publish: true
+    - text: "Led a CISO-sponsored password security programme, then completed a FortiPAM privileged access rollout with automated password management, session recording and SSO"
+      attribution: "Led"
+      lenses: [hands-on, operating-model]
+      capabilities: [security, engineering]
+      publish: true
+      highlight: true
   learnt:
     - text: "People can accept a hard decision they understand. Broken promises and shifting direction are what lose them."
       kind: lesson
@@ -124,8 +147,8 @@
   summary: "I brought legacy technical teams together into one proactive managed services operating model, moving towards ITIL-aligned governance and modern monitoring and cross-skilling engineers for hybrid infrastructure."
   publish_summary: true
   outcomes:
-    - text: "Provided technical leadership through the consolidation of multiple monitoring tools onto LogicMonitor, driving migration completion and the retirement of legacy platforms"
-      attribution: "Co-led"
+    - text: "Built the investment case with senior leadership for consolidating 44 monitoring tools onto LogicMonitor, then provided technical leadership through the rollout and drove legacy decommissioning"
+      attribution: "Contributed"
       lenses: [operating-model, hands-on]
       capabilities: [platform-transformation, monitoring]
       publish: true
@@ -262,7 +285,7 @@
   summary: "I was a technical escalation point across customer estates and mentored junior engineers, helping turn the support function into a structured ITIL operation during rapid client onboarding. Carrenza was acquired by Six Degrees in 2016."
   publish_summary: true
   outcomes:
-    - text: "Part of the technical rollout and customer planning for Jira Service Management, which let the team measure SLAs for the first time"
+    - text: "Contributed to the Jira Service Management rollout, including technical implementation and customer planning, which let the team measure SLAs for the first time"
       attribution: "Contributed"
       lenses: [hands-on]
       capabilities: [itsm]

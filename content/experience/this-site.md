@@ -19,4 +19,4 @@ I built it with AI-assisted coding, working in short iterations and reviewing ev
 
 The other detail that matters to me is a publish gate. Every outcome and case study carries an attribution of Led, Co-led, Contributed or Supported, and nothing appears until I have approved it. The build fails if an attribution is missing or invalid, if a draft is marked as published, or if placeholder text would reach a visitor. A pre-publish script then checks the built site for things I never want live, such as stray placeholders, third-party requests and cookies. It is the same discipline I would expect in a live service. The checks are code that runs every time, rather than a promise to be careful.
 
-The career line is drawn as a route map, and selecting a station takes you to that role and opens its card. There are also a few things hidden for the curious. If they get in the way, the Easter Egg Hunt Mode toggle in the footer switches them off.
+The career line is drawn as a route map, and selecting a station takes you to that role and opens its card. There are also a few things hidden for the curious, switched on via the Easter Egg Hunt Mode toggle in the footer.

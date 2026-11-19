@@ -9,7 +9,7 @@ disableKinds = ["taxonomy", "term", "RSS"]
   locale = "en-GB"
 
 [params]
-  description = "Andrew Wood, infrastructure and managed services leader. CV and portfolio."
+  description = "Andrew Wood, Managed Services, Technical Service Delivery and Operations Leader. CV and portfolio."
 
 [outputs]
   home = ["HTML"]

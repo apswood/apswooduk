@@ -191,7 +191,7 @@ a.pill-h{text-decoration:none}a.pill-h:hover,.pill-link:hover .pill rect{filter:
 /* About, CV call to action, footer mode toggle */
 .brief,.skills{padding-left:1.2rem}.brief li,.skills li{margin:0 0 .4em}
 .cv-cta{background:var(--surface);border-left:8px solid var(--accent);border-radius:6px;padding:4px 20px;margin:1.4rem 0}
-.cv-url{font-family:var(--mono);font-size:.9rem;color:var(--muted)}
+.cv-url{font-family:var(--mono);font-size:.9rem;color:var(--muted);white-space:nowrap}
 .mode-row{margin:.6rem 0 0}
 
 /* Texture: original moquette-style band. Kept to the footer and dividers. */
@@ -370,7 +370,7 @@ a:hover{text-decoration-thickness:2px}
 
 /* Controls: one size, comfortable to tap, clear states */
 .chip,.btn{min-height:36px;line-height:1.2;border-radius:999px;border-color:color-mix(in srgb,var(--muted) 70%,transparent)}
-.chip:hover{background:color-mix(in srgb,var(--ink) 8%,var(--surface));border-color:var(--ink)}
+.chip:not([aria-pressed="true"]):hover{background:color-mix(in srgb,var(--ink) 8%,var(--surface));border-color:var(--ink)}
 .chip:disabled{cursor:default}
 .btn{min-height:44px;padding:11px 26px;font-weight:600;font-family:var(--head);letter-spacing:.01em}
 .btn:hover{background:color-mix(in srgb,var(--accent) 86%,var(--ink));border-color:transparent}

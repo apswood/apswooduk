@@ -3,3 +3,6 @@ resources/
 .hugo_build.lock
 .taste-skill/
 .hugo-bin/
+.agents/
+.claude/
+skills-lock.json

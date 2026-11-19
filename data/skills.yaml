@@ -4,7 +4,7 @@
 - { name: "Service transition", publish: true }
 - { name: "Onshore and offshore team leadership", publish: true }
 - { name: "Microsoft Azure and VMware", publish: true }
-- { name: "Networking, SD-WAN, firewalls and load balancing (Cisco ASA, Juniper SRX)", publish: true }
+- { name: "Networking, SD-WAN, firewalls and load balancing (Fortinet SD-WAN, Palo Alto including Panorama, Cisco ASA, Juniper SRX)", publish: true }
 - { name: "Microsoft 365, Intune and Azure Virtual Desktop", publish: true }
 - { name: "PowerShell, Python, Power Automate, Power BI and Copilot Studio", publish: true }
 - { name: "ServiceNow and LogicMonitor", publish: true }

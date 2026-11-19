@@ -1,5 +1,5 @@
-# status must be: held, exam pending. Rendered exactly as written.
-- { name: "ITIL 5 Foundation", issuer: "PeopleCert", status: "exam pending", publish: true }   # TODO(andrew): change to held once passed
+# status must be: held, training complete, exam pending. Rendered exactly as written.
+- { name: "ITIL 5 Foundation", issuer: "PeopleCert", status: "training complete, exam pending", publish: true }   # TODO(andrew): change to held once passed
 - { name: "ITIL v3 Practitioner", issuer: "AXELOS", year: 2017, status: "held", publish: true }
 - { name: "ITIL v3 Foundation", issuer: "AXELOS", year: 2016, status: "held", publish: true }
 - { name: "Red Hat Certified Engineer (RHCE)", issuer: "Red Hat", year: 2016, status: "held", publish: true }

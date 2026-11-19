@@ -8,7 +8,7 @@
       [_________]
   Your task: find every easter egg. Fastest wins. Your time starts now.
 -->` | safeHTML }}
-<html lang="en-GB">
+<html lang="en-GB" data-serious="1">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,7 +20,7 @@
   <script>
   (function(){var d=document.documentElement;d.classList.add('js');
   try{var t=localStorage.getItem('aw-theme');if(t==='light'||t==='dark')d.dataset.theme=t;
-  if(localStorage.getItem('aw-serious')==='1')d.dataset.serious='1'}catch(e){}})();
+  if(localStorage.getItem('aw-eggs')==='1')delete d.dataset.serious}catch(e){}})();
   </script>
   <link rel="preload" href="/fonts/Railway-Semibold.woff2" as="font" type="font/woff2" crossorigin>
   {{ $css := resources.Get "css/site.css" | minify | fingerprint }}
@@ -38,7 +38,7 @@
       <a href="/about/"{{ if eq .Section "about" }} aria-current="page"{{ end }}>About</a>
       <a href="/experience/"{{ if eq .Section "experience" }} aria-current="page"{{ end }}>Experience</a>
       <a href="/approach/"{{ if eq .Section "approach" }} aria-current="page"{{ end }}>Approach</a>
-      <a href="/off-the-clock/"{{ if eq .Section "off-the-clock" }} aria-current="page"{{ end }}>Off the clock</a>
+      <a href="/off-the-clock/" data-egg{{ if eq .Section "off-the-clock" }} aria-current="page"{{ end }}>Off the clock</a>
       <a href="/contact/"{{ if eq .Section "contact" }} aria-current="page"{{ end }}>Contact</a>
     </nav>
     <div class="controls" role="group" aria-label="Display settings" hidden>
@@ -48,7 +48,7 @@
   <main id="main">{{ block "main" . }}{{ end }}</main>
   <div class="divider" aria-hidden="true"></div>
   <footer class="foot">
-    <p class="foot-line"><span>Last reviewed {{ time.AsTime hugo.Data.profile.last_reviewed | time.Format "2 January 2006" }}. <a href="/cv/">Printable CV</a></span> <button type="button" class="chip" id="egg-toggle" aria-pressed="true" hidden>Easter Egg Hunt Mode: On</button></p>
+    <p class="foot-line"><span>Last reviewed {{ time.AsTime hugo.Data.profile.last_reviewed | time.Format "2 January 2006" }}. <a href="/cv/">Printable CV</a></span> <button type="button" class="chip" id="egg-toggle" aria-pressed="false" hidden>Easter Egg Hunt Mode: Off</button></p>
     <p class="egg-row" data-egg>
       <button type="button" class="chip" data-terminal aria-label="Open terminal">&gt;_</button>
       {{ if not (eq .Section "eggs") }}<button type="button" class="chip" id="dig-open" aria-expanded="false" aria-controls="dig">Dig</button>{{ end }}
